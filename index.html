@@ -14,100 +14,137 @@
         }
         
         :root {
-            --primary: #4CAF50;
-            --secondary: #2196F3;
-            --accent: #FF9800;
-            --light: #f9f9f9;
-            --dark: #333;
-            --danger: #f44336;
-            --success: #4caf50;
-            --border: #ddd;
-            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --primary: #0F4C81; /* নেভি ব্লু */
+            --secondary: #1C2E4A; /* ডার্ক ব্লু */
+            --accent: #FF6B6B; /* কোরাল */
+            --light: #f8f9fa;
+            --dark: #2C3E50;
+            --darker: #1A2530;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --danger: #FF6B6B;
+            --border: #34495E;
+            --shadow: 0 4px 20px rgba(0,0,0,0.25);
+            --gradient: linear-gradient(135deg, #0F4C81 0%, #1C2E4A 100%);
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--dark);
+            background: linear-gradient(135deg, var(--darker) 0%, var(--secondary) 100%);
+            color: var(--light);
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
+            background: var(--dark);
+            border-radius: 16px;
             box-shadow: var(--shadow);
             overflow: hidden;
         }
         
         header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--gradient);
             color: white;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><circle cx="50" cy="50" r="40" fill="white"/></svg>');
+            opacity: 0.1;
         }
         
         header h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
+            position: relative;
         }
         
         header p {
             opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
         }
         
         .auth-section {
             padding: 20px;
-            background: var(--light);
+            background: var(--secondary);
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
         
         .btn {
-            padding: 10px 16px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn-primary {
-            background: var(--primary);
+            background: var(--accent);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #3d8b40;
+            background: #FF5252;
+            transform: translateY(-2px);
         }
         
         .btn-secondary {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
         }
         
         .btn-secondary:hover {
-            background: #0b7dda;
+            background: #0D3A6A;
+            transform: translateY(-2px);
         }
         
-        .btn-danger {
-            background: var(--danger);
+        .btn-google {
+            background: #DB4437;
             color: white;
         }
         
-        .btn-danger:hover {
-            background: #d32f2f;
+        .btn-google:hover {
+            background: #C03A2E;
+            transform: translateY(-2px);
         }
         
         .main-content {
@@ -118,47 +155,92 @@
         
         .form-section {
             flex: 1;
-            padding: 25px;
-            min-width: 300px;
+            padding: 30px;
+            min-width: 350px;
             border-right: 1px solid var(--border);
+            background: var(--dark);
         }
         
         .list-section {
-            flex: 1;
-            padding: 25px;
-            min-width: 300px;
+            flex: 2;
+            padding: 30px;
+            min-width: 400px;
+            background: var(--darker);
         }
         
         .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary);
-            color: var(--dark);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+            color: var(--light);
         }
         
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: var(--light);
         }
         
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
+            background: var(--secondary);
+            color: var(--light);
+            transition: all 0.3s;
         }
         
         .form-control:focus {
             outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+        
+        .item-entry {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .item-number {
+            font-weight: bold;
+            color: var(--accent);
+            min-width: 30px;
+        }
+        
+        .item-input {
+            flex: 1;
+        }
+        
+        .price-input {
+            width: 100px;
+        }
+        
+        .shop-input {
+            width: 120px;
+        }
+        
+        .add-item-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .add-item-btn:hover {
+            background: #3DBBB4;
         }
         
         .item-list {
@@ -166,111 +248,173 @@
             margin-top: 20px;
         }
         
-        .item-list li {
-            background: var(--light);
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 8px;
+        .market-list {
+            background: var(--secondary);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .market-list-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
         
-        .item-list li:hover {
-            transform: translateY(-2px);
+        .market-list-title {
+            font-size: 1.3rem;
+            color: var(--accent);
         }
         
-        .item-info {
-            flex: 1;
-        }
-        
-        .item-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .item-details {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
+        .market-list-date {
+            color: #BDC3C7;
             font-size: 0.9rem;
-            color: #666;
         }
         
-        .item-actions {
+        .market-list-shop {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .market-list-items {
+            margin-left: 20px;
+        }
+        
+        .market-item {
             display: flex;
-            gap: 8px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+        
+        .market-item-name {
+            flex: 2;
+        }
+        
+        .market-item-price {
+            flex: 1;
+            text-align: right;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .market-list-total {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            text-align: right;
+            font-weight: bold;
+            color: var(--success);
+        }
+        
+        .list-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .action-btn {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.1rem;
-            color: #666;
+            font-size: 1.2rem;
+            color: #7F8C8D;
             transition: color 0.3s;
+            padding: 8px;
+            border-radius: 6px;
         }
         
         .complete-btn:hover {
             color: var(--success);
+            background: rgba(78, 205, 196, 0.1);
         }
         
         .delete-btn:hover {
             color: var(--danger);
-        }
-        
-        .completed-list {
-            background: #f0f9ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 30px;
-            border-left: 4px solid var(--secondary);
-        }
-        
-        .completed-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--secondary);
+            background: rgba(255, 107, 107, 0.1);
         }
         
         .stats {
             display: flex;
             justify-content: space-around;
             margin-top: 30px;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
+            padding: 20px;
+            background: var(--secondary);
+            border-radius: 10px;
             text-align: center;
+            box-shadow: var-shadow);
         }
         
         .stat-item h3 {
-            font-size: 1.8rem;
-            color: var(--primary);
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .stat-item p {
+            color: #BDC3C7;
         }
         
         .login-form {
             max-width: 400px;
             margin: 40px auto;
             padding: 30px;
-            background: white;
-            border-radius: 12px;
+            background: var(--dark);
+            border-radius: 16px;
             box-shadow: var(--shadow);
+            text-align: center;
         }
         
         .login-form h2 {
             text-align: center;
             margin-bottom: 25px;
-            color: var(--primary);
+            color: var(--accent);
+        }
+        
+        .google-btn {
+            background: #4285F4;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .google-btn:hover {
+            background: #357AE8;
+            transform: translateY(-2px);
         }
         
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 25px;
             margin-top: 30px;
-            color: #666;
+            color: #BDC3C7;
             font-size: 0.9rem;
+            background: var(--darker);
+            border-top: 1px solid var(--border);
+        }
+        
+        .developer {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--accent);
         }
         
         @media (max-width: 768px) {
@@ -281,6 +425,20 @@
             .form-section {
                 border-right: none;
                 border-bottom: 1px solid var(--border);
+            }
+            
+            .auth-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .item-entry {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .price-input, .shop-input {
+                width: 100%;
             }
         }
     </style>
@@ -294,43 +452,52 @@
         
         <div class="auth-section">
             <div class="user-info">
-                <i class="fas fa-user-circle fa-2x"></i>
-                <span>লগ ইন করা নেই</span>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span id="userStatus">লগ ইন করা নেই</span>
             </div>
-            <button class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Gmail দিয়ে লগ ইন</button>
+            <button class="btn btn-google" id="loginBtn">
+                <i class="fab fa-google"></i> Gmail দিয়ে লগ ইন
+            </button>
         </div>
         
         <div class="main-content">
             <section class="form-section">
-                <h2 class="section-title">নতুন আইটেম যোগ করুন</h2>
-                <form id="itemForm">
-                    <div class="form-group">
-                        <label for="itemName">মালের নাম</label>
-                        <input type="text" id="itemName" class="form-control" placeholder="যেমন: চাল, ডাল, তেল" required>
+                <h2 class="section-title">নতুন বাজারলিষ্ট তৈরি করুন</h2>
+                
+                <div class="form-group">
+                    <label for="listDate">তারিখ</label>
+                    <input type="date" id="listDate" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shopName">দোকানের নাম (ঐচ্ছিক)</label>
+                    <input type="text" id="shopName" class="form-control" placeholder="দোকানের নাম">
+                </div>
+                
+                <h3>বাজার আইটেম যোগ করুন</h3>
+                
+                <div id="itemsContainer">
+                    <div class="item-entry">
+                        <div class="item-number">1.</div>
+                        <input type="text" class="form-control item-input" placeholder="মালের নাম">
+                        <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="itemDate">তারিখ</label>
-                        <input type="date" id="itemDate" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="itemAmount">টাকার পরিমাণ</label>
-                        <input type="number" id="itemAmount" class="form-control" placeholder="টাকায়" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="itemQuantity">পরিমাণ (কিলোগ্রাম/লিটার)</label>
-                        <input type="number" id="itemQuantity" class="form-control" placeholder="যেমন: ২ কেজি" step="0.1" min="0">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus-circle"></i> তালিকায় যোগ করুন</button>
-                </form>
+                </div>
+                
+                <button type="button" class="add-item-btn" id="addItemBtn">
+                    <i class="fas fa-plus"></i> আরও আইটেম যোগ করুন
+                </button>
+                
+                <button type="button" class="btn btn-primary" id="saveListBtn">
+                    <i class="fas fa-save"></i> বাজারলিষ্ট সংরক্ষণ করুন
+                </button>
                 
                 <div class="stats">
                     <div class="stat-item">
-                        <h3 id="totalItems">০</h3>
-                        <p>মোট আইটেম</p>
+                        <h3 id="totalLists">০</h3>
+                        <p>মোট লিষ্ট</p>
                     </div>
                     <div class="stat-item">
                         <h3 id="totalAmount">০</h3>
@@ -340,21 +507,15 @@
             </section>
             
             <section class="list-section">
-                <h2 class="section-title">বাজার তালিকা</h2>
-                <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন।</p>
-                <ul class="item-list" id="itemList"></ul>
-                
-                <div class="completed-list">
-                    <h3 class="completed-title"><i class="fas fa-check-circle"></i> সম্পূর্ণ বাজারলিষ্ট</h3>
-                    <p id="completedEmptyMessage">কোনো বাজারলিষ্ট সম্পূর্ণ করা হয়নি।</p>
-                    <ul class="item-list" id="completedList"></ul>
-                </div>
+                <h2 class="section-title">বাজারলিষ্ট সমূহ</h2>
+                <p id="emptyMessage">কোনো বাজারলিষ্ট তৈরি করা হয়নি।</p>
+                <div id="marketListsContainer"></div>
             </section>
         </div>
         
         <footer>
-            <p>© ২০২৩ বাজারলিষ্ট - তৈরি করেছেন আপনার নাম</p>
-            <p>GitHub এ এই প্রোজেক্টটি দেখতে <a href="#">এখানে ক্লিক করুন</a></p>
+            <p>© ২০২৩ বাজারলিষ্ট - আপনার দৈনন্দিন বাজার সহচর</p>
+            <p class="developer">The App build by Mahfuz Bgh Developed</p>
         </footer>
     </div>
 
@@ -362,167 +523,213 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date as default
             const today = new Date().toISOString().substr(0, 10);
-            document.getElementById('itemDate').value = today;
+            document.getElementById('listDate').value = today;
             
-            // Sample data for demonstration
-            const sampleItems = [
-                { id: 1, name: 'চাল', date: '2023-08-15', amount: 80, quantity: 5, completed: false },
-                { id: 2, name: 'ডাল', date: '2023-08-15', amount: 120, quantity: 2, completed: false },
-                { id: 3, name: 'তেল', date: '2023-08-14', amount: 180, quantity: 2, completed: true },
-                { id: 4, name: 'পেঁয়াজ', date: '2023-08-14', amount: 40, quantity: 1.5, completed: true }
-            ];
+            let marketLists = JSON.parse(localStorage.getItem('marketLists')) || [];
+            let itemCount = 1;
+            let loggedIn = false;
             
-            let items = JSON.parse(localStorage.getItem('bazarListItems')) || sampleItems;
+            // Render market lists
+            renderMarketLists();
             
-            // Render items
-            renderItems();
+            // Add item button
+            document.getElementById('addItemBtn').addEventListener('click', function() {
+                itemCount++;
+                const newItem = document.createElement('div');
+                newItem.className = 'item-entry';
+                newItem.innerHTML = `
+                    <div class="item-number">${itemCount}.</div>
+                    <input type="text" class="form-control item-input" placeholder="মালের নাম">
+                    <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
+                `;
+                document.getElementById('itemsContainer').appendChild(newItem);
+            });
             
-            // Form submission
-            document.getElementById('itemForm').addEventListener('submit', function(e) {
-                e.preventDefault();
+            // Save list button
+            document.getElementById('saveListBtn').addEventListener('click', function() {
+                if (!loggedIn) {
+                    alert('দয়া করে প্রথমে Gmail দিয়ে লগ ইন করুন!');
+                    return;
+                }
                 
-                const name = document.getElementById('itemName').value;
-                const date = document.getElementById('itemDate').value;
-                const amount = parseFloat(document.getElementById('itemAmount').value);
-                const quantity = parseFloat(document.getElementById('itemQuantity').value) || 0;
+                const date = document.getElementById('listDate').value;
+                const shop = document.getElementById('shopName').value;
                 
-                const newItem = {
+                // Get all items
+                const items = [];
+                let totalAmount = 0;
+                const itemEntries = document.querySelectorAll('.item-entry');
+                
+                itemEntries.forEach(entry => {
+                    const nameInput = entry.querySelector('.item-input');
+                    const priceInput = entry.querySelector('.price-input');
+                    
+                    if (nameInput.value && priceInput.value) {
+                        const item = {
+                            name: nameInput.value,
+                            price: parseFloat(priceInput.value)
+                        };
+                        items.push(item);
+                        totalAmount += item.price;
+                    }
+                });
+                
+                if (items.length === 0) {
+                    alert('কমপক্ষে একটি আইটেম যোগ করুন!');
+                    return;
+                }
+                
+                const newList = {
                     id: Date.now(),
-                    name,
                     date,
-                    amount,
-                    quantity,
+                    shop,
+                    items,
+                    totalAmount,
                     completed: false
                 };
                 
-                items.push(newItem);
-                saveItems();
-                renderItems();
+                marketLists.push(newList);
+                saveMarketLists();
+                renderMarketLists();
                 
                 // Reset form
-                document.getElementById('itemForm').reset();
-                document.getElementById('itemDate').value = today;
+                document.getElementById('itemsContainer').innerHTML = `
+                    <div class="item-entry">
+                        <div class="item-number">1.</div>
+                        <input type="text" class="form-control item-input" placeholder="মালের নাম">
+                        <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
+                    </div>
+                `;
+                itemCount = 1;
+                document.getElementById('shopName').value = '';
             });
             
             // Login button
             document.getElementById('loginBtn').addEventListener('click', function() {
-                alert('Gmail লগ ইন সিস্টেমটি শীঘ্রই আসছে!');
+                // Show Google login popup
+                const email = prompt('আপনার Gmail আইডি লিখুন:');
+                if (email && email.includes('@gmail.com')) {
+                    loggedIn = true;
+                    document.getElementById('userStatus').textContent = email;
+                    this.innerHTML = '<i class="fas fa-sign-out-alt"></i> লগ আউট';
+                    this.classList.remove('btn-google');
+                    this.classList.add('btn-secondary');
+                    
+                    // Load user data
+                    loadUserData(email);
+                    
+                    alert('সফলভাবে লগ ইন করা হয়েছে! আপনার পূর্বের তথ্য লোড করা হয়েছে।');
+                } else if (email) {
+                    alert('দয়া করে একটি বৈধ Gmail আইডি লিখুন!');
+                }
             });
             
-            // Save items to localStorage
-            function saveItems() {
-                localStorage.setItem('bazarListItems', JSON.stringify(items));
+            // Save market lists to localStorage
+            function saveMarketLists() {
+                localStorage.setItem('marketLists', JSON.stringify(marketLists));
             }
             
-            // Render items to the DOM
-            function renderItems() {
-                const itemList = document.getElementById('itemList');
-                const completedList = document.getElementById('completedList');
+            // Render market lists to the DOM
+            function renderMarketLists() {
+                const container = document.getElementById('marketListsContainer');
                 const emptyMessage = document.getElementById('emptyMessage');
-                const completedEmptyMessage = document.getElementById('completedEmptyMessage');
                 
-                // Clear lists
-                itemList.innerHTML = '';
-                completedList.innerHTML = '';
+                // Clear container
+                container.innerHTML = '';
                 
-                // Separate completed and pending items
-                const pendingItems = items.filter(item => !item.completed);
-                const completedItems = items.filter(item => item.completed);
+                // Show/hide empty message
+                emptyMessage.style.display = marketLists.length ? 'none' : 'block';
                 
-                // Show/hide empty messages
-                emptyMessage.style.display = pendingItems.length ? 'none' : 'block';
-                completedEmptyMessage.style.display = completedItems.length ? 'none' : 'block';
-                
-                // Render pending items
-                pendingItems.forEach(item => {
-                    const li = createItemElement(item);
-                    itemList.appendChild(li);
-                });
-                
-                // Render completed items
-                completedItems.forEach(item => {
-                    const li = createItemElement(item, true);
-                    completedList.appendChild(li);
+                // Render market lists
+                marketLists.forEach(list => {
+                    const listElement = document.createElement('div');
+                    listElement.className = 'market-list';
+                    
+                    // Format date
+                    const dateObj = new Date(list.date);
+                    const formattedDate = dateObj.toLocaleDateString('bn-BD');
+                    
+                    listElement.innerHTML = `
+                        <div class="market-list-header">
+                            <div class="market-list-title">বাজারলিষ্ট #${list.id.toString().slice(-4)}</div>
+                            <div class="market-list-date">${formattedDate}</div>
+                        </div>
+                        ${list.shop ? `<div class="market-list-shop"><i class="fas fa-store"></i> ${list.shop}</div>` : ''}
+                        <div class="market-list-items">
+                            ${list.items.map((item, index) => `
+                                <div class="market-item">
+                                    <div class="market-item-name">${index + 1}. ${item.name}</div>
+                                    <div class="market-item-price">৳${item.price}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="market-list-total">মোট: ৳${list.totalAmount}</div>
+                        <div class="list-actions">
+                            <button class="action-btn complete-btn" data-id="${list.id}">
+                                <i class="fas fa-check-circle"></i> সম্পূর্ণ
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${list.id}">
+                                <i class="fas fa-trash-alt"></i> মুছুন
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add event listeners
+                    listElement.querySelector('.complete-btn').addEventListener('click', function() {
+                        completeList(list.id);
+                    });
+                    
+                    listElement.querySelector('.delete-btn').addEventListener('click', function() {
+                        deleteList(list.id);
+                    });
+                    
+                    container.appendChild(listElement);
                 });
                 
                 // Update stats
                 updateStats();
             }
             
-            // Create item element
-            function createItemElement(item, isCompleted = false) {
-                const li = document.createElement('li');
-                
-                // Format date
-                const dateObj = new Date(item.date);
-                const formattedDate = dateObj.toLocaleDateString('bn-BD');
-                
-                li.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-details">
-                            <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
-                            <span><i class="fas fa-money-bill-wave"></i> ৳${item.amount}</span>
-                            ${item.quantity ? `<span><i class="fas fa-weight"></i> ${item.quantity} কেজি</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="item-actions">
-                        ${!isCompleted ? `
-                            <button class="action-btn complete-btn" data-id="${item.id}">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        ` : ''}
-                        <button class="action-btn delete-btn" data-id="${item.id}">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                `;
-                
-                // Add event listeners
-                if (!isCompleted) {
-                    li.querySelector('.complete-btn').addEventListener('click', function() {
-                        completeItem(item.id);
-                    });
-                }
-                
-                li.querySelector('.delete-btn').addEventListener('click', function() {
-                    deleteItem(item.id);
-                });
-                
-                return li;
-            }
-            
-            // Complete item
-            function completeItem(id) {
-                items = items.map(item => {
-                    if (item.id === id) {
-                        return { ...item, completed: true };
+            // Complete list
+            function completeList(id) {
+                marketLists = marketLists.map(list => {
+                    if (list.id === id) {
+                        return { ...list, completed: true };
                     }
-                    return item;
+                    return list;
                 });
                 
-                saveItems();
-                renderItems();
+                saveMarketLists();
+                renderMarketLists();
             }
             
-            // Delete item
-            function deleteItem(id) {
-                if (confirm('আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?')) {
-                    items = items.filter(item => item.id !== id);
-                    saveItems();
-                    renderItems();
+            // Delete list
+            function deleteList(id) {
+                if (confirm('আপনি কি নিশ্চিত যে আপনি এই বাজারলিষ্টটি মুছতে চান?')) {
+                    marketLists = marketLists.filter(list => list.id !== id);
+                    saveMarketLists();
+                    renderMarketLists();
                 }
             }
             
             // Update statistics
             function updateStats() {
-                const totalItems = items.filter(item => !item.completed).length;
-                const totalAmount = items
-                    .filter(item => !item.completed)
-                    .reduce((sum, item) => sum + item.amount, 0);
+                const totalLists = marketLists.length;
+                const totalAmount = marketLists.reduce((sum, list) => sum + list.totalAmount, 0);
                 
-                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalLists').textContent = totalLists;
                 document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
+            }
+            
+            // Load user data (simulated)
+            function loadUserData(email) {
+                // In a real app, this would fetch data from a server
+                // For now, we'll just use localStorage
+                const userData = localStorage.getItem(`marketLists_${email}`);
+                if (userData) {
+                    marketLists = JSON.parse(userData);
+                    renderMarketLists();
+                }
             }
         });
     </script>
