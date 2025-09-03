@@ -1,3 +1,4 @@
+```javascript
 const CACHE_NAME = 'bazarlist-v1';
 const urlsToCache = [
   '/',
@@ -21,3 +22,4 @@ self.addEventListener('fetch', event => {
       .then(response => response || fetch(event.request))
   );
 });
+```
