@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বাজারলিষ্ট - দৈনন্দিন বাজার তালিকা</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0F4C81">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="বাজারলিষ্ট">
+    <meta name="description" content="দৈনন্দিন বাজার তালিকা ও খরচের হিসাব">
+    <meta name="keywords" content="বাজার, তালিকা, খরচ, হিসাব">
+    <meta name="author" content="Mahfuz Bgh">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="বাজারলিষ্ট">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
     <style>
         * {
             margin: 0;
@@ -144,6 +166,17 @@
         
         .btn-google:hover {
             background: #C03A2E;
+            transform: translateY(-2px);
+        }
+        
+        .install-btn {
+            background: var(--success);
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .install-btn:hover {
+            background: #3DBBB4;
             transform: translateY(-2px);
         }
         
@@ -350,7 +383,7 @@
             background: var(--secondary);
             border-radius: 10px;
             text-align: center;
-            box-shadow: var-shadow);
+            box-shadow: var(--shadow);
         }
         
         .stat-item h3 {
@@ -417,6 +450,15 @@
             color: var(--accent);
         }
         
+        .pwa-install-container {
+            text-align: center;
+            padding: 15px;
+            background: rgba(15, 76, 129, 0.1);
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        
         @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
@@ -440,6 +482,34 @@
             .price-input, .shop-input {
                 width: 100%;
             }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* PWA Installation Prompt */
+        .pwa-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .pwa-prompt button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -457,8 +527,20 @@
                 </div>
                 <span id="userStatus">লগ ইন করা নেই</span>
             </div>
-            <button class="btn btn-google" id="loginBtn">
-                <i class="fab fa-google"></i> Gmail দিয়ে লগ ইন
+            <div>
+                <button class="btn btn-google" id="loginBtn">
+                    <i class="fab fa-google"></i> Gmail দিয়ে লগ ইন
+                </button>
+                <button class="btn install-btn" id="installBtn" style="display:none;">
+                    <i class="fas fa-download"></i> অ্যাপ ইন্সটল করুন
+                </button>
+            </div>
+        </div>
+        
+        <div class="pwa-install-container" id="pwaInstallContainer">
+            <p>বাজারলিষ্ট অ্যাপটি ইন্সটল করুন এবং অফলাইনে ব্যবহার করুন!</p>
+            <button class="btn btn-primary" id="pwaInstallBtn">
+                <i class="fas fa-download"></i> অ্যাপ ইন্সটল করুন
             </button>
         </div>
         
@@ -519,7 +601,77 @@
         </footer>
     </div>
 
+    <!-- PWA Installation Prompt -->
+    <div class="pwa-prompt" id="pwaPrompt">
+        বাজারলিষ্ট অ্যাপ ইন্সটল করুন?
+        <button id="pwaPromptInstall">ইন্সটল</button>
+        <button id="pwaPromptCancel">বাদ দিন</button>
+    </div>
+
     <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                .then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                })
+                .catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+            });
+        }
+
+        // PWA Before Install Prompt
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+        const pwaPrompt = document.getElementById('pwaPrompt');
+        const pwaPromptInstall = document.getElementById('pwaPromptInstall');
+        const pwaPromptCancel = document.getElementById('pwaPromptCancel');
+        const pwaInstallContainer = document.getElementById('pwaInstallContainer');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+            pwaInstallContainer.style.display = 'block';
+            
+            installBtn.addEventListener('click', (e) => {
+                installBtn.style.display = 'none';
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+            
+            pwaInstallBtn.addEventListener('click', (e) => {
+                pwaInstallContainer.style.display = 'none';
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+        });
+
+        // Check if app is already installed
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('App was installed successfully');
+            installBtn.style.display = 'none';
+            pwaInstallContainer.style.display = 'none';
+        });
+
+        // Main Application Code
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date as default
             const today = new Date().toISOString().substr(0, 10);
