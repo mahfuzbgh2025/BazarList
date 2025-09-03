@@ -17,4 +17,4 @@
 
 ## GitHub Pages লিংক
 
-[লাইভ ডেমো দেখুন](https://your-username.github.io/your-repo-name)
+[লাইভ ডেমো দেখুন]https://mahfuzbgh2025.github.io/BazarList/
