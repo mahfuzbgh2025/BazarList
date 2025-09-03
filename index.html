@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাজারলিষ্ট - দৈনন্দিন বাজার তালিকা</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #4CAF50;
+            --secondary: #2196F3;
+            --accent: #FF9800;
+            --light: #f9f9f9;
+            --dark: #333;
+            --danger: #f44336;
+            --success: #4caf50;
+            --border: #ddd;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+        }
+        
+        .auth-section {
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3d8b40;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 500px;
+        }
+        
+        .form-section {
+            flex: 1;
+            padding: 25px;
+            min-width: 300px;
+            border-right: 1px solid var(--border);
+        }
+        
+        .list-section {
+            flex: 1;
+            padding: 25px;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+        
+        .item-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .item-list li {
+            background: var(--light);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        
+        .item-list li:hover {
+            transform: translateY(-2px);
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .item-details {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .complete-btn:hover {
+            color: var(--success);
+        }
+        
+        .delete-btn:hover {
+            color: var(--danger);
+        }
+        
+        .completed-list {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .completed-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shopping-basket"></i> বাজারলিষ্ট</h1>
+            <p>দৈনন্দিন বাজার তালিকা ও খরচের হিসাব</p>
+        </header>
+        
+        <div class="auth-section">
+            <div class="user-info">
+                <i class="fas fa-user-circle fa-2x"></i>
+                <span>লগ ইন করা নেই</span>
+            </div>
+            <button class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Gmail দিয়ে লগ ইন</button>
+        </div>
+        
+        <div class="main-content">
+            <section class="form-section">
+                <h2 class="section-title">নতুন আইটেম যোগ করুন</h2>
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName">মালের নাম</label>
+                        <input type="text" id="itemName" class="form-control" placeholder="যেমন: চাল, ডাল, তেল" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemDate">তারিখ</label>
+                        <input type="date" id="itemDate" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemAmount">টাকার পরিমাণ</label>
+                        <input type="number" id="itemAmount" class="form-control" placeholder="টাকায়" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemQuantity">পরিমাণ (কিলোগ্রাম/লিটার)</label>
+                        <input type="number" id="itemQuantity" class="form-control" placeholder="যেমন: ২ কেজি" step="0.1" min="0">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus-circle"></i> তালিকায় যোগ করুন</button>
+                </form>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3 id="totalItems">০</h3>
+                        <p>মোট আইটেম</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="totalAmount">০</h3>
+                        <p>মোট খরচ</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="list-section">
+                <h2 class="section-title">বাজার তালিকা</h2>
+                <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন।</p>
+                <ul class="item-list" id="itemList"></ul>
+                
+                <div class="completed-list">
+                    <h3 class="completed-title"><i class="fas fa-check-circle"></i> সম্পূর্ণ বাজারলিষ্ট</h3>
+                    <p id="completedEmptyMessage">কোনো বাজারলিষ্ট সম্পূর্ণ করা হয়নি।</p>
+                    <ul class="item-list" id="completedList"></ul>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>© ২০২৩ বাজারলিষ্ট - তৈরি করেছেন আপনার নাম</p>
+            <p>GitHub এ এই প্রোজেক্টটি দেখতে <a href="#">এখানে ক্লিক করুন</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().substr(0, 10);
+            document.getElementById('itemDate').value = today;
+            
+            // Sample data for demonstration
+            const sampleItems = [
+                { id: 1, name: 'চাল', date: '2023-08-15', amount: 80, quantity: 5, completed: false },
+                { id: 2, name: 'ডাল', date: '2023-08-15', amount: 120, quantity: 2, completed: false },
+                { id: 3, name: 'তেল', date: '2023-08-14', amount: 180, quantity: 2, completed: true },
+                { id: 4, name: 'পেঁয়াজ', date: '2023-08-14', amount: 40, quantity: 1.5, completed: true }
+            ];
+            
+            let items = JSON.parse(localStorage.getItem('bazarListItems')) || sampleItems;
+            
+            // Render items
+            renderItems();
+            
+            // Form submission
+            document.getElementById('itemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('itemName').value;
+                const date = document.getElementById('itemDate').value;
+                const amount = parseFloat(document.getElementById('itemAmount').value);
+                const quantity = parseFloat(document.getElementById('itemQuantity').value) || 0;
+                
+                const newItem = {
+                    id: Date.now(),
+                    name,
+                    date,
+                    amount,
+                    quantity,
+                    completed: false
+                };
+                
+                items.push(newItem);
+                saveItems();
+                renderItems();
+                
+                // Reset form
+                document.getElementById('itemForm').reset();
+                document.getElementById('itemDate').value = today;
+            });
+            
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                alert('Gmail লগ ইন সিস্টেমটি শীঘ্রই আসছে!');
+            });
+            
+            // Save items to localStorage
+            function saveItems() {
+                localStorage.setItem('bazarListItems', JSON.stringify(items));
+            }
+            
+            // Render items to the DOM
+            function renderItems() {
+                const itemList = document.getElementById('itemList');
+                const completedList = document.getElementById('completedList');
+                const emptyMessage = document.getElementById('emptyMessage');
+                const completedEmptyMessage = document.getElementById('completedEmptyMessage');
+                
+                // Clear lists
+                itemList.innerHTML = '';
+                completedList.innerHTML = '';
+                
+                // Separate completed and pending items
+                const pendingItems = items.filter(item => !item.completed);
+                const completedItems = items.filter(item => item.completed);
+                
+                // Show/hide empty messages
+                emptyMessage.style.display = pendingItems.length ? 'none' : 'block';
+                completedEmptyMessage.style.display = completedItems.length ? 'none' : 'block';
+                
+                // Render pending items
+                pendingItems.forEach(item => {
+                    const li = createItemElement(item);
+                    itemList.appendChild(li);
+                });
+                
+                // Render completed items
+                completedItems.forEach(item => {
+                    const li = createItemElement(item, true);
+                    completedList.appendChild(li);
+                });
+                
+                // Update stats
+                updateStats();
+            }
+            
+            // Create item element
+            function createItemElement(item, isCompleted = false) {
+                const li = document.createElement('li');
+                
+                // Format date
+                const dateObj = new Date(item.date);
+                const formattedDate = dateObj.toLocaleDateString('bn-BD');
+                
+                li.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-details">
+                            <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
+                            <span><i class="fas fa-money-bill-wave"></i> ৳${item.amount}</span>
+                            ${item.quantity ? `<span><i class="fas fa-weight"></i> ${item.quantity} কেজি</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        ${!isCompleted ? `
+                            <button class="action-btn complete-btn" data-id="${item.id}">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn delete-btn" data-id="${item.id}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listeners
+                if (!isCompleted) {
+                    li.querySelector('.complete-btn').addEventListener('click', function() {
+                        completeItem(item.id);
+                    });
+                }
+                
+                li.querySelector('.delete-btn').addEventListener('click', function() {
+                    deleteItem(item.id);
+                });
+                
+                return li;
+            }
+            
+            // Complete item
+            function completeItem(id) {
+                items = items.map(item => {
+                    if (item.id === id) {
+                        return { ...item, completed: true };
+                    }
+                    return item;
+                });
+                
+                saveItems();
+                renderItems();
+            }
+            
+            // Delete item
+            function deleteItem(id) {
+                if (confirm('আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?')) {
+                    items = items.filter(item => item.id !== id);
+                    saveItems();
+                    renderItems();
+                }
+            }
+            
+            // Update statistics
+            function updateStats() {
+                const totalItems = items.filter(item => !item.completed).length;
+                const totalAmount = items
+                    .filter(item => !item.completed)
+                    .reduce((sum, item) => sum + item.amount, 0);
+                
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
+            }
+        });
+    </script>
+</body>
+</html>
