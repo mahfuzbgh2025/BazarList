@@ -16,378 +16,12 @@
     
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
-    
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-        }
-        
-        :root {
-            --primary: #0F4C81;
-            --secondary: #1C2E4A;
-            --accent: #FF6B6B;
-            --light: #f8f9fa;
-            --dark: #2C3E50;
-            --darker: #1A2530;
-            --success: #4ECDC4;
-            --warning: #FFE66D;
-            --danger: #FF6B6B;
-            --border: #34495E;
-            --shadow: 0 4px 20px rgba(0,0,0,0.25);
-            --gradient: linear-gradient(135deg, #0F4C81 0%, #1C2E4A 100%);
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--darker) 0%, var(--secondary) 100%);
-            color: var(--light);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--dark);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-        
-        header {
-            background: var(--gradient);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><circle cx="50" cy="50" r="40" fill="white"/></svg>');
-            opacity: 0.1;
-        }
-        
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        
-        header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            position: relative;
-        }
-        
-        .auth-section {
-            padding: 20px;
-            background: var(--secondary);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #FF5252;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #0D3A6A;
-            transform: translateY(-2px);
-        }
-        
-        .btn-google {
-            background: #DB4437;
-            color: white;
-        }
-        
-        .btn-google:hover {
-            background: #C03A2E;
-            transform: translateY(-2px);
-        }
-        
-        .main-content {
-            display: flex;
-            flex-wrap: wrap;
-            min-height: 500px;
-        }
-        
-        .form-section {
-            flex: 1;
-            padding: 30px;
-            min-width: 300px;
-            border-right: 1px solid var(--border);
-            background: var(--dark);
-        }
-        
-        .list-section {
-            flex: 1;
-            padding: 30px;
-            min-width: 300px;
-            background: var(--darker);
-        }
-        
-        .section-title {
-            font-size: 1.6rem;
-            margin-bottom: 25px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--accent);
-            color: var(--light);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--light);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
-            background: var(--secondary);
-            color: var(--light);
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
-        }
-        
-        .item-list {
-            list-style: none;
-            margin-top: 20px;
-        }
-        
-        .item-list li {
-            background: var(--secondary);
-            padding: 18px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-            border-left: 4px solid var(--accent);
-        }
-        
-        .item-list li:hover {
-            transform: translateY(-3px);
-        }
-        
-        .item-info {
-            flex: 1;
-        }
-        
-        .item-name {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--light);
-        }
-        
-        .item-details {
-            display: flex;
-            gap: 15px;
-            margin-top: 8px;
-            font-size: 0.95rem;
-            color: #BDC3C7;
-        }
-        
-        .item-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #7F8C8D;
-            transition: color 0.3s;
-            padding: 8px;
-            border-radius: 6px;
-        }
-        
-        .complete-btn:hover {
-            color: var(--success);
-            background: rgba(78, 205, 196, 0.1);
-        }
-        
-        .delete-btn:hover {
-            color: var(--danger);
-            background: rgba(255, 107, 107, 0.1);
-        }
-        
-        .completed-list {
-            background: rgba(30, 46, 74, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 4px solid var(--success);
-        }
-        
-        .completed-title {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--success);
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding: 20px;
-            background: var(--secondary);
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-        
-        .stat-item h3 {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-        
-        .stat-item p {
-            color: #BDC3C7;
-        }
-        
-        .login-form {
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 30px;
-            background: var(--dark);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-        
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: var(--accent);
-        }
-        
-        .google-btn {
-            background: #4285F4;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        
-        .google-btn:hover {
-            background: #357AE8;
-            transform: translateY(-2px);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 25px;
-            margin-top: 30px;
-            color: #BDC3C7;
-            font-size: 0.9rem;
-            background: var(--darker);
-            border-top: 1px solid var(--border);
-        }
-        
-        .developer {
-            margin-top: 10px;
-            font-style: italic;
-            color: var(--accent);
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .form-section {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-            
-            .auth-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-    </style>
+
+    <!-- Common Styles -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -409,6 +43,7 @@
         </div>
         
         <div class="main-content">
+            <!-- Form Section -->
             <section class="form-section">
                 <h2 class="section-title">নতুন আইটেম যোগ করুন</h2>
                 <form id="itemForm">
@@ -449,6 +84,7 @@
                 </div>
             </section>
             
+            <!-- List Section -->
             <section class="list-section">
                 <h2 class="section-title">বাজার তালিকা</h2>
                 <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন।</p>
@@ -470,11 +106,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set today's date as default
+            // আজকের তারিখ default
             const today = new Date().toISOString().substr(0, 10);
             document.getElementById('itemDate').value = today;
             
-            // Sample data for demonstration
             const sampleItems = [
                 { id: 1, name: 'চাল', date: '2023-08-15', amount: 80, quantity: 5, completed: false },
                 { id: 2, name: 'ডাল', date: '2023-08-15', amount: 120, quantity: 2, completed: false },
@@ -485,10 +120,8 @@
             let items = JSON.parse(localStorage.getItem('bazarListItems')) || sampleItems;
             let loggedIn = false;
             
-            // Render items
             renderItems();
             
-            // Form submission
             document.getElementById('itemForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -515,12 +148,10 @@
                 saveItems();
                 renderItems();
                 
-                // Reset form
                 document.getElementById('itemForm').reset();
                 document.getElementById('itemDate').value = today;
             });
             
-            // Login button
             document.getElementById('loginBtn').addEventListener('click', function() {
                 loggedIn = !loggedIn;
                 if (loggedIn) {
@@ -528,8 +159,6 @@
                     this.innerHTML = '<i class="fas fa-sign-out-alt"></i> লগ আউট';
                     this.classList.remove('btn-google');
                     this.classList.add('btn-secondary');
-                    
-                    // Show welcome message
                     alert('সফলভাবে লগ ইন করা হয়েছে! এখন আপনি বাজারলিষ্ট ব্যবস্থাপনা করতে পারবেন।');
                 } else {
                     document.getElementById('userStatus').textContent = 'লগ ইন করা নেই';
@@ -539,51 +168,41 @@
                 }
             });
             
-            // Save items to localStorage
             function saveItems() {
                 localStorage.setItem('bazarListItems', JSON.stringify(items));
             }
             
-            // Render items to the DOM
             function renderItems() {
                 const itemList = document.getElementById('itemList');
                 const completedList = document.getElementById('completedList');
                 const emptyMessage = document.getElementById('emptyMessage');
                 const completedEmptyMessage = document.getElementById('completedEmptyMessage');
                 
-                // Clear lists
                 itemList.innerHTML = '';
                 completedList.innerHTML = '';
                 
-                // Separate completed and pending items
                 const pendingItems = items.filter(item => !item.completed);
                 const completedItems = items.filter(item => item.completed);
                 
-                // Show/hide empty messages
                 emptyMessage.style.display = pendingItems.length ? 'none' : 'block';
                 completedEmptyMessage.style.display = completedItems.length ? 'none' : 'block';
                 
-                // Render pending items
                 pendingItems.forEach(item => {
                     const li = createItemElement(item);
                     itemList.appendChild(li);
                 });
                 
-                // Render completed items
                 completedItems.forEach(item => {
                     const li = createItemElement(item, true);
                     completedList.appendChild(li);
                 });
                 
-                // Update stats
                 updateStats();
             }
             
-            // Create item element
             function createItemElement(item, isCompleted = false) {
                 const li = document.createElement('li');
                 
-                // Format date
                 const dateObj = new Date(item.date);
                 const formattedDate = dateObj.toLocaleDateString('bn-BD');
                 
@@ -608,7 +227,6 @@
                     </div>
                 `;
                 
-                // Add event listeners
                 if (!isCompleted) {
                     li.querySelector('.complete-btn').addEventListener('click', function() {
                         completeItem(item.id);
@@ -622,7 +240,6 @@
                 return li;
             }
             
-            // Complete item
             function completeItem(id) {
                 items = items.map(item => {
                     if (item.id === id) {
@@ -635,7 +252,6 @@
                 renderItems();
             }
             
-            // Delete item
             function deleteItem(id) {
                 if (confirm('আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?')) {
                     items = items.filter(item => item.id !== id);
@@ -644,7 +260,6 @@
                 }
             }
             
-            // Update statistics
             function updateStats() {
                 const totalItems = items.filter(item => !item.completed).length;
                 const totalAmount = items
@@ -655,7 +270,6 @@
                 document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
             }
 
-            // PWA Installation Prompt
             let deferredPrompt;
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
@@ -664,17 +278,16 @@
         });
     </script>
 
-    <!-- Service Worker Registration Code - এই部分টি যোগ করা হয়েছে -->
+    <!-- Service Worker Registration -->
     <script>
-        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then(function(registration) {
                         console.log('Service Worker registered with scope:', registration.scope);
                     })
                     .catch(function(error) {
-                        console.log('Service Worker registration failed:', error);
+                        console.error('Service Worker registration failed:', error);
                     });
             });
         }
