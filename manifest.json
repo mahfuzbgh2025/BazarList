@@ -9,6 +9,9 @@
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
+  "dir": "ltr",
+  "lang": "bn-BD",
+  "prefer_related_applications": false,
 
   "icons": [
     {
@@ -48,13 +51,22 @@
       "src": "AppImages/android/android-launchericon-512-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "label": "BazarList App"
+      "label": "Main Screen"
     }
   ],
 
   "launch_handler": {
-    "client_mode": "navigate-existing"
+    "client_mode": ["navigate-existing"]
   },
 
-  "categories": ["shopping", "productivity", "utilities"]
+  "categories": ["shopping", "productivity", "utilities"],
+
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://mahfuzbgh2025.github.io/BazarList/"
+    }
+  ],
+
+  "iarc_rating_id": "pending"
 }
