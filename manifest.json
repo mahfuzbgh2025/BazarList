@@ -1,14 +1,14 @@
 {
-  "name": "বাজারলিষ্ট - দৈনন্দিন বাজার তালিকা",
-  "short_name": "বাজারলিষ্ট",
+  "name": "BazarList",
+  "short_name": "BazarList",
+  "description": "BazarList হলো আপনার শপিং ম্যানেজমেন্ট অ্যাপ।",
+  "id": "bazarlist-app",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0F4C81",
-  "theme_color": "#0F4C81",
-
-  "description": "একটি ওয়েব অ্যাপ্লিকেশন যা দৈনন্দিন বাজার খরচের হিসাব রাখে।",
-  "id": "com.bazarlist.app",
   "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
 
   "icons": [
     {
@@ -41,5 +41,20 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+
+  "screenshots": [
+    {
+      "src": "AppImages/android/android-launchericon-512-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "BazarList App"
+    }
+  ],
+
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+
+  "categories": ["shopping", "productivity", "utilities"]
 }
