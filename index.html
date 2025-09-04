@@ -4,34 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বাজারলিষ্ট - দৈনন্দিন বাজার তালিকা</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0F4C81">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="বাজারলিষ্ট">
-    <meta name="description" content="দৈনন্দিন বাজার তালিকা ও খরচের হিসাব">
-    <meta name="keywords" content="বাজার, তালিকা, খরচ, হিসাব">
-    <meta name="author" content="Mahfuz Bgh">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- iOS Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="বাজারলিষ্ট">
     
-    <!-- Favicon and App Icons -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     
-    <!-- Firebase App -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuKAuiDQsrCv0LfRh9Cw0Lkg0YLQsNC70YzRj9C30YwiLAogICJzaG9ydF9uYW1lIjogIuKAuiDQsrCv0LfRh9Cw0LkiLAogICJkZXNjcmlwdGlvbiI6ICLQtNCw0L3QvdCw0LvQuCDQsrCv0LfRh9Cw0Lkg0YLQsNC70YzRj9C30LAg0Lgg0LfQuNGC0LDQuyDQuNGB0LrQsNCy0LAiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFDMkU0QSIsCiAgInRoZW1lX2NvbG9yIjogIiMwRjRDODEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIQnlaWE5sY25abFFYTndaV04wVW1GMGFXODlJbmhOY3lJZ2QybGtkR2c5SWpJd0lqRXlNREFpSUhacFpYZENiM2c5SWpBZ01DQXlNREFnTVRJMUlEQWdNQ0F4TlNCaGJua2lJSGRwWkhSb1BTSXhNQ0lnWlc1a1pYSmxjaUJ6ZEhsc1pUMGlZMjl0TG1Ga2IySmxMbU52YlNJZ2RHVjRkQzFoYm1Ob2IzSTlJbTFoZEhKcGVDQXlJSE5sYkd4a2F5QTFJREFnTVNBNElEQWdNQ0F4TlNCN0lEQWdNQ0F4TlNCeVpUNWpiMjBpSUdacGJHdzlJbU52YlM1cGJtWnZJajRtSTNoaE95QnpkR0YwWlNCd1lYSjBPbkJoY21GdFpTNWpiMjA4TDNOMGVXeGxQand2YzNablBnPT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjczBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5jeUlnZDJsa2RHZzlJakl3SWpFeU1EQWlJSFpwWlhkQ2IzZzlJakFnTUNBeU1EQWdNVEkxSURBZ01DQXhOU0JoYm5raUlIZHBaSFJvUFNJeE1DSWdaVzVrWlhKbGNpQnpkSGxzWlQwaVkyOXRMbUZrYjJKbExtTnZiU0lnZEdWNGRDMWhibU5vYjNJOUltMWhkSEpwZUNBeUlITmxiR3hrYXlBMUlEQWdNU0E0SURBZ01DQXhOU0I3SURBZ01DQXhOU0J5WlQ1amIyMGlJR1pwYkd3OUltTnZiUzVwYm1adklqNG1JM2hoT3lCemRHRjBaU0J3WVhKME9uQmhjbUZ0WlM1amIyMDhMM04wZVd4bFBqd3ZjM1puUGc9PSIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -64,7 +50,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--dark);
             border-radius: 16px;
@@ -132,13 +118,6 @@
             font-weight: bold;
         }
         
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
         .btn {
             padding: 12px 20px;
             border: none;
@@ -181,17 +160,6 @@
             transform: translateY(-2px);
         }
         
-        .install-btn {
-            background: var(--success);
-            color: white;
-            margin-left: 10px;
-        }
-        
-        .install-btn:hover {
-            background: #3DBBB4;
-            transform: translateY(-2px);
-        }
-        
         .main-content {
             display: flex;
             flex-wrap: wrap;
@@ -201,15 +169,15 @@
         .form-section {
             flex: 1;
             padding: 30px;
-            min-width: 350px;
+            min-width: 300px;
             border-right: 1px solid var(--border);
             background: var(--dark);
         }
         
         .list-section {
-            flex: 2;
+            flex: 1;
             padding: 30px;
-            min-width: 400px;
+            min-width: 300px;
             background: var(--darker);
         }
         
@@ -249,148 +217,49 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
         }
         
-        .item-entry {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
+        .item-list {
+            list-style: none;
+            margin-top: 20px;
         }
         
-        .item-number {
-            font-weight: bold;
-            color: var(--accent);
-            min-width: 30px;
-        }
-        
-        .item-input {
-            flex: 1;
-        }
-        
-        .price-input {
-            width: 100px;
-        }
-        
-        .shop-input {
-            width: 120px;
-        }
-        
-        .add-item-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        
-        .add-item-btn:hover {
-            background: #3DBBB4;
-        }
-        
-        .market-list {
+        .item-list li {
             background: var(--secondary);
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             box-shadow: var(--shadow);
+            transition: transform 0.2s;
             border-left: 4px solid var(--accent);
         }
         
-        .market-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
+        .item-list li:hover {
+            transform: translateY(-3px);
         }
         
-        .market-list-title {
-            font-size: 1.3rem;
-            color: var(--accent);
-        }
-        
-        .market-list-date {
-            color: #BDC3C7;
-            font-size: 0.9rem;
-        }
-        
-        .market-list-shop {
-            color: var(--success);
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        
-        .market-list-items {
-            margin-left: 20px;
-        }
-        
-        .market-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            transition: background 0.3s;
-        }
-        
-        .market-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .market-item-name {
-            flex: 2;
-        }
-        
-        .market-item-price {
+        .item-info {
             flex: 1;
-            text-align: right;
-            color: var(--accent);
-            font-weight: bold;
         }
         
-        .market-item-actions {
+        .item-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+        
+        .item-details {
             display: flex;
-            gap: 8px;
-            margin-left: 10px;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: #BDC3C7;
         }
         
-        .item-action-btn {
-            background: none;
-            border: none;
-            color: #7F8C8D;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        
-        .edit-btn:hover {
-            color: var(--success);
-            background: rgba(78, 205, 196, 0.1);
-        }
-        
-        .delete-item-btn:hover {
-            color: var(--danger);
-            background: rgba(255, 107, 107, 0.1);
-        }
-        
-        .market-list-total {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border);
-            text-align: right;
-            font-weight: bold;
-            color: var(--success);
-        }
-        
-        .list-actions {
+        .item-actions {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
         }
         
         .action-btn {
@@ -414,9 +283,18 @@
             background: rgba(255, 107, 107, 0.1);
         }
         
-        .edit-list-btn:hover {
-            color: var(--warning);
-            background: rgba(255, 230, 109, 0.1);
+        .completed-list {
+            background: rgba(30, 46, 74, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .completed-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--success);
         }
         
         .stats {
@@ -440,6 +318,44 @@
             color: #BDC3C7;
         }
         
+        .login-form {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--dark);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--accent);
+        }
+        
+        .google-btn {
+            background: #4285F4;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .google-btn:hover {
+            background: #357AE8;
+            transform: translateY(-2px);
+        }
+        
         footer {
             text-align: center;
             padding: 25px;
@@ -456,55 +372,6 @@
             color: var(--accent);
         }
         
-        .pwa-install-container {
-            text-align: center;
-            padding: 15px;
-            background: rgba(15, 76, 129, 0.1);
-            border-radius: 10px;
-            margin: 15px 0;
-            display: none;
-        }
-        
-        .edit-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .edit-modal-content {
-            background: var(--dark);
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--accent);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
         @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
@@ -519,19 +386,6 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            
-            .item-entry {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .price-input, .shop-input {
-                width: 100%;
-            }
-            
-            header h1 {
-                font-size: 2rem;
-            }
         }
     </style>
 </head>
@@ -544,64 +398,49 @@
         
         <div class="auth-section">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">
+                <div class="user-avatar">
                     <i class="fas fa-user"></i>
                 </div>
                 <span id="userStatus">লগ ইন করা নেই</span>
             </div>
-            <div>
-                <button class="btn btn-google" id="loginBtn">
-                    <i class="fab fa-google"></i> Gmail দিয়ে লগ ইন
-                </button>
-                <button class="btn install-btn" id="installBtn" style="display:none;">
-                    <i class="fas fa-download"></i> অ্যাপ ইন্সটল করুন
-                </button>
-            </div>
-        </div>
-        
-        <div class="pwa-install-container" id="pwaInstallContainer">
-            <p>বাজারলিষ্ট অ্যাপটি ইন্সটল করুন এবং অফলাইনে ব্যবহার করুন!</p>
-            <button class="btn btn-primary" id="pwaInstallBtn">
-                <i class="fas fa-download"></i> অ্যাপ ইন্সটল করুন
+            <button class="btn btn-google" id="loginBtn">
+                <i class="fab fa-google"></i> Gmail দিয়ে লগ ইন
             </button>
         </div>
         
         <div class="main-content">
             <section class="form-section">
-                <h2 class="section-title">নতুন বাজারলিষ্ট তৈরি করুন</h2>
-                
-                <div class="form-group">
-                    <label for="listDate">তারিখ</label>
-                    <input type="date" id="listDate" class="form-control" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="shopName">দোকানের নাম (ঐচ্ছিক)</label>
-                    <input type="text" id="shopName" class="form-control" placeholder="দোকানের নাম">
-                </div>
-                
-                <h3>বাজার আইটেম যোগ করুন</h3>
-                
-                <div id="itemsContainer">
-                    <div class="item-entry">
-                        <div class="item-number">1.</div>
-                        <input type="text" class="form-control item-input" placeholder="মালের নাম">
-                        <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
+                <h2 class="section-title">নতুন আইটেম যোগ করুন</h2>
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName">মালের নাম</label>
+                        <input type="text" id="itemName" class="form-control" placeholder="যেমন: চাল, ডাল, তেল" required>
                     </div>
-                </div>
-                
-                <button type="button" class="add-item-btn" id="addItemBtn">
-                    <i class="fas fa-plus"></i> আরও আইটেম যোগ করুন
-                </button>
-                
-                <button type="button" class="btn btn-primary" id="saveListBtn">
-                    <i class="fas fa-save"></i> বাজারলিষ্ট সংরক্ষণ করুন
-                </button>
+                    
+                    <div class="form-group">
+                        <label for="itemDate">তারিখ</label>
+                        <input type="date" id="itemDate" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemAmount">টাকার পরিমাণ</label>
+                        <input type="number" id="itemAmount" class="form-control" placeholder="টাকায়" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemQuantity">পরিমাণ (কিলোগ্রাম/লিটার)</label>
+                        <input type="number" id="itemQuantity" class="form-control" placeholder="যেমন: ২ কেজি" step="0.1" min="0">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> তালিকায় যোগ করুন
+                    </button>
+                </form>
                 
                 <div class="stats">
                     <div class="stat-item">
-                        <h3 id="totalLists">০</h3>
-                        <p>মোট লিষ্ট</p>
+                        <h3 id="totalItems">০</h3>
+                        <p>মোট আইটেম</p>
                     </div>
                     <div class="stat-item">
                         <h3 id="totalAmount">০</h3>
@@ -611,9 +450,15 @@
             </section>
             
             <section class="list-section">
-                <h2 class="section-title">বাজারলিষ্ট সমূহ</h2>
-                <p id="emptyMessage">কোনো বাজারলিষ্ট তৈরি করা হয়নি।</p>
-                <div id="marketListsContainer"></div>
+                <h2 class="section-title">বাজার তালিকা</h2>
+                <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন。</p>
+                <ul class="item-list" id="itemList"></ul>
+                
+                <div class="completed-list">
+                    <h3 class="completed-title"><i class="fas fa-check-circle"></i> সম্পূর্ণ বাজারলিষ্ট</h3>
+                    <p id="completedEmptyMessage">কোনো বাজারলিষ্ট সম্পূর্ণ করা হয়নি。</p>
+                    <ul class="item-list" id="completedList"></ul>
+                </div>
             </section>
         </div>
         
@@ -623,480 +468,200 @@
         </footer>
     </div>
 
-    <!-- Edit Modal -->
-    <div class="edit-modal" id="editModal">
-        <div class="edit-modal-content">
-            <div class="modal-header">
-                <h3>লিষ্ট সম্পাদনা করুন</h3>
-                <button class="modal-close" id="closeModal">&times;</button>
-            </div>
-            <div id="modalContent">
-                <!-- Dynamic content will be loaded here -->
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyYourAPIKeyHere",
-            authDomain: "your-project-id.firebaseapp.com",
-            projectId: "your-project-id",
-            storageBucket: "your-project-id.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "your-app-id"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        // Google Provider
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js')
-                .then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                })
-                .catch(function(error) {
-                    console.log('ServiceWorker registration failed: ', error);
-                });
-            });
-        }
-
-        // PWA Before Install Prompt
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-        const pwaInstallBtn = document.getElementById('pwaInstallBtn');
-        const pwaInstallContainer = document.getElementById('pwaInstallContainer');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-            pwaInstallContainer.style.display = 'block';
-            
-            installBtn.addEventListener('click', (e) => {
-                installBtn.style.display = 'none';
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            });
-            
-            pwaInstallBtn.addEventListener('click', (e) => {
-                pwaInstallContainer.style.display = 'none';
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            });
-        });
-
-        // Check if app is already installed
-        window.addEventListener('appinstalled', (evt) => {
-            console.log('App was installed successfully');
-            installBtn.style.display = 'none';
-            pwaInstallContainer.style.display = 'none';
-        });
-
-        // Main Application Code
-        let marketLists = [];
-        let itemCount = 1;
-        let currentUser = null;
-        let editingListId = null;
-
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date as default
             const today = new Date().toISOString().substr(0, 10);
-            document.getElementById('listDate').value = today;
+            document.getElementById('itemDate').value = today;
             
-            // Initialize Firebase Auth state listener
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('userStatus').textContent = user.email;
-                    document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-out-alt"></i> লগ আউট';
-                    document.getElementById('loginBtn').classList.remove('btn-google');
-                    document.getElementById('loginBtn').classList.add('btn-secondary');
-                    
-                    // Load user data from Firestore
-                    loadUserData(user.uid);
-                } else {
-                    currentUser = null;
-                    document.getElementById('userStatus').textContent = 'লগ ইন করা নেই';
-                    document.getElementById('loginBtn').innerHTML = '<i class="fab fa-google"></i> Gmail দিয়ে লগ ইন';
-                    document.getElementById('loginBtn').classList.remove('btn-secondary');
-                    document.getElementById('loginBtn').classList.add('btn-google');
-                    document.getElementById('userAvatar').innerHTML = '<i class="fas fa-user"></i>';
-                    
-                    marketLists = [];
-                    renderMarketLists();
-                }
-            });
+            // Sample data for demonstration
+            const sampleItems = [
+                { id: 1, name: 'চাল', date: '2023-08-15', amount: 80, quantity: 5, completed: false },
+                { id: 2, name: 'ডাল', date: '2023-08-15', amount: 120, quantity: 2, completed: false },
+                { id: 3, name: 'তেল', date: '2023-08-14', amount: 180, quantity: 2, completed: true },
+                { id: 4, name: 'পেঁয়াজ', date: '2023-08-14', amount: 40, quantity: 1.5, completed: true }
+            ];
             
-            // Render market lists
-            renderMarketLists();
+            let items = JSON.parse(localStorage.getItem('bazarListItems')) || sampleItems;
+            let loggedIn = false;
             
-            // Add item button
-            document.getElementById('addItemBtn').addEventListener('click', function() {
-                itemCount++;
-                const newItem = document.createElement('div');
-                newItem.className = 'item-entry';
-                newItem.innerHTML = `
-                    <div class="item-number">${itemCount}.</div>
-                    <input type="text" class="form-control item-input" placeholder="মালের নাম">
-                    <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
-                `;
-                document.getElementById('itemsContainer').appendChild(newItem);
-            });
+            // Render items
+            renderItems();
             
-            // Save list button
-            document.getElementById('saveListBtn').addEventListener('click', function() {
-                if (!currentUser) {
+            // Form submission
+            document.getElementById('itemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!loggedIn) {
                     alert('দয়া করে প্রথমে Gmail দিয়ে লগ ইন করুন!');
                     return;
                 }
                 
-                const date = document.getElementById('listDate').value;
-                const shop = document.getElementById('shopName').value;
+                const name = document.getElementById('itemName').value;
+                const date = document.getElementById('itemDate').value;
+                const amount = parseFloat(document.getElementById('itemAmount').value);
+                const quantity = parseFloat(document.getElementById('itemQuantity').value) || 0;
                 
-                // Get all items
-                const items = [];
-                let totalAmount = 0;
-                const itemEntries = document.querySelectorAll('.item-entry');
-                
-                itemEntries.forEach(entry => {
-                    const nameInput = entry.querySelector('.item-input');
-                    const priceInput = entry.querySelector('.price-input');
-                    
-                    if (nameInput.value && priceInput.value) {
-                        const item = {
-                            name: nameInput.value,
-                            price: parseFloat(priceInput.value)
-                        };
-                        items.push(item);
-                        totalAmount += item.price;
-                    }
-                });
-                
-                if (items.length === 0) {
-                    alert('কমপক্ষে একটি আইটেম যোগ করুন!');
-                    return;
-                }
-                
-                const listData = {
+                const newItem = {
+                    id: Date.now(),
+                    name,
                     date,
-                    shop,
-                    items,
-                    totalAmount,
-                    completed: false,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    amount,
+                    quantity,
+                    completed: false
                 };
                 
-                if (editingListId) {
-                    // Update existing list
-                    db.collection('users').doc(currentUser.uid).collection('marketLists').doc(editingListId)
-                        .update(listData)
-                        .then(() => {
-                            alert('লিষ্ট আপডেট করা হয়েছে!');
-                            editingListId = null;
-                            loadUserData(currentUser.uid);
-                        })
-                        .catch(error => {
-                            console.error('Error updating list: ', error);
-                            alert('লিষ্ট আপডেট করতে সমস্যা হয়েছে!');
-                        });
-                } else {
-                    // Create new list
-                    db.collection('users').doc(currentUser.uid).collection('marketLists')
-                        .add(listData)
-                        .then(() => {
-                            alert('নতুন লিষ্ট সংরক্ষণ করা হয়েছে!');
-                            loadUserData(currentUser.uid);
-                        })
-                        .catch(error => {
-                            console.error('Error adding list: ', error);
-                            alert('লিষ্ট সংরক্ষণ করতে সমস্যা হয়েছে!');
-                        });
-                }
+                items.push(newItem);
+                saveItems();
+                renderItems();
                 
                 // Reset form
-                document.getElementById('itemsContainer').innerHTML = `
-                    <div class="item-entry">
-                        <div class="item-number">1.</div>
-                        <input type="text" class="form-control item-input" placeholder="মালের নাম">
-                        <input type="number" class="form-control price-input" placeholder="টাকা" min="0">
-                    </div>
-                `;
-                itemCount = 1;
-                document.getElementById('shopName').value = '';
-                document.getElementById('listDate').value = today;
+                document.getElementById('itemForm').reset();
+                document.getElementById('itemDate').value = today;
             });
             
             // Login button
             document.getElementById('loginBtn').addEventListener('click', function() {
-                if (currentUser) {
-                    // Logout
-                    auth.signOut().then(() => {
-                        alert('লগ আউট successful!');
-                    }).catch((error) => {
-                        console.error('Logout error: ', error);
-                    });
+                loggedIn = !loggedIn;
+                if (loggedIn) {
+                    document.getElementById('userStatus').textContent = 'লগ ইন করা আছে';
+                    this.innerHTML = '<i class="fas fa-sign-out-alt"></i> লগ আউট';
+                    this.classList.remove('btn-google');
+                    this.classList.add('btn-secondary');
+                    
+                    // Show welcome message
+                    alert('সফলভাবে লগ ইন করা হয়েছে! এখন আপনি বাজারলিষ্ট ব্যবস্থাপনা করতে পারবেন।');
                 } else {
-                    // Login with Google
-                    auth.signInWithPopup(provider)
-                        .then((result) => {
-                            // Login successful
-                        }).catch((error) => {
-                            console.error('Login error: ', error);
-                            alert('লগ ইন করতে সমস্যা হয়েছে!');
-                        });
+                    document.getElementById('userStatus').textContent = 'লগ ইন করা নেই';
+                    this.innerHTML = '<i class="fab fa-google"></i> Gmail দিয়ে লগ ইন';
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-google');
                 }
             });
             
-            // Modal close button
-            document.getElementById('closeModal').addEventListener('click', function() {
-                document.getElementById('editModal').style.display = 'none';
-            });
+            // Save items to localStorage
+            function saveItems() {
+                localStorage.setItem('bazarListItems', JSON.stringify(items));
+            }
             
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target === document.getElementById('editModal')) {
-                    document.getElementById('editModal').style.display = 'none';
-                }
-            });
-        });
-        
-        // Load user data from Firestore
-        function loadUserData(userId) {
-            db.collection('users').doc(userId).collection('marketLists')
-                .orderBy('createdAt', 'desc')
-                .get()
-                .then((querySnapshot) => {
-                    marketLists = [];
-                    querySnapshot.forEach((doc) => {
-                        const listData = doc.data();
-                        marketLists.push({
-                            id: doc.id,
-                            ...listData
-                        });
-                    });
-                    renderMarketLists();
-                })
-                .catch((error) => {
-                    console.error('Error loading data: ', error);
+            // Render items to the DOM
+            function renderItems() {
+                const itemList = document.getElementById('itemList');
+                const completedList = document.getElementById('completedList');
+                const emptyMessage = document.getElementById('emptyMessage');
+                const completedEmptyMessage = document.getElementById('completedEmptyMessage');
+                
+                // Clear lists
+                itemList.innerHTML = '';
+                completedList.innerHTML = '';
+                
+                // Separate completed and pending items
+                const pendingItems = items.filter(item => !item.completed);
+                const completedItems = items.filter(item => item.completed);
+                
+                // Show/hide empty messages
+                emptyMessage.style.display = pendingItems.length ? 'none' : 'block';
+                completedEmptyMessage.style.display = completedItems.length ? 'none' : 'block';
+                
+                // Render pending items
+                pendingItems.forEach(item => {
+                    const li = createItemElement(item);
+                    itemList.appendChild(li);
                 });
-        }
-        
-        // Render market lists to the DOM
-        function renderMarketLists() {
-            const container = document.getElementById('marketListsContainer');
-            const emptyMessage = document.getElementById('emptyMessage');
+                
+                // Render completed items
+                completedItems.forEach(item => {
+                    const li = createItemElement(item, true);
+                    completedList.appendChild(li);
+                });
+                
+                // Update stats
+                updateStats();
+            }
             
-            // Clear container
-            container.innerHTML = '';
-            
-            // Show/hide empty message
-            emptyMessage.style.display = marketLists.length ? 'none' : 'block';
-            
-            // Render market lists
-            marketLists.forEach(list => {
-                const listElement = document.createElement('div');
-                listElement.className = 'market-list';
+            // Create item element
+            function createItemElement(item, isCompleted = false) {
+                const li = document.createElement('li');
                 
                 // Format date
-                const dateObj = list.date ? new Date(list.date) : new Date();
+                const dateObj = new Date(item.date);
                 const formattedDate = dateObj.toLocaleDateString('bn-BD');
                 
-                listElement.innerHTML = `
-                    <div class="market-list-header">
-                        <div class="market-list-title">বাজারলিষ্ট #${list.id.slice(-4)}</div>
-                        <div class="market-list-date">${formattedDate}</div>
+                li.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-details">
+                            <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
+                            <span><i class="fas fa-money-bill-wave"></i> ৳${item.amount}</span>
+                            ${item.quantity ? `<span><i class="fas fa-weight"></i> ${item.quantity} কেজি</span>` : ''}
+                        </div>
                     </div>
-                    ${list.shop ? `<div class="market-list-shop"><i class="fas fa-store"></i> ${list.shop}</div>` : ''}
-                    <div class="market-list-items">
-                        ${list.items.map((item, index) => `
-                            <div class="market-item">
-                                <div class="market-item-name">${index + 1}. ${item.name}</div>
-                                <div class="market-item-price">৳${item.price}</div>
-                                <div class="market-item-actions">
-                                    <button class="item-action-btn edit-item-btn" onclick="editItem('${list.id}', ${index})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="item-action-btn delete-item-btn" onclick="deleteItem('${list.id}', ${index})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="market-list-total">মোট: ৳${list.totalAmount}</div>
-                    <div class="list-actions">
-                        <button class="action-btn edit-list-btn" onclick="editList('${list.id}')">
-                            <i class="fas fa-edit"></i> সম্পাদনা
-                        </button>
-                        <button class="action-btn complete-btn" onclick="completeList('${list.id}')">
-                            <i class="fas fa-check-circle"></i> সম্পূর্ণ
-                        </button>
-                        <button class="action-btn delete-btn" onclick="deleteList('${list.id}')">
-                            <i class="fas fa-trash-alt"></i> মুছুন
+                    <div class="item-actions">
+                        ${!isCompleted ? `
+                            <button class="action-btn complete-btn" data-id="${item.id}">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn delete-btn" data-id="${item.id}">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>
                 `;
                 
-                container.appendChild(listElement);
-            });
-            
-            // Update stats
-            updateStats();
-        }
-        
-        // Edit list
-        function editList(listId) {
-            const list = marketLists.find(l => l.id === listId);
-            if (!list) return;
-            
-            editingListId = listId;
-            
-            // Fill form with list data
-            document.getElementById('listDate').value = list.date || new Date().toISOString().substr(0, 10);
-            document.getElementById('shopName').value = list.shop || '';
-            
-            // Clear existing items
-            document.getElementById('itemsContainer').innerHTML = '';
-            itemCount = 0;
-            
-            // Add items to form
-            list.items.forEach((item, index) => {
-                itemCount++;
-                const newItem = document.createElement('div');
-                newItem.className = 'item-entry';
-                newItem.innerHTML = `
-                    <div class="item-number">${itemCount}.</div>
-                    <input type="text" class="form-control item-input" placeholder="মালের নাম" value="${item.name}">
-                    <input type="number" class="form-control price-input" placeholder="টাকা" min="0" value="${item.price}">
-                `;
-                document.getElementById('itemsContainer').appendChild(newItem);
-            });
-            
-            // Scroll to form
-            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Edit item
-        function editItem(listId, itemIndex) {
-            const list = marketLists.find(l => l.id === listId);
-            if (!list || !list.items[itemIndex]) return;
-            
-            const newName = prompt('মালের নাম সম্পাদনা করুন:', list.items[itemIndex].name);
-            if (newName === null) return;
-            
-            const newPrice = prompt('দাম সম্পাদনা করুন:', list.items[itemIndex].price);
-            if (newPrice === null) return;
-            
-            list.items[itemIndex].name = newName;
-            list.items[itemIndex].price = parseFloat(newPrice);
-            list.totalAmount = list.items.reduce((sum, item) => sum + item.price, 0);
-            list.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-            
-            // Update in Firestore
-            db.collection('users').doc(currentUser.uid).collection('marketLists').doc(listId)
-                .update({
-                    items: list.items,
-                    totalAmount: list.totalAmount,
-                    updatedAt: list.updatedAt
-                })
-                .then(() => {
-                    renderMarketLists();
-                })
-                .catch(error => {
-                    console.error('Error updating item: ', error);
-                    alert('আইটেম আপডেট করতে সমস্যা হয়েছে!');
-                });
-        }
-        
-        // Delete item
-        function deleteItem(listId, itemIndex) {
-            if (!confirm('আপনি কি এই আইটেমটি মুছতে চান?')) return;
-            
-            const list = marketLists.find(l => l.id === listId);
-            if (!list || !list.items[itemIndex]) return;
-            
-            list.items.splice(itemIndex, 1);
-            list.totalAmount = list.items.reduce((sum, item) => sum + item.price, 0);
-            list.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-            
-            // Update in Firestore
-            db.collection('users').doc(currentUser.uid).collection('marketLists').doc(listId)
-                .update({
-                    items: list.items,
-                    totalAmount: list.totalAmount,
-                    updatedAt: list.updatedAt
-                })
-                .then(() => {
-                    renderMarketLists();
-                })
-                .catch(error => {
-                    console.error('Error deleting item: ', error);
-                    alert('আইটেম মুছতে সমস্যা হয়েছে!');
-                });
-        }
-        
-        // Complete list
-        function completeList(listId) {
-            db.collection('users').doc(currentUser.uid).collection('marketLists').doc(listId)
-                .update({
-                    completed: true,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
-                .then(() => {
-                    loadUserData(currentUser.uid);
-                })
-                .catch(error => {
-                    console.error('Error completing list: ', error);
-                    alert('লিষ্ট সম্পূর্ণ করতে সমস্যা হয়েছে!');
-                });
-        }
-        
-        // Delete list
-        function deleteList(listId) {
-            if (confirm('আপনি কি এই বাজারলিষ্টটি মুছতে চান?')) {
-                db.collection('users').doc(currentUser.uid).collection('marketLists').doc(listId)
-                    .delete()
-                    .then(() => {
-                        loadUserData(currentUser.uid);
-                    })
-                    .catch(error => {
-                        console.error('Error deleting list: ', error);
-                        alert('লিষ্ট মুছতে সমস্যা হয়েছে!');
+                // Add event listeners
+                if (!isCompleted) {
+                    li.querySelector('.complete-btn').addEventListener('click', function() {
+                        completeItem(item.id);
                     });
+                }
+                
+                li.querySelector('.delete-btn').addEventListener('click', function() {
+                    deleteItem(item.id);
+                });
+                
+                return li;
             }
-        }
-        
-        // Update statistics
-        function updateStats() {
-            const totalLists = marketLists.length;
-            const totalAmount = marketLists.reduce((sum, list) => sum + list.totalAmount, 0);
             
-            document.getElementById('totalLists').textContent = totalLists;
-            document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
-        }
+            // Complete item
+            function completeItem(id) {
+                items = items.map(item => {
+                    if (item.id === id) {
+                        return { ...item, completed: true };
+                    }
+                    return item;
+                });
+                
+                saveItems();
+                renderItems();
+            }
+            
+            // Delete item
+            function deleteItem(id) {
+                if (confirm('আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?')) {
+                    items = items.filter(item => item.id !== id);
+                    saveItems();
+                    renderItems();
+                }
+            }
+            
+            // Update statistics
+            function updateStats() {
+                const totalItems = items.filter(item => !item.completed).length;
+                const totalAmount = items
+                    .filter(item => !item.completed)
+                    .reduce((sum, item) => sum + item.amount, 0);
+                
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
+            }
+
+            // PWA Installation Prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+            });
+        });
     </script>
 </body>
 </html>
