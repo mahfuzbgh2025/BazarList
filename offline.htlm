@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অফলাইন - বাজারলিষ্ট</title>
+  <meta name="theme-color" content="#0F4C81">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-shopping-basket"></i> বাজারলিষ্ট</h1>
+    <p>দৈনন্দিন বাজার তালিকা ও খরচের হিসাব</p>
+  </header>
+
+  <div class="offline-box">
+    <div class="offline-content">
+      <div class="icon"><i class="fas fa-wifi-slash"></i></div>
+      <h2>আপনি এখন অফলাইনে!</h2>
+      <p>এই মুহূর্তে ইন্টারনেট সংযোগ নেই।</p>
+      <p>দয়া করে ইন্টারনেট চালু করে আবার চেষ্টা করুন।</p>
+      <button onclick="location.reload()">🔄 আবার চেষ্টা করুন</button>
+    </div>
+  </div>
+</body>
+</html>
