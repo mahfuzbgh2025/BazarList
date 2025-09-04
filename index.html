@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <header>
@@ -14,20 +13,17 @@
   </header>
 
   <main>
-    <!-- নতুন লিস্ট যোগ -->
     <div class="new-list">
       <input type="text" id="newListName" placeholder="নতুন লিস্টের নাম লিখুন">
       <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
     </div>
 
-    <!-- ব্যাকআপ/রিস্টোর -->
     <div class="backup-restore">
-      <button id="exportBtn">📤 Backup Export (.json)</button>
+      <button id="exportBtn">📤 Backup Export</button>
       <input type="file" id="importFile" style="display:none">
-      <button id="importBtn">📥 Import Restore (.json)</button>
+      <button id="importBtn">📥 Import Restore</button>
     </div>
 
-    <!-- লিস্ট গুলো -->
     <div id="lists"></div>
   </main>
 
@@ -35,6 +31,7 @@
     <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
   </footer>
 
+  <!-- ⚡ Script লোড -->
   <script src="app.js"></script>
 </body>
 </html>
