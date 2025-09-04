@@ -1,17 +1,16 @@
 {
   "name": "BazarList",
   "short_name": "BazarList",
-  "description": "BazarList হলো আপনার শপিং ম্যানেজমেন্ট অ্যাপ।",
-  "id": "bazarlist-app",
-  "start_url": "./index.html",
-  "scope": "./",
+  "description": "Smart shopping list PWA with offline support and installable features.",
+  "id": "com.bazarlist.app",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "theme_color": "#0F4C81",
+  "lang": "en",
   "dir": "ltr",
-  "lang": "bn-BD",
-  "prefer_related_applications": false,
 
   "icons": [
     {
@@ -37,12 +36,14 @@
     {
       "src": "AppImages/android/android-launchericon-192-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable any"
     },
     {
       "src": "AppImages/android/android-launchericon-512-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable any"
     }
   ],
 
@@ -51,22 +52,24 @@
       "src": "AppImages/android/android-launchericon-512-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "label": "Main Screen"
+      "form_factor": "wide"
     }
   ],
 
-  "launch_handler": {
-    "client_mode": ["navigate-existing"]
-  },
+  "categories": ["shopping", "productivity"],
 
-  "categories": ["shopping", "productivity", "utilities"],
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
 
   "related_applications": [
     {
-      "platform": "webapp",
-      "url": "https://mahfuzbgh2025.github.io/BazarList/"
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.bazarlist.app",
+      "id": "com.bazarlist.app"
     }
   ],
+  "prefer_related_applications": false,
 
-  "iarc_rating_id": "pending"
+  "gcm_sender_id": "103953800507"
 }
