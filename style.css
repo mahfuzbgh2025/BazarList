@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: linear-gradient(to right, #1c2b49, #223a5e);
+  background: linear-gradient(to bottom, #0d47a1, #1c2b49);
   color: white;
   text-align: center;
 }
@@ -10,6 +10,7 @@ header {
   background: #0d47a1;
   padding: 15px;
   color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .new-list, .backup-restore {
@@ -26,6 +27,8 @@ input, button {
 button {
   cursor: pointer;
   font-weight: bold;
+  background: #2196f3;
+  color: #fff;
 }
 
 button:hover {
@@ -33,7 +36,7 @@ button:hover {
 }
 
 .list {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   margin: 15px;
   padding: 15px;
   border-radius: 10px;
