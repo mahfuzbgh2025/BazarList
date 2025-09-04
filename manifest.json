@@ -1,12 +1,14 @@
 {
   "name": "বাজারলিষ্ট - দৈনন্দিন বাজার তালিকা",
   "short_name": "বাজারলিষ্ট",
-  "lang": "bn-BD",
-  "start_url": "index.html",
-  "scope": ".",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0F4C81",
   "theme_color": "#0F4C81",
+
+  "description": "একটি ওয়েব অ্যাপ্লিকেশন যা দৈনন্দিন বাজার খরচের হিসাব রাখে।",
+  "id": "com.bazarlist.app",
+  "orientation": "portrait",
 
   "icons": [
     {
@@ -32,33 +34,11 @@
     {
       "src": "AppImages/android/android-launchericon-192-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "AppImages/android/android-launchericon-512-512.png",
       "sizes": "512x512",
-      "type": "image/png"
-    },
-
-    {
-      "src": "AppImages/windows11/Square44x44Logo.altform-lightunplated_target200.png",
-      "sizes": "44x44",
-      "type": "image/png"
-    },
-    {
-      "src": "AppImages/windows11/Square150x150Logo.scale-100.png",
-      "sizes": "150x150",
-      "type": "image/png"
-    },
-    {
-      "src": "AppImages/windows11/Wide310x150Logo.scale-100.png",
-      "sizes": "310x150",
-      "type": "image/png"
-    },
-    {
-      "src": "AppImages/windows11/Square150x150Logo.scale-200.png",
-      "sizes": "300x300",
       "type": "image/png"
     }
   ]
