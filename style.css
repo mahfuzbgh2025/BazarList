@@ -1,86 +1,47 @@
-/* General Styles */
 body {
+  font-family: Arial, sans-serif;
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0d1b2a, #1b263b);
-  color: #fff;
-  text-align: center;
-}
-
-/* Header */
-.app-header {
-  padding: 20px;
-  background: #1b263b;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-.app-header h1 {
-  margin: 0;
-  font-size: 2rem;
-}
-.app-header p {
-  margin: 5px 0 0;
-  font-size: 1rem;
-  opacity: 0.8;
-}
-
-/* Main Container */
-.container {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-}
-
-/* Card */
-.card {
-  background: #243447;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-/* Input and Button */
-input {
-  padding: 10px;
-  width: 70%;
-  border: none;
-  border-radius: 8px;
-  margin-right: 8px;
-}
-button {
-  padding: 10px 15px;
-  border: none;
-  background: #00b4d8;
+  padding: 0;
+  background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
   color: white;
-  font-weight: bold;
-  border-radius: 8px;
+}
+header {
+  text-align: center;
+  padding: 20px;
+  background: #1e3c72;
+}
+#new-list {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  gap: 10px;
+}
+#new-list input {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  width: 50%;
+}
+#new-list button {
+  padding: 8px 12px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  border-radius: 6px;
   cursor: pointer;
 }
-button:hover {
-  background: #0096c7;
-}
-
-/* List */
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0;
-  text-align: left;
-}
-li {
+.list {
+  background: rgba(255,255,255,0.1);
+  margin: 15px;
   padding: 10px;
-  margin: 5px 0;
-  background: #415a77;
-  border-radius: 6px;
+  border-radius: 10px;
 }
-
-/* Footer */
-footer {
-  padding: 15px;
-  margin-top: 20px;
-  font-size: 0.9rem;
-  opacity: 0.7;
+.list h2 { margin: 0; }
+.product {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.2);
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 6px;
 }
