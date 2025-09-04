@@ -1,121 +1,152 @@
-let lists = JSON.parse(localStorage.getItem("bazarLists")) || {};
-
-function saveData() {
-  localStorage.setItem("bazarLists", JSON.stringify(lists));
-}
-
-// ✅ লিস্ট তৈরি
-function addList() {
-  const name = document.getElementById("newListName").value.trim();
-  if (!name) return alert("লিস্টের নাম লিখুন!");
-  if (!lists[name]) lists[name] = [];
-  saveData();
+document.addEventListener("DOMContentLoaded", () => {
+  let lists = JSON.parse(localStorage.getItem("bazarLists")) || [];
   renderLists();
-  document.getElementById("newListName").value = "";
-}
 
-// ✅ প্রোডাক্ট যোগ
-function addProduct(listName) {
-  const listContainer = document.getElementById(listName);
-  const name = listContainer.querySelector(".product-name").value.trim();
-  const qty = listContainer.querySelector(".product-qty").value.trim();
-  const price = parseFloat(listContainer.querySelector(".product-price").value.trim());
-  const date = new Date().toISOString().split("T")[0];
+  const listNameInput = document.getElementById("listNameInput");
+  const addListBtn = document.getElementById("addListBtn");
+  const listsContainer = document.getElementById("listsContainer");
+  const totalAmountEl = document.getElementById("totalAmount");
 
-  if (!name || !qty || !price) return alert("সব ঘর পূরণ করুন!");
+  // ✅ নতুন লিস্ট যোগ
+  addListBtn.addEventListener("click", () => {
+    const name = listNameInput.value.trim();
+    if (!name) {
+      alert("দয়া করে লিস্টের নাম লিখুন");
+      return;
+    }
+    lists.push({ id: Date.now(), name, items: [] });
+    listNameInput.value = "";
+    saveLists();
+    renderLists();
+  });
 
-  lists[listName].push({ name, qty, price, date });
-  saveData();
-  renderLists();
-}
+  // ✅ লিস্ট + আইটেম রেন্ডার
+  function renderLists() {
+    listsContainer.innerHTML = "";
+    let totalAmount = 0;
 
-// ✅ প্রোডাক্ট ডিলিট
-function deleteProduct(listName, index) {
-  lists[listName].splice(index, 1);
-  saveData();
-  renderLists();
-}
+    lists.forEach((list) => {
+      const listDiv = document.createElement("div");
+      listDiv.className = "list";
 
-// ✅ মোট হিসাব
-function updateTotal(listName, container) {
-  let total = lists[listName].reduce((sum, p) => sum + p.price, 0);
-  let totalBox = container.querySelector(".total-box");
-  if (!totalBox) {
-    totalBox = document.createElement("div");
-    totalBox.className = "total-box";
-    container.appendChild(totalBox);
-  }
-  totalBox.innerHTML = `মোট: ${total}৳`;
-}
+      const listHeader = document.createElement("h2");
+      listHeader.textContent = list.name;
+      listDiv.appendChild(listHeader);
 
-// ✅ লিস্ট রেন্ডার
-function renderLists() {
-  const listsDiv = document.getElementById("lists");
-  listsDiv.innerHTML = "";
-
-  for (let listName in lists) {
-    const listDiv = document.createElement("div");
-    listDiv.className = "list";
-    listDiv.id = listName;
-
-    listDiv.innerHTML = `
-      <h3>${listName}</h3>
-      <input class="product-name" placeholder="পণ্যের নাম">
-      <input class="product-qty" placeholder="কেজি/পরিমাণ">
-      <input type="number" class="product-price" placeholder="টাকা">
-      <button onclick="addProduct('${listName}')">➕ প্রোডাক্ট</button>
-      <div class="products"></div>
-    `;
-
-    const productsDiv = listDiv.querySelector(".products");
-    lists[listName].forEach((p, index) => {
-      const productDiv = document.createElement("div");
-      productDiv.className = "product";
-
-      productDiv.innerHTML = `
-        <span>${p.name} (${p.qty}) - ${p.price}৳</span>
-        <small>${p.date}</small>
-        <button onclick="deleteProduct('${listName}', ${index})">❌</button>
+      // Add Item Form
+      const form = document.createElement("form");
+      form.className = "item-form";
+      form.innerHTML = `
+        <input type="text" placeholder="পণ্যের নাম" required>
+        <input type="date" required>
+        <input type="number" placeholder="টাকার অংক" required>
+        <input type="number" step="0.1" placeholder="পরিমাণ (কেজি/লিটার)">
+        <button type="submit">➕</button>
       `;
+      listDiv.appendChild(form);
 
-      productsDiv.appendChild(productDiv);
+      const itemList = document.createElement("ul");
+      listDiv.appendChild(itemList);
+
+      // Render Items
+      list.items.forEach((item) => {
+        totalAmount += item.amount;
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${item.name}</strong> 
+          (${item.date}) - ৳${item.amount} 
+          ${item.quantity ? `, ${item.quantity} কেজি` : ""}
+          <button class="edit">✏️</button>
+          <button class="delete">🗑️</button>
+        `;
+
+        // Edit button
+        li.querySelector(".edit").addEventListener("click", () => {
+          const newName = prompt("পণ্যের নাম পরিবর্তন করুন:", item.name);
+          if (newName !== null) item.name = newName;
+
+          const newDate = prompt("তারিখ পরিবর্তন করুন:", item.date);
+          if (newDate !== null) item.date = newDate;
+
+          const newAmount = prompt("টাকার অংক পরিবর্তন করুন:", item.amount);
+          if (newAmount !== null) item.amount = parseFloat(newAmount) || item.amount;
+
+          const newQuantity = prompt("পরিমাণ (কেজি/লিটার) পরিবর্তন করুন:", item.quantity);
+          if (newQuantity !== null) item.quantity = parseFloat(newQuantity) || item.quantity;
+
+          saveLists();
+          renderLists();
+        });
+
+        // Delete button
+        li.querySelector(".delete").addEventListener("click", () => {
+          if (confirm("আপনি কি নিশ্চিত যে এই আইটেম মুছতে চান?")) {
+            list.items = list.items.filter((i) => i !== item);
+            saveLists();
+            renderLists();
+          }
+        });
+
+        itemList.appendChild(li);
+      });
+
+      // Add Item Event
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const inputs = form.querySelectorAll("input");
+        const [nameInput, dateInput, amountInput, qtyInput] = inputs;
+        const newItem = {
+          id: Date.now(),
+          name: nameInput.value,
+          date: dateInput.value,
+          amount: parseFloat(amountInput.value),
+          quantity: parseFloat(qtyInput.value) || 0
+        };
+        list.items.push(newItem);
+        saveLists();
+        renderLists();
+        form.reset();
+      });
+
+      listsContainer.appendChild(listDiv);
     });
 
-    updateTotal(listName, listDiv);
-    listsDiv.appendChild(listDiv);
+    totalAmountEl.textContent = totalAmount;
   }
-}
 
-// ✅ এক্সপোর্ট
-function exportBackup() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lists));
-  const dl = document.createElement("a");
-  dl.href = dataStr;
-  dl.download = "bazarlist-backup.json";
-  dl.click();
-}
+  // ✅ লোকালস্টোরেজে সেভ
+  function saveLists() {
+    localStorage.setItem("bazarLists", JSON.stringify(lists));
+  }
 
-// ✅ ইম্পোর্ট
-function importBackup(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      lists = JSON.parse(e.target.result);
-      saveData();
-      renderLists();
-    } catch {
-      alert("Invalid file!");
-    }
-  };
-  reader.readAsText(file);
-}
+  // ✅ Export Backup
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lists));
+    const dl = document.createElement("a");
+    dl.setAttribute("href", dataStr);
+    dl.setAttribute("download", "bazarlist-backup.json");
+    dl.click();
+  });
 
-// ✅ বাটন ইভেন্ট
-document.getElementById("addListBtn").onclick = addList;
-document.getElementById("exportBtn").onclick = exportBackup;
-document.getElementById("importBtn").onclick = () => document.getElementById("importFile").click();
-document.getElementById("importFile").addEventListener("change", importBackup);
+  // ✅ Import Restore
+  document.getElementById("importBtn").addEventListener("click", () => {
+    document.getElementById("importFile").click();
+  });
 
-renderLists();
+  document.getElementById("importFile").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        lists = JSON.parse(event.target.result);
+        saveLists();
+        renderLists();
+        alert("Backup restore সফল হয়েছে ✅");
+      } catch {
+        alert("ফাইলটি সঠিক নয় ❌");
+      }
+    };
+    reader.readAsText(file);
+  });
+});
