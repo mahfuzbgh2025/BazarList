@@ -103,5 +103,82 @@ function deleteList(listIndex) {
   }
 }
 
+// ======================
+// 📤 Backup System
+// ======================
+const APP_STORAGE_PREFIX = "bazarlist";
+
+function collectAllAppData() {
+  const dump = { meta: {}, data: {} };
+  dump.meta.exportedAt = new Date().toISOString();
+  dump.meta.app = "BazarList";
+  dump.meta.version = 1;
+
+  // localStorage থেকে ডাটা কালেক্ট করা
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.toLowerCase().includes(APP_STORAGE_PREFIX)) {
+      dump.data[k] = localStorage.getItem(k);
+    }
+  }
+  return dump;
+}
+
+function downloadJSON(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function restoreAllAppData(dump) {
+  if (!dump || !dump.data || typeof dump.data !== "object") {
+    alert("❌ Invalid backup file.");
+    return false;
+  }
+  // পুরোনো ডাটা মুছে ফেলা
+  Object.entries(dump.data).forEach(([k, v]) => {
+    localStorage.setItem(k, v);
+  });
+
+  localStorage.setItem("bazarlist-last-restore-at", new Date().toISOString());
+  return true;
+}
+
+// Backup export
+document.getElementById("exportBtn")?.addEventListener("click", () => {
+  const data = collectAllAppData();
+  const date = new Date().toISOString().slice(0, 10);
+  downloadJSON(data, `BazarList-backup-${date}.json`);
+});
+
+// Backup import
+document.getElementById("importFile")?.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const json = JSON.parse(text);
+    const ok = restoreAllAppData(json);
+    if (ok) {
+      alert("✅ Backup restored! The app will reload.");
+      location.reload();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Could not restore. Please select a valid backup JSON file.");
+  } finally {
+    e.target.value = ""; // reset
+  }
+});
+
+// ======================
+
 // প্রথমবার রেন্ডার
 renderLists();
