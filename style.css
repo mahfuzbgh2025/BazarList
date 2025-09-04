@@ -31,10 +31,6 @@ button {
   color: #fff;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
 .list {
   background: rgba(255, 255, 255, 0.08);
   margin: 15px;
@@ -58,41 +54,6 @@ button:hover {
   align-items: center;
 }
 
-.product span {
-  font-size: 0.95rem;
-}
-
-.product small {
-  color: #ccc;
-  margin-left: 10px;
-}
-
-.product button {
-  margin-left: 5px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-}
-
-/* ✏️ Edit বাটন */
-.edit-btn {
-  background: #ff9800;
-  color: white;
-}
-.edit-btn:hover {
-  background: #e68900;
-}
-
-/* 🗑️ Delete বাটন */
-.delete-btn {
-  background: #f44336;
-  color: white;
-}
-.delete-btn:hover {
-  background: #d32f2f;
-}
-
-/* ✅ মোট টাকার বক্স */
 .total-box {
   margin-top: 10px;
   padding: 10px;
@@ -102,11 +63,4 @@ button:hover {
   font-size: 1rem;
   color: #ffeb3b;
   font-weight: bold;
-}
-
-footer {
-  margin-top: 20px;
-  padding: 10px;
-  background: #0d47a1;
-  color: #fff;
 }
