@@ -28,12 +28,21 @@ button {
   font-weight: bold;
 }
 
+button:hover {
+  opacity: 0.9;
+}
+
 .list {
   background: rgba(255, 255, 255, 0.1);
   margin: 15px;
   padding: 15px;
   border-radius: 10px;
   text-align: left;
+}
+
+.list h3 {
+  margin-top: 0;
+  color: #ffeb3b;
 }
 
 .product {
@@ -90,4 +99,11 @@ button {
   font-size: 1rem;
   color: #ffeb3b;
   font-weight: bold;
+}
+
+footer {
+  margin-top: 20px;
+  padding: 10px;
+  background: #0d47a1;
+  color: #fff;
 }
