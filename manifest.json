@@ -2,36 +2,30 @@
   "name": "বাজারলিষ্ট",
   "short_name": "বাজারলিষ্ট",
   "description": "দৈনন্দিন বাজার তালিকা ও খরচের হিসাব",
-  "start_url": "/",
+  "start_url": "/https://mahfuzbgh2025.github.io/BazarList/",
   "display": "standalone",
   "background_color": "#1C2E4A",
   "theme_color": "#0F4C81",
   "orientation": "portrait",
-  "id": "/?source=pwa",
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
   "icons": [
     {
-      "src": "https://cdn.jsdelivr.net/gh/mahfuzbgh2025/BazarList/icon-512.png",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSIjMEY0QzgxIi8+CjxwYXRoIGQ9Ik0zNDQgMjU2TDI3MiAzMjhMMjI0IDI4MEwyOTYgMjA4TDIyNCAxMzZMMjcyIDg0TDM0NCAxNTZMMzUyIDE2OEwzNDQgMTYwTDI4OCAxMDRMMjU2IDEzNkwyODggMTY4TDI1NiAyMDBMMjg4IDIzMkwyNTYgMjY0TDI4OCAyOTZMMzQ0IDI0MEwzNTIgMjMyTDM0NCAyNDBMMjcyIDMyOEgzNDRWMzA0TDM0NCAyNTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://cdn.jsdelivr.net/gh/mahfuzbgh2025/BazarList/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "https://cdn.jsdelivr.net/gh/mahfuzbgh2025/BazarList/screenshot.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "বাজারলিষ্ট অ্যাপ"
-    }
+  "id": "bazarlisht",
+  "lang": "bn",
+  "dir": "auto",
+  "scope": "https://mahfuzbgh2025.github.io/BazarList/",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay"
+  ],
+  "categories": [
+    "productivity",
+    "shopping",
+    "utilities"
   ]
 }
