@@ -1,7 +1,7 @@
 {
   "name": "BazarList",
   "short_name": "BazarList",
-  "description": "দৈনন্দিন বাজার তালিকা ও খরচের হিসাব রাখার জন্য একটি PWA অ্যাপ।",
+  "description": "দৈনন্দিন বাজার তালিকা রাখুন সহজে।",
   "lang": "bn-BD",
   "dir": "ltr",
   "id": "/",
@@ -9,30 +9,10 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1C2E4A",
-  "theme_color": "#0F4C81",
+  "background_color": "#0d47a1",
+  "theme_color": "#0d47a1",
   "categories": ["productivity", "shopping", "utilities"],
   "icons": [
-    {
-      "src": "./AppImages/android/android-launchericon-48-48.png",
-      "sizes": "48x48",
-      "type": "image/png"
-    },
-    {
-      "src": "./AppImages/android/android-launchericon-72-72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "./AppImages/android/android-launchericon-96-96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "./AppImages/android/android-launchericon-144-144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
     {
       "src": "./AppImages/android/android-launchericon-192-192.png",
       "sizes": "192x192",
@@ -51,10 +31,11 @@
       "src": "./AppImages/screenshots/screen1.png",
       "sizes": "540x960",
       "type": "image/png",
-      "label": "মেইন লিস্ট স্ক্রিন"
+      "label": "Main List Page"
     }
   ],
   "launch_handler": {
     "client_mode": "focus-existing"
-  }
+  },
+  "iarc_rating_id": "pending"
 }
