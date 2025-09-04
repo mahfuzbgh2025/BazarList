@@ -15,7 +15,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
     
     <!-- Manifest -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuKAuiDQsrCv0LfRh9Cw0Lkg0YLQsNC70YzRj9C30YwiLAogICJzaG9ydF9uYW1lIjogIuKAuiDQsrCv0LfRh9Cw0LkiLAogICJkZXNjcmlwdGlvbiI6ICLQtNCw0L3QvdCw0LvQuCDQsrCv0LfRh9Cw0Lkg0YLQsNC70YzRj9C30LAg0Lgg0LfQuNGC0LDQuyDQuNGB0LrQsNCy0LAiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFDMkU0QSIsCiAgInRoZW1lX2NvbG9yIjogIiMwRjRDODEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIQnlaWE5sY25abFFYTndaV04wVW1GMGFXODlJbmhOY3lJZ2QybGtkR2c5SWpJd0lqRXlNREFpSUhacFpYZENiM2c5SWpBZ01DQXlNREFnTVRJMUlEQWdNQ0F4TlNCaGJua2lJSGRwWkhSb1BTSXhNQ0lnWlc1a1pYSmxjaUJ6ZEhsc1pUMGlZMjl0TG1Ga2IySmxMbU52YlNJZ2RHVjRkQzFoYm1Ob2IzSTlJbTFoZEhKcGVDQXlJSE5sYkd4a2F5QTFJREFnTVNBNElEQWdNQ0F4TlNCN0lEQWdNQ0F4TlNCeVpUNWpiMjBpSUdacGJHdzlJbU52YlM1cGJtWnZJajRtSTNoaE95QnpkR0YwWlNCd1lYSjBPbkJoY21GdFpTNWpiMjA4TDNOMGVXeGxQand2YzNablBnPT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjczBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5jeUlnZDJsa2RHZzlJakl3SWpFeU1EQWlJSFpwWlhkQ2IzZzlJakFnTUNBeU1EQWdNVEkxSURBZ01DQXhOU0JoYm5raUlIZHBaSFJvUFNJeE1DSWdaVzVrWlhKbGNpQnpkSGxzWlQwaVkyOXRMbUZrYjJKbExtTnZiU0lnZEdWNGRDMWhibU5vYjNJOUltMWhkSEpwZUNBeUlITmxiR3hrYXlBMUlEQWdNU0E0SURBZ01DQXhOU0I3SURBZ01DQXhOU0J5WlQ1amIyMGlJR1pwYkd3OUltTnZiUzVwYm1adklqNG1JM2hoT3lCemRHRjBaU0J3WVhKME9uQmhjbUZ0WlM1amIyMDhMM04wZVd4bFBqd3ZjM1puUGc9PSIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
+    <link rel="manifest" href="manifest.json">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -451,12 +451,12 @@
             
             <section class="list-section">
                 <h2 class="section-title">বাজার তালিকা</h2>
-                <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন。</p>
+                <p id="emptyMessage">কোনো আইটেম যোগ করা হয়নি। উপরে ফর্ম ব্যবহার করে নতুন আইটেম যোগ করুন।</p>
                 <ul class="item-list" id="itemList"></ul>
                 
                 <div class="completed-list">
                     <h3 class="completed-title"><i class="fas fa-check-circle"></i> সম্পূর্ণ বাজারলিষ্ট</h3>
-                    <p id="completedEmptyMessage">কোনো বাজারলিষ্ট সম্পূর্ণ করা হয়নি。</p>
+                    <p id="completedEmptyMessage">কোনো বাজারলিষ্ট সম্পূর্ণ করা হয়নি।</p>
                     <ul class="item-list" id="completedList"></ul>
                 </div>
             </section>
@@ -468,41 +468,216 @@
         </footer>
     </div>
 
-   <script>
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    // Simple Service Worker তৈরি
-    const swContent = `
-      self.addEventListener('install', function(event) {
-        console.log('Service Worker installing...');
-        self.skipWaiting();
-      });
-      
-      self.addEventListener('activate', function(event) {
-        console.log('Service Worker activating...');
-      });
-      
-      self.addEventListener('fetch', function(event) {
-        // Basic fetch handler
-        event.respondWith(fetch(event.request));
-      });
-    `;
-    
-    // Service Worker ফাইল তৈরি
-    const blob = new Blob([swContent], { type: 'application/javascript' });
-    const swURL = URL.createObjectURL(blob);
-    
-    // Service Worker রেজিস্ট্রেশন
-    navigator.serviceWorker.register(swURL)
-      .then(function(registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(function(error) {
-        console.log('Service Worker registration failed:', error);
-      });
-  });
-}
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().substr(0, 10);
+            document.getElementById('itemDate').value = today;
+            
+            // Sample data for demonstration
+            const sampleItems = [
+                { id: 1, name: 'চাল', date: '2023-08-15', amount: 80, quantity: 5, completed: false },
+                { id: 2, name: 'ডাল', date: '2023-08-15', amount: 120, quantity: 2, completed: false },
+                { id: 3, name: 'তেল', date: '2023-08-14', amount: 180, quantity: 2, completed: true },
+                { id: 4, name: 'পেঁয়াজ', date: '2023-08-14', amount: 40, quantity: 1.5, completed: true }
+            ];
+            
+            let items = JSON.parse(localStorage.getItem('bazarListItems')) || sampleItems;
+            let loggedIn = false;
+            
+            // Render items
+            renderItems();
+            
+            // Form submission
+            document.getElementById('itemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!loggedIn) {
+                    alert('দয়া করে প্রথমে Gmail দিয়ে লগ ইন করুন!');
+                    return;
+                }
+                
+                const name = document.getElementById('itemName').value;
+                const date = document.getElementById('itemDate').value;
+                const amount = parseFloat(document.getElementById('itemAmount').value);
+                const quantity = parseFloat(document.getElementById('itemQuantity').value) || 0;
+                
+                const newItem = {
+                    id: Date.now(),
+                    name,
+                    date,
+                    amount,
+                    quantity,
+                    completed: false
+                };
+                
+                items.push(newItem);
+                saveItems();
+                renderItems();
+                
+                // Reset form
+                document.getElementById('itemForm').reset();
+                document.getElementById('itemDate').value = today;
+            });
+            
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                loggedIn = !loggedIn;
+                if (loggedIn) {
+                    document.getElementById('userStatus').textContent = 'লগ ইন করা আছে';
+                    this.innerHTML = '<i class="fas fa-sign-out-alt"></i> লগ আউট';
+                    this.classList.remove('btn-google');
+                    this.classList.add('btn-secondary');
+                    
+                    // Show welcome message
+                    alert('সফলভাবে লগ ইন করা হয়েছে! এখন আপনি বাজারলিষ্ট ব্যবস্থাপনা করতে পারবেন।');
+                } else {
+                    document.getElementById('userStatus').textContent = 'লগ ইন করা নেই';
+                    this.innerHTML = '<i class="fab fa-google"></i> Gmail দিয়ে লগ ইন';
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-google');
+                }
+            });
+            
+            // Save items to localStorage
+            function saveItems() {
+                localStorage.setItem('bazarListItems', JSON.stringify(items));
+            }
+            
+            // Render items to the DOM
+            function renderItems() {
+                const itemList = document.getElementById('itemList');
+                const completedList = document.getElementById('completedList');
+                const emptyMessage = document.getElementById('emptyMessage');
+                const completedEmptyMessage = document.getElementById('completedEmptyMessage');
+                
+                // Clear lists
+                itemList.innerHTML = '';
+                completedList.innerHTML = '';
+                
+                // Separate completed and pending items
+                const pendingItems = items.filter(item => !item.completed);
+                const completedItems = items.filter(item => item.completed);
+                
+                // Show/hide empty messages
+                emptyMessage.style.display = pendingItems.length ? 'none' : 'block';
+                completedEmptyMessage.style.display = completedItems.length ? 'none' : 'block';
+                
+                // Render pending items
+                pendingItems.forEach(item => {
+                    const li = createItemElement(item);
+                    itemList.appendChild(li);
+                });
+                
+                // Render completed items
+                completedItems.forEach(item => {
+                    const li = createItemElement(item, true);
+                    completedList.appendChild(li);
+                });
+                
+                // Update stats
+                updateStats();
+            }
+            
+            // Create item element
+            function createItemElement(item, isCompleted = false) {
+                const li = document.createElement('li');
+                
+                // Format date
+                const dateObj = new Date(item.date);
+                const formattedDate = dateObj.toLocaleDateString('bn-BD');
+                
+                li.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-details">
+                            <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
+                            <span><i class="fas fa-money-bill-wave"></i> ৳${item.amount}</span>
+                            ${item.quantity ? `<span><i class="fas fa-weight"></i> ${item.quantity} কেজি</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        ${!isCompleted ? `
+                            <button class="action-btn complete-btn" data-id="${item.id}">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn delete-btn" data-id="${item.id}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listeners
+                if (!isCompleted) {
+                    li.querySelector('.complete-btn').addEventListener('click', function() {
+                        completeItem(item.id);
+                    });
+                }
+                
+                li.querySelector('.delete-btn').addEventListener('click', function() {
+                    deleteItem(item.id);
+                });
+                
+                return li;
+            }
+            
+            // Complete item
+            function completeItem(id) {
+                items = items.map(item => {
+                    if (item.id === id) {
+                        return { ...item, completed: true };
+                    }
+                    return item;
+                });
+                
+                saveItems();
+                renderItems();
+            }
+            
+            // Delete item
+            function deleteItem(id) {
+                if (confirm('আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?')) {
+                    items = items.filter(item => item.id !== id);
+                    saveItems();
+                    renderItems();
+                }
+            }
+            
+            // Update statistics
+            function updateStats() {
+                const totalItems = items.filter(item => !item.completed).length;
+                const totalAmount = items
+                    .filter(item => !item.completed)
+                    .reduce((sum, item) => sum + item.amount, 0);
+                
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalAmount').textContent = `৳${totalAmount}`;
+            }
+
+            // PWA Installation Prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+            });
+        });
+    </script>
+
+    <!-- Service Worker Registration Code - এই部分টি যোগ করা হয়েছে -->
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
