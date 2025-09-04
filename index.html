@@ -6,6 +6,11 @@
   <title>BazarList</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Android Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="AppImages/android/android-launchericon-192-192.png">
+  <!-- iOS Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="AppImages/ios/apple-icon-180.png">
 </head>
 <body>
   <header>
@@ -14,16 +19,24 @@
   </header>
 
   <main>
-    <!-- নতুন লিস্ট যোগ -->
     <section id="new-list">
       <input type="text" id="listName" placeholder="নতুন লিস্টের নাম লিখুন">
       <button onclick="addList()">➕ লিস্ট যোগ করুন</button>
     </section>
-
-    <!-- লিস্ট শো -->
     <section id="lists"></section>
   </main>
 
+  <footer>
+    <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
+  </footer>
+
   <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(reg => console.log("Service Worker Registered:", reg.scope))
+        .catch(err => console.log("Service Worker Failed:", err));
+    }
+  </script>
 </body>
 </html>
