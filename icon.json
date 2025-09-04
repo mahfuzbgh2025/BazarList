@@ -1,0 +1,18 @@
+"icons": [
+  {
+    "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSIjMEY0QzgxIi8+CjxwYXRoIGQ9Ik0zNDQgMjU2TDI3MiAzMjhMMjI0IDI4MEwyOTYgMjA4TDIyNCAxMzZMMjcyIDg0TDM0NCAxNTZMMzUyIDE2OEwzNDQgMTYwTDI4OCAxMDRMMjU2IDEzNkwyODggMTY4TDI1NiAyMDBMMjg4IDIzMkwyNTYgMjY0TDI4OCAyOTZMMzQ0IDI0MEwzNTIgMjMyTDM0NCAyNDBMMjcyIDMyOEgzNDRWMzA0TDM0NCAyNTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
+    "sizes": "512x512",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  },
+  {
+    "src": "/icons/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "/icons/icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
