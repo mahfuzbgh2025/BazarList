@@ -4,60 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
-
-  <!-- App Icon -->
-  <link rel="icon" href="AppImages/android/android-launchericon-192-192.png" type="image/png">
-
-  <!-- Theme Color -->
-  <meta name="theme-color" content="#0d1b2a">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="app-header">
+  <header>
     <h1>🛒 BazarList</h1>
-    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে</p>
+    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে।</p>
   </header>
 
-  <main class="container">
-    <div class="card">
-      <h2>📝 নতুন আইটেম যোগ করুন</h2>
-      <input type="text" id="itemInput" placeholder="আইটেম লিখুন...">
-      <button onclick="addItem()">➕ যোগ করুন</button>
-    </div>
+  <main>
+    <!-- নতুন লিস্ট যোগ -->
+    <section id="new-list">
+      <input type="text" id="listName" placeholder="নতুন লিস্টের নাম লিখুন">
+      <button onclick="addList()">➕ লিস্ট যোগ করুন</button>
+    </section>
 
-    <div class="card">
-      <h2>📋 আপনার তালিকা</h2>
-      <ul id="itemList"></ul>
-    </div>
+    <!-- লিস্ট শো -->
+    <section id="lists"></section>
   </main>
 
-  <footer>
-    <p>© 2025 BazarList | PWA Demo</p>
-  </footer>
-
-  <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
-        .then(reg => console.log("Service Worker Registered:", reg.scope))
-        .catch(err => console.log("Service Worker Failed:", err));
-    }
-
-    // Local List App
-    function addItem() {
-      const input = document.getElementById("itemInput");
-      const list = document.getElementById("itemList");
-
-      if (input.value.trim() !== "") {
-        const li = document.createElement("li");
-        li.textContent = input.value;
-        list.appendChild(li);
-        input.value = "";
-      }
-    }
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
