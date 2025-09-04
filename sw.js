@@ -1,5 +1,4 @@
-const CACHE_NAME = "bazarlist-cache-v3";
-
+const CACHE_NAME = "bazarlist-cache-v5"; // নতুন ভার্সন নাম্বার
 const urlsToCache = [
   "./",
   "./index.html",
@@ -82,6 +81,7 @@ const urlsToCache = [
   "./AppImages/windows11/SplashScreen.scale-400.png"
 ];
 
+// ✅ Install event: ক্যাশে সব ফাইল সেভ হবে
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -89,28 +89,34 @@ self.addEventListener("install", (event) => {
       return cache.addAll(urlsToCache);
     })
   );
+  self.skipWaiting(); // সাথে সাথে নতুন SW এক্টিভ হবে
 });
 
+// ✅ Fetch event: ক্যাশ থেকে ফাইল সার্ভ + নতুন ফাইল ব্যাকগ্রাউন্ডে আপডেট হবে
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      if (response) return response;
-      return fetch(event.request)
+      const fetchPromise = fetch(event.request)
         .then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
+          if (!networkResponse || networkResponse.status !== 200) {
+            return response || networkResponse;
+          }
+          caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, networkResponse.clone());
-            return networkResponse;
           });
+          return networkResponse;
         })
         .catch(() => {
           if (event.request.mode === "navigate") {
             return caches.match("./offline.html");
           }
         });
+      return response || fetchPromise;
     })
   );
 });
 
+// ✅ Activate event: পুরোনো cache মুছে ফেলবে
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) =>
@@ -124,4 +130,5 @@ self.addEventListener("activate", (event) => {
       )
     )
   );
+  self.clients.claim(); // সাথে সাথে নতুন SW সব ট্যাবে এক্টিভ হবে
 });
