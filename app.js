@@ -94,7 +94,6 @@ function renderLists() {
     lists[listName].forEach((p, index) => {
       const productDiv = document.createElement("div");
       productDiv.className = "product";
-      productDiv.setAttribute("data-price", p.price);
 
       productDiv.innerHTML = `
         <span>${p.name} (${p.qty}) - ${p.price}৳</span>
