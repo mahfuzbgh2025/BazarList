@@ -1,53 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
+  <link rel="stylesheet" href="style.css">
 
-  <!-- PWA Manifest -->
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- Theme color -->
-  <meta name="theme-color" content="#0F4C81">
+  <!-- App Icon -->
+  <link rel="icon" href="AppImages/android/android-launchericon-192-192.png" type="image/png">
 
-  <!-- Android icons -->
-  <link rel="icon" type="image/png" sizes="48x48" href="AppImages/android/android-launchericon-48-48.png">
-  <link rel="icon" type="image/png" sizes="72x72" href="AppImages/android/android-launchericon-72-72.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="AppImages/android/android-launchericon-96-96.png">
-  <link rel="icon" type="image/png" sizes="144x144" href="AppImages/android/android-launchericon-144-144.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="AppImages/android/android-launchericon-192-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="AppImages/android/android-launchericon-512-512.png">
-
-  <!-- iOS icons -->
-  <link rel="apple-touch-icon" sizes="120x120" href="AppImages/ios/apple-icon-120.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="AppImages/ios/apple-icon-152.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="AppImages/ios/apple-icon-167.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="AppImages/ios/apple-icon-180.png">
-
-  <!-- Windows 11 icons -->
-  <meta name="msapplication-square44x44logo" content="AppImages/windows11/Square44x44Logo.altform-lightunplated_target200.png">
-  <meta name="msapplication-square150x150logo" content="AppImages/windows11/Square150x150Logo.scale-100.png">
-  <meta name="msapplication-wide310x150logo" content="AppImages/windows11/Wide310x150Logo.scale-100.png">
-
-  <link rel="stylesheet" href="style.css">
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0d1b2a">
 </head>
 <body>
-  <h1>Welcome to BazarList</h1>
-  <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে।</p>
+  <header class="app-header">
+    <h1>🛒 BazarList</h1>
+    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে</p>
+  </header>
 
-  <!-- Service Worker Registration -->
+  <main class="container">
+    <div class="card">
+      <h2>📝 নতুন আইটেম যোগ করুন</h2>
+      <input type="text" id="itemInput" placeholder="আইটেম লিখুন...">
+      <button onclick="addItem()">➕ যোগ করুন</button>
+    </div>
+
+    <div class="card">
+      <h2>📋 আপনার তালিকা</h2>
+      <ul id="itemList"></ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 BazarList | PWA Demo</p>
+  </footer>
+
+  <!-- Service Worker -->
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js')
-          .then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-          })
-          .catch(function(error) {
-            console.log('Service Worker registration failed:', error);
-          });
-      });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(reg => console.log("Service Worker Registered:", reg.scope))
+        .catch(err => console.log("Service Worker Failed:", err));
+    }
+
+    // Local List App
+    function addItem() {
+      const input = document.getElementById("itemInput");
+      const list = document.getElementById("itemList");
+
+      if (input.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = input.value;
+        list.appendChild(li);
+        input.value = "";
+      }
     }
   </script>
 </body>
