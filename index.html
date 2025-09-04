@@ -4,19 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
-
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Android Icons -->
-  <link rel="icon" type="image/png" sizes="192x192" href="AppImages/android/android-launchericon-192-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="AppImages/android/android-launchericon-512-512.png">
-
-  <!-- iOS Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="AppImages/ios/180.png">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <header>
@@ -25,39 +14,27 @@
   </header>
 
   <main>
-    <!-- নতুন লিস্ট তৈরি -->
-    <section id="new-list">
-      <input type="text" id="listName" placeholder="নতুন লিস্টের নাম লিখুন">
+    <!-- নতুন লিস্ট যোগ -->
+    <div class="new-list">
+      <input type="text" id="newListName" placeholder="নতুন লিস্টের নাম লিখুন">
       <button onclick="addList()">➕ লিস্ট যোগ করুন</button>
-    </section>
+    </div>
 
-    <!-- Backup Actions -->
-    <section class="backup-actions" style="display:flex; gap:.5rem; flex-wrap:wrap; margin: 0 20px;">
-      <button id="exportBtn" class="btn">📤 Backup Export (.json)</button>
-      <label for="importFile" class="btn" style="cursor:pointer; background:#2196f3; color:#fff; padding:8px 12px; border-radius:6px;">📥 Import Restore (.json)</label>
-      <input type="file" id="importFile" accept="application/json" hidden>
-    </section>
+    <!-- ব্যাকআপ/রিস্টোর -->
+    <div class="backup-restore">
+      <button onclick="exportBackup()">📤 Backup Export (.json)</button>
+      <input type="file" id="importFile" style="display:none" onchange="importBackup(event)">
+      <button onclick="document.getElementById('importFile').click()">📥 Import Restore (.json)</button>
+    </div>
 
-    <!-- সব লিস্ট এখানে দেখাবে -->
-    <section id="lists"></section>
+    <!-- লিস্ট গুলো এখানে আসবে -->
+    <div id="lists"></div>
   </main>
 
   <footer>
     <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
   </footer>
 
-  <!-- Main App -->
   <script src="app.js"></script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-          .then(reg => console.log("✅ Service Worker registered:", reg.scope))
-          .catch(err => console.error("❌ Service Worker failed:", err));
-      });
-    }
-  </script>
 </body>
 </html>
