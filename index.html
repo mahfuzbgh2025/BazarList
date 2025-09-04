@@ -6,7 +6,7 @@
   <title>BazarList</title>
 
   <!-- Theme & Manifest -->
-  <meta name="theme-color" content="#0F4C81">
+  <meta name="theme-color" content="#0d47a1">
   <link rel="manifest" href="manifest.json">
 
   <!-- Favicon -->
@@ -18,7 +18,7 @@
 <body>
   <header>
     <h1>🛒 BazarList</h1>
-    <p>দৈনন্দিন বাজার তালিকা ও খরচের হিসাব</p>
+    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে।</p>
   </header>
 
   <main>
@@ -40,17 +40,5 @@
   </footer>
 
   <script src="app.js"></script>
-
-  <!-- Service Worker Register -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("./sw.js")
-          .then(reg => console.log("SW registered:", reg.scope))
-          .catch(err => console.log("SW failed:", err));
-      });
-    }
-  </script>
 </body>
 </html>
