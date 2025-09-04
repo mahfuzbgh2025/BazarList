@@ -4,13 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
+
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 
   <!-- Android Icons -->
   <link rel="icon" type="image/png" sizes="192x192" href="AppImages/android/android-launchericon-192-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="AppImages/android/android-launchericon-512-512.png">
+
   <!-- iOS Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="AppImages/ios/apple-icon-180.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="AppImages/ios/180.png">
 </head>
 <body>
   <header>
@@ -19,10 +25,20 @@
   </header>
 
   <main>
+    <!-- নতুন লিস্ট তৈরি -->
     <section id="new-list">
       <input type="text" id="listName" placeholder="নতুন লিস্টের নাম লিখুন">
       <button onclick="addList()">➕ লিস্ট যোগ করুন</button>
     </section>
+
+    <!-- Backup Actions -->
+    <section class="backup-actions" style="display:flex; gap:.5rem; flex-wrap:wrap; margin: 0 20px;">
+      <button id="exportBtn" class="btn">📤 Backup Export (.json)</button>
+      <label for="importFile" class="btn" style="cursor:pointer; background:#2196f3; color:#fff; padding:8px 12px; border-radius:6px;">📥 Import Restore (.json)</label>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </section>
+
+    <!-- সব লিস্ট এখানে দেখাবে -->
     <section id="lists"></section>
   </main>
 
@@ -30,12 +46,17 @@
     <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
   </footer>
 
+  <!-- Main App -->
   <script src="app.js"></script>
+
+  <!-- Service Worker Registration -->
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
-        .then(reg => console.log("Service Worker Registered:", reg.scope))
-        .catch(err => console.log("Service Worker Failed:", err));
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(reg => console.log("✅ Service Worker registered:", reg.scope))
+          .catch(err => console.error("❌ Service Worker failed:", err));
+      });
     }
   </script>
 </body>
