@@ -4,34 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
+
+  <!-- Theme & Manifest -->
+  <meta name="theme-color" content="#0F4C81">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Favicon -->
+  <link rel="icon" href="./AppImages/android/android-launchericon-192-192.png" type="image/png">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
     <h1>🛒 BazarList</h1>
-    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে।</p>
+    <p>দৈনন্দিন বাজার তালিকা ও খরচের হিসাব</p>
   </header>
 
   <main>
-    <div class="new-list">
-      <input type="text" id="newListName" placeholder="নতুন লিস্টের নাম লিখুন">
-      <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
-    </div>
+    <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন">
+    <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
 
-    <div class="backup-restore">
-      <button id="exportBtn">📤 Backup Export</button>
-      <input type="file" id="importFile" style="display:none">
-      <button id="importBtn">📥 Import Restore</button>
-    </div>
+    <button id="exportBtn">📂 Backup Export (.json)</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;">
+    <button id="importBtn">📥 Import Restore (.json)</button>
 
-    <div id="lists"></div>
+    <div id="listsContainer"></div>
+    <div id="totalContainer">
+      <h3>মোট খরচ: <span id="totalAmount">0</span> টাকা</h3>
+    </div>
   </main>
 
   <footer>
     <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
   </footer>
 
-  <!-- ⚡ Script লোড -->
   <script src="app.js"></script>
+
+  <!-- Service Worker Register -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("./sw.js")
+          .then(reg => console.log("SW registered:", reg.scope))
+          .catch(err => console.log("SW failed:", err));
+      });
+    }
+  </script>
 </body>
 </html>
