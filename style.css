@@ -1,184 +1,93 @@
-/* 🌐 Global Style */
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(to right, #1c2b49, #223a5e);
+  color: white;
+  text-align: center;
+}
+
+header {
+  background: #0d47a1;
+  padding: 15px;
   color: #fff;
 }
 
-/* 🏷️ Header */
-header {
-  text-align: center;
-  padding: 20px;
-  background: #1e3c72;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-}
-header h1 {
-  margin: 0;
-  font-size: 2rem;
-}
-header p {
-  margin: 5px 0 0;
-  font-size: 1.1rem;
-  opacity: 0.9;
+.new-list, .backup-restore {
+  margin: 15px;
 }
 
-/* ➕ নতুন লিস্ট */
-#new-list {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  gap: 10px;
-}
-#new-list input {
+input, button {
   padding: 10px;
-  border-radius: 6px;
-  border: none;
-  width: 60%;
-  font-size: 1rem;
-}
-#new-list button {
-  padding: 10px 15px;
-  border: none;
-  background: #4caf50;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.3s;
-}
-#new-list button:hover {
-  background: #45a049;
-  transform: scale(1.05);
-}
-
-/* 📋 প্রতিটি লিস্ট */
-.list {
-  background: rgba(255,255,255,0.1);
-  margin: 20px;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-.list h2 {
-  margin: 0 0 15px;
-  font-size: 1.5rem;
-  color: #ffd369;
-}
-
-/* 🛍️ প্রোডাক্ট ফর্ম */
-.list input {
-  padding: 8px;
   margin: 5px;
   border-radius: 6px;
   border: none;
-  font-size: 0.9rem;
-}
-.list button {
-  padding: 8px 12px;
-  border: none;
-  background: #2196f3;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin-top: 5px;
-  transition: 0.3s;
-}
-.list button:hover {
-  background: #1976d2;
 }
 
-/* 🛒 প্রোডাক্ট কার্ড */
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.list {
+  background: rgba(255, 255, 255, 0.1);
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+}
+
 .product {
+  background: rgba(255,255,255,0.15);
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0,0,0,0.2);
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-.product span {
-  font-weight: bold;
-  color: #ffeb3b;
-}
-.product small {
-  font-size: 0.8rem;
-  opacity: 0.8;
-  margin-left: 10px;
-}
-.product button {
-  background: #ff5252;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  padding: 5px 8px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: 0.3s;
-}
-.product button:hover {
-  background: #e53935;
 }
 
-/* ❌ লিস্ট ডিলিট বাটন */
-.list > button {
-  margin-top: 10px;
-  background: #f44336;
+.product span {
+  font-size: 0.95rem;
 }
-.list > button:hover {
+
+.product small {
+  color: #ccc;
+  margin-left: 10px;
+}
+
+.product button {
+  margin-left: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* ✏️ Edit বাটন */
+.edit-btn {
+  background: #ff9800;
+  color: white;
+}
+.edit-btn:hover {
+  background: #e68900;
+}
+
+/* 🗑️ Delete বাটন */
+.delete-btn {
+  background: #f44336;
+  color: white;
+}
+.delete-btn:hover {
   background: #d32f2f;
 }
 
-/* 📤 Backup/Restore Buttons */
-.backup-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 20px;
-  flex-wrap: wrap;
-}
-
-.backup-actions .btn {
-  padding: 10px 14px;
-  border: none;
+/* ✅ মোট টাকার বক্স */
+.total-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 150, 136, 0.3);
   border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-}
-
-/* Export Button */
-#exportBtn {
-  background: #4caf50;
-  color: white;
-}
-#exportBtn:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-}
-
-/* Import Button */
-.backup-actions label.btn {
-  background: #2196f3;
-  color: white;
-  cursor: pointer;
-}
-.backup-actions label.btn:hover {
-  background: #1976d2;
-  transform: translateY(-2px);
-}
-
-/* 📌 Footer */
-footer {
-  text-align: center;
-  padding: 15px;
-  background: #1e1e1e;
-  color: #ccc;
-  font-size: 0.9rem;
+  text-align: right;
+  font-size: 1rem;
+  color: #ffeb3b;
+  font-weight: bold;
 }
