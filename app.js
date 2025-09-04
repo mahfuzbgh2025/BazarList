@@ -53,7 +53,6 @@ function editProduct(listName, index) {
   listContainer.querySelector(".product-qty").value = product.qty;
   listContainer.querySelector(".product-price").value = product.price;
 
-  // আপডেটের জন্য Add Product বাটন পরিবর্তন করা
   const btn = listContainer.querySelector(".add-btn");
   btn.innerText = "✅ Update";
   btn.onclick = () => addProduct(listName, index);
@@ -86,9 +85,11 @@ function renderLists() {
       <input class="product-name" placeholder="পণ্যের নাম">
       <input class="product-qty" placeholder="কেজি/পরিমাণ">
       <input type="number" class="product-price" placeholder="টাকা">
-      <button class="add-btn" onclick="addProduct('${listName}')">➕ প্রোডাক্ট</button>
+      <button class="add-btn">➕ প্রোডাক্ট</button>
       <div class="products"></div>
     `;
+
+    listDiv.querySelector(".add-btn").onclick = () => addProduct(listName);
 
     const productsDiv = listDiv.querySelector(".products");
     lists[listName].forEach((p, index) => {
@@ -99,10 +100,14 @@ function renderLists() {
         <span>${p.name} (${p.qty}) - ${p.price}৳</span>
         <small>${p.date}</small>
         <div>
-          <button class="edit-btn" onclick="editProduct('${listName}', ${index})">✏️</button>
-          <button class="delete-btn" onclick="deleteProduct('${listName}', ${index})">🗑️</button>
+          <button class="edit-btn">✏️</button>
+          <button class="delete-btn">🗑️</button>
         </div>
       `;
+
+      productDiv.querySelector(".edit-btn").onclick = () => editProduct(listName, index);
+      productDiv.querySelector(".delete-btn").onclick = () => deleteProduct(listName, index);
+
       productsDiv.appendChild(productDiv);
     });
 
@@ -139,4 +144,11 @@ function importBackup(event) {
   reader.readAsText(file);
 }
 
+// ✅ বাটন ইভেন্ট বাইন্ড
+document.getElementById("addListBtn").onclick = addList;
+document.getElementById("exportBtn").onclick = exportBackup;
+document.getElementById("importBtn").onclick = () => document.getElementById("importFile").click();
+document.getElementById("importFile").addEventListener("change", importBackup);
+
+// শুরুতে রেন্ডার
 renderLists();
