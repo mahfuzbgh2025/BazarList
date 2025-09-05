@@ -431,19 +431,10 @@ function downloadPDF(listId) {
   
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-
-  // ✅ Register AdorshoLipi font (from BL-AdorshoLipi-normal.js)
-  if (typeof doc.addFileToVFS === "function" && typeof doc.addFont === "function" && typeof BLAdorshoLipiNormal !== "undefined") {
-    try {
-      doc.addFileToVFS("BL-AdorshoLipi-normal.ttf", BLAdorshoLipiNormal); 
-      doc.addFont("BL-AdorshoLipi-normal.ttf", "BLAdorshoLipi", "normal");
-      doc.setFont("BLAdorshoLipi");
-    } catch (e) {
-      console.warn("AdorshoLipi font load failed, fallback to default.", e);
-    }
-  }
-
   let y = 10;
+
+  // Set the custom font
+  doc.setFont('BL-AdorshoLipi', 'normal');
   
   doc.setFontSize(16);
   doc.text(`বাজারের তালিকা: ${list.name}`, 10, y);
@@ -466,4 +457,84 @@ function downloadPDF(listId) {
   doc.text(`মোট খরচ: ${totalListPrice.toFixed(2)} টাকা`, 10, y);
   y += 10;
 
-  doc.save(`${
+  doc.save(`${list.name}.pdf`);
+}
+// --- Import/Export Functionality ---
+
+exportBtn.addEventListener('click', () => {
+  // Check for internet connection before exporting
+  if (!navigator.onLine) {
+    alert("ডেটা এক্সপোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
+    return;
+  }
+
+  const dataToExport = {
+    bazarLists: bazarLists,
+    trash: trash,
+    archivedLists: archivedLists
+  };
+  const dataStr = JSON.stringify(dataToExport, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'bazarlist_full_backup.json';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+});
+
+importBtn.addEventListener('click', () => {
+  // Check for internet connection before importing
+  if (!navigator.onLine) {
+    alert("ডেটা ইম্পোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
+    return;
+  }
+  importFile.click();
+});
+
+importFile.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importedData = JSON.parse(event.target.result);
+        if (importedData.bazarLists && importedData.trash && importedData.archivedLists) {
+          bazarLists = importedData.bazarLists;
+          trash = importedData.trash;
+          archivedLists = importedData.archivedLists;
+          saveToLocalStorage();
+          renderAllLists();
+          alert('ডেটা সফলভাবে ইম্পোর্ট করা হয়েছে!');
+        } else {
+          alert('ফাইলটি সঠিক ফরম্যাটে নেই।');
+        }
+      } catch (error) {
+        alert('ফাইলটি পড়ার সময় একটি সমস্যা হয়েছে।');
+      }
+    };
+    reader.readAsText(file);
+  }
+});
+
+// --- Initial Setup ---
+
+function initializeApp() {
+  const storedData = localStorage.getItem('bazarLists');
+  if (storedData) {
+    bazarLists = JSON.parse(storedData);
+  }
+  const storedTrash = localStorage.getItem('bazarTrash');
+  if (storedTrash) {
+    trash = JSON.parse(storedTrash);
+  }
+  const storedArchived = localStorage.getItem('bazarArchived');
+  if (storedArchived) {
+    archivedLists = JSON.parse(storedArchived);
+  }
+  renderAllLists();
+}
+
+document.addEventListener('DOMContentLoaded', initializeApp);
