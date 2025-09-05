@@ -25,6 +25,24 @@ const showArchiveBtn = document.getElementById('showArchiveBtn');
 const trashModal = document.getElementById('trashModal');
 const trashItemsContainer = document.getElementById('trashItemsContainer');
 const editModal = document.getElementById('editModal');
+const signInBtn = document.getElementById('signInBtn');
+const signOutBtn = document.getElementById('signOutBtn');
+
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBu9_s_myizAJNYBZLEb5DU4Hz-pFMMBoI",
+  authDomain: "bazarlist-c157c.firebaseapp.com",
+  databaseURL: "https://bazarlist-c157c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bazarlist-c157c",
+  storageBucket: "bazarlist-c157c.firebasestorage.app",
+  messagingSenderId: "694772066634",
+  appId: "1:694772066634:web:d85fb77c9b84b7bfc1b9b3",
+  measurementId: "G-JE42BLD2RQ"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // Data structure to hold all the lists and items
 let bazarLists = [];
@@ -39,6 +57,47 @@ function saveToLocalStorage() {
   localStorage.setItem('bazarTrash', JSON.stringify(trash));
   localStorage.setItem('bazarArchived', JSON.stringify(archivedLists));
   updateTotalCost();
+
+  // Check if user is logged in, then save to Firebase
+  const user = firebase.auth().currentUser;
+  if (user) {
+    saveToFirebase(user.uid);
+  }
+}
+
+// Function to save data to Firebase
+function saveToFirebase(uid) {
+    if (uid) {
+        database.ref('users/' + uid).set({
+            lists: bazarLists,
+            trash: trash,
+            archived: archivedLists
+        })
+        .then(() => {
+            console.log('Data saved to Firebase successfully.');
+        })
+        .catch((error) => {
+            console.error('Error saving data:', error);
+        });
+    }
+}
+
+// Function to load data from Firebase
+function loadDataFromFirebase(uid) {
+    database.ref('users/' + uid).once('value')
+        .then((snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                bazarLists = data.lists || [];
+                trash = data.trash || [];
+                archivedLists = data.archived || [];
+                renderAllLists();
+                console.log('Data loaded from Firebase.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error loading data:', error);
+        });
 }
 
 // Function to update the overall total cost display
@@ -49,6 +108,17 @@ function updateTotalCost() {
     }, 0);
   }, 0);
   totalAmountSpan.textContent = total.toFixed(2);
+}
+
+// Update UI based on user login status
+function updateUI(user) {
+    if (user) {
+        signInBtn.style.display = 'none';
+        signOutBtn.style.display = 'inline-block';
+    } else {
+        signInBtn.style.display = 'inline-block';
+        signOutBtn.style.display = 'none';
+    }
 }
 
 // --- Main Rendering Functions ---
@@ -122,7 +192,7 @@ function renderList(list) {
 
   // Event listener for archiving the list
   listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
-    const listId = e.target.dataset.listId;
+    const listId = e.target.dataset.l`istId;
     archiveList(listId);
   });
 
@@ -230,6 +300,36 @@ listsContainer.addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
     restoreListFromArchive(listId);
   }
+});
+
+signInBtn.addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log('User signed in:', user.displayName);
+            loadDataFromFirebase(user.uid);
+            updateUI(user);
+        })
+        .catch((error) => {
+            console.error('Sign-in failed:', error);
+        });
+});
+
+signOutBtn.addEventListener('click', () => {
+    firebase.auth().signOut()
+        .then(() => {
+            console.log('User signed out.');
+            bazarLists = [];
+            trash = [];
+            archivedLists = [];
+            saveToLocalStorage();
+            renderAllLists();
+            updateUI(null);
+        })
+        .catch((error) => {
+            console.error('Sign-out failed:', error);
+        });
 });
 
 // --- New Features Logic ---
@@ -433,7 +533,7 @@ function downloadPDF(listId) {
   const doc = new jsPDF();
   let y = 10;
   
-  doc.setFont('NotoSansBengali', 'normal');
+  doc.setFont('NotoSansBengaliNormal', 'normal');
   
   doc.setFontSize(16);
   doc.text(`বাজারের তালিকা: ${list.name}`, 10, y);
@@ -521,19 +621,27 @@ importFile.addEventListener('change', (e) => {
 // --- Initial Setup ---
 
 function initializeApp() {
-  const storedData = localStorage.getItem('bazarLists');
-  if (storedData) {
-    bazarLists = JSON.parse(storedData);
-  }
-  const storedTrash = localStorage.getItem('bazarTrash');
-  if (storedTrash) {
-    trash = JSON.parse(storedTrash);
-  }
-  const storedArchived = localStorage.getItem('bazarArchived');
-  if (storedArchived) {
-    archivedLists = JSON.parse(storedArchived);
-  }
-  renderAllLists();
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            updateUI(user);
+            loadDataFromFirebase(user.uid);
+        } else {
+            updateUI(null);
+            const storedData = localStorage.getItem('bazarLists');
+            if (storedData) {
+                bazarLists = JSON.parse(storedData);
+            }
+            const storedTrash = localStorage.getItem('bazarTrash');
+            if (storedTrash) {
+                trash = JSON.parse(storedTrash);
+            }
+            const storedArchived = localStorage.getItem('bazarArchived');
+            if (storedArchived) {
+                archivedLists = JSON.parse(storedArchived);
+            }
+            renderAllLists();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
