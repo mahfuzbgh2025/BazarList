@@ -1,12 +1,13 @@
-const staticCacheName = 'site-static-v2';
+const staticCacheName = 'site-static-v3';
 const assets = [
   '/BazarList/',
   '/BazarList/index.html',
   '/BazarList/app.js',
   '/BazarList/style.css',
   '/BazarList/offline.html',
-  './AppImages/android/android-launchericon-192-192.png',
-  './AppImages/android/android-launchericon-512-512.png'
+  '/BazarList/manifest.json',
+  '/BazarList/AppImages/android/android-launchericon-192-192.png',
+  '/BazarList/AppImages/android/android-launchericon-512-512.png'
 ];
 
 // Install event
@@ -33,7 +34,7 @@ self.addEventListener('activate', evt => {
 
 // Fetch event
 self.addEventListener('fetch', evt => {
-  if (evt.request.url.indexOf('http') === 0) { // Check if the request is for a network resource
+  if (evt.request.url.startsWith('http')) {
     evt.respondWith(
       caches.match(evt.request).then(cacheRes => {
         return cacheRes || fetch(evt.request).catch(() => caches.match('/BazarList/offline.html'));
