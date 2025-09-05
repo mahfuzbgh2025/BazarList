@@ -3,6 +3,15 @@ function generateId() {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
 
+// Function to format the date as 'DD/MM/YYYY'
+function formatDate(date) {
+  const d = new Date(date);
+  const day = d.getDate().toString().padStart(2, '0');
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 // Global variables for DOM elements
 const listNameInput = document.getElementById('listNameInput');
 const addListBtn = document.getElementById('addListBtn');
@@ -35,7 +44,6 @@ function updateTotalCost() {
 
 // --- Main Rendering Functions ---
 
-// Renders an individual list and its items to the DOM
 function renderList(list) {
   const listDiv = document.createElement('div');
   listDiv.className = 'list';
@@ -60,7 +68,6 @@ function renderList(list) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const [nameInput, quantityInput, priceInput] = e.target.querySelectorAll('input');
-    
     addItemToList(list.id, nameInput.value, quantityInput.value, priceInput.value);
     e.target.reset();
   });
@@ -72,20 +79,30 @@ function renderList(list) {
   listsContainer.appendChild(listDiv);
 }
 
-// Renders a single item inside a list
 function renderItem(parentListElement, item) {
   const listItem = document.createElement('li');
   listItem.innerHTML = `
-    <span>${item.name} (${item.quantity}) - ${item.price} টাকা</span>
-    <button class="delete-item-btn" data-item-id="${item.id}">❌</button>
+    <div class="item-details">
+      <span>${item.name} (${item.quantity}) - ${item.price} টাকা</span>
+      <div class="item-meta">তারিখ: ${item.date}</div>
+    </div>
+    <div class="item-buttons">
+      <button class="edit-btn" data-item-id="${item.id}">🖊️</button>
+      <button class="delete-btn" data-item-id="${item.id}">❌</button>
+    </div>
   `;
-  listItem.querySelector('.delete-item-btn').addEventListener('click', () => {
+  
+  listItem.querySelector('.delete-btn').addEventListener('click', () => {
     deleteItem(item.id);
   });
+  
+  listItem.querySelector('.edit-btn').addEventListener('click', () => {
+    showEditModal(item);
+  });
+
   parentListElement.appendChild(listItem);
 }
 
-// Renders all lists from the data array
 function renderAllLists() {
   listsContainer.innerHTML = '';
   bazarLists.forEach(list => renderList(list));
@@ -94,7 +111,6 @@ function renderAllLists() {
 
 // --- Event Handlers ---
 
-// Adds a new list
 addListBtn.addEventListener('click', () => {
   const listName = listNameInput.value.trim();
   if (listName) {
@@ -110,7 +126,6 @@ addListBtn.addEventListener('click', () => {
   }
 });
 
-// Adds a new item to a specific list
 function addItemToList(listId, itemName, itemQuantity, itemPrice) {
   const list = bazarLists.find(l => l.id === listId);
   if (list) {
@@ -118,7 +133,8 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice) {
       id: generateId(),
       name: itemName,
       quantity: itemQuantity,
-      price: itemPrice
+      price: itemPrice,
+      date: formatDate(new Date()) // Add current date here
     };
     list.items.push(newItem);
     saveToLocalStorage();
@@ -126,7 +142,6 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice) {
   }
 }
 
-// Deletes an item
 function deleteItem(itemId) {
   bazarLists.forEach(list => {
     list.items = list.items.filter(item => item.id !== itemId);
@@ -135,7 +150,6 @@ function deleteItem(itemId) {
   renderAllLists();
 }
 
-// Deletes a list
 listsContainer.addEventListener('click', (e) => {
   if (e.target.classList.contains('delete-list-btn')) {
     const listId = e.target.dataset.listId;
@@ -145,9 +159,51 @@ listsContainer.addEventListener('click', (e) => {
   }
 });
 
+// --- Edit Modal Functionality ---
+function showEditModal(item) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>পণ্য পরিবর্তন করুন</h3>
+      <input type="text" id="editName" value="${item.name}">
+      <input type="text" id="editQuantity" value="${item.quantity}">
+      <input type="number" id="editPrice" value="${item.price}">
+      <button id="saveEditBtn">সেভ করুন</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+
+  modal.querySelector('.close-btn').addEventListener('click', () => {
+    modal.style.display = 'none';
+    modal.remove();
+  });
+  
+  modal.querySelector('#saveEditBtn').addEventListener('click', () => {
+    const newName = modal.querySelector('#editName').value;
+    const newQuantity = modal.querySelector('#editQuantity').value;
+    const newPrice = modal.querySelector('#editPrice').value;
+
+    const list = bazarLists.find(l => l.items.find(i => i.id === item.id));
+    if (list) {
+      const existingItem = list.items.find(i => i.id === item.id);
+      existingItem.name = newName;
+      existingItem.quantity = newQuantity;
+      existingItem.price = newPrice;
+      saveToLocalStorage();
+      renderAllLists();
+    }
+
+    modal.style.display = 'none';
+    modal.remove();
+  });
+}
+
 // --- Import/Export Functionality ---
 
-// Export data to a JSON file
 exportBtn.addEventListener('click', () => {
   const dataStr = JSON.stringify(bazarLists, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -161,7 +217,6 @@ exportBtn.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// Import data from a JSON file
 importBtn.addEventListener('click', () => {
   importFile.click();
 });
@@ -191,7 +246,6 @@ importFile.addEventListener('change', (e) => {
 
 // --- Initial Setup ---
 
-// Load data from local storage on app start
 function initializeApp() {
   const storedData = localStorage.getItem('bazarLists');
   if (storedData) {
@@ -200,5 +254,4 @@ function initializeApp() {
   renderAllLists();
 }
 
-// Initialize the app when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initializeApp);
