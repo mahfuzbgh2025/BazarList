@@ -116,17 +116,52 @@ ul li {
   padding: 12px;
   border-radius: 8px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.item-details {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-size: 1.1rem;
+}
+
+.item-meta {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.item-buttons {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
 ul li button {
-  margin-left: 5px;
   padding: 5px 8px;
   font-size: 0.9rem;
   background: #e74c3c;
   color: #fff;
+}
+
+.edit-btn {
+  background: #3498db;
+}
+
+.edit-btn:hover {
+  background: #2980b9;
+}
+
+.delete-btn {
+  background: #e74c3c;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
 }
 
 #totalContainer {
@@ -146,10 +181,55 @@ footer {
   box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile-first approach for better responsiveness */
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #3b5998;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content input, .modal-content button {
+  width: 100%;
+}
+
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 @media (max-width: 480px) {
   .input-container, .button-container {
     flex-direction: column;
   }
 }
-
