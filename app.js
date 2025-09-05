@@ -307,18 +307,7 @@ listsContainer.addEventListener('click', (e) => {
 
 signInBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-            const user = result.user;
-            console.log('User signed in successfully with popup:', user.displayName, user.email);
-            loadDataFromFirebase(user.uid);
-            updateUI(user);
-        })
-        .catch((error) => {
-            console.error('Sign-in failed:', error);
-            // Handle specific errors like "auth/popup-closed-by-user"
-            // or "auth/cancelled-popup-request"
-        });
+    firebase.auth().signInWithRedirect(provider); // Changed to signInWithRedirect
 });
 
 signOutBtn.addEventListener('click', () => {
