@@ -21,13 +21,15 @@ const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
 const showTrashBtn = document.getElementById('showTrashBtn');
+const showArchiveBtn = document.getElementById('showArchiveBtn');
 const trashModal = document.getElementById('trashModal');
 const trashItemsContainer = document.getElementById('trashItemsContainer');
 const editModal = document.getElementById('editModal');
 
-// Data structure to hold all the lists and items, and a separate array for trash
+// Data structure to hold all the lists and items
 let bazarLists = [];
 let trash = [];
+let archivedLists = [];
 
 // --- Helper Functions ---
 
@@ -35,6 +37,7 @@ let trash = [];
 function saveToLocalStorage() {
   localStorage.setItem('bazarLists', JSON.stringify(bazarLists));
   localStorage.setItem('bazarTrash', JSON.stringify(trash));
+  localStorage.setItem('bazarArchived', JSON.stringify(archivedLists));
   updateTotalCost();
 }
 
@@ -57,9 +60,13 @@ function renderList(list) {
   listDiv.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h2>${list.name}</h2>
-      <div class="list-actions">
-        <button class="pdf-btn" data-list-id="${list.id}">📄 PDF</button>
-        <button class="delete-list-btn" data-list-id="${list.id}">🗑️</button>
+      <div class="dropdown">
+        <button class="dropbtn">⋮</button>
+        <div class="dropdown-content">
+          <button class="edit-list-name-btn">নাম পরিবর্তন</button>
+          <button class="pdf-btn">📄 PDF ডাউনলোড</button>
+          <button class="delete-list-btn">🗑️ লিস্ট ডিলিট</button>
+        </div>
       </div>
     </div>
     <form class="item-form">
@@ -70,11 +77,45 @@ function renderList(list) {
       <button type="submit">➕ যোগ করুন</button>
     </form>
     <ul></ul>
+    <div style="text-align: right; margin-top: 10px;">
+      <button class="archive-list-btn">✓ আর্কাইভ</button>
+    </div>
   `;
   
   const form = listDiv.querySelector('.item-form');
   const itemsList = listDiv.querySelector('ul');
   
+  // Event listener for the 3-dot dropdown menu
+  listDiv.querySelector('.dropbtn').addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents document click from closing it immediately
+    listDiv.querySelector('.dropdown-content').classList.toggle('show');
+  });
+
+  // Event listeners for dropdown menu actions
+  listDiv.querySelector('.edit-list-name-btn').addEventListener('click', () => {
+    const newName = prompt("লিস্টের নতুন নাম লিখুন:", list.name);
+    if (newName) {
+      list.name = newName;
+      saveToLocalStorage();
+      renderAllLists();
+    }
+  });
+
+  listDiv.querySelector('.pdf-btn').addEventListener('click', () => {
+    downloadPDF(list.id);
+  });
+
+  listDiv.querySelector('.delete-list-btn').addEventListener('click', () => {
+    if (confirm('আপনি কি এই লিস্টটি মুছে ফেলতে চান?')) {
+      moveToTrash(list.id, 'list');
+    }
+  });
+
+  // Event listener for archiving the list
+  listDiv.querySelector('.archive-list-btn').addEventListener('click', () => {
+    archiveList(list.id);
+  });
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const [nameInput, quantityInput, priceInput, dateInput] = e.target.querySelectorAll('input');
@@ -103,7 +144,7 @@ function renderItem(parentListElement, item) {
   `;
   
   listItem.querySelector('.delete-btn').addEventListener('click', () => {
-    moveToTrash(item.id);
+    moveToTrash(item.id, 'item');
   });
   
   listItem.querySelector('.edit-btn').addEventListener('click', () => {
@@ -119,7 +160,41 @@ function renderAllLists() {
   updateTotalCost();
 }
 
+function renderArchive() {
+  listsContainer.innerHTML = '<h2>আর্কাইভ করা লিস্টসমূহ</h2>';
+  if (archivedLists.length === 0) {
+    listsContainer.innerHTML += '<p style="text-align: center;">আর্কাইভ খালি আছে।</p>';
+  } else {
+    archivedLists.forEach(list => {
+      const listDiv = document.createElement('div');
+      listDiv.className = 'list';
+      listDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>${list.name} (আর্কাইভ)</h2>
+          <button class="restore-list-btn" data-list-id="${list.id}">♻️ ফিরিয়ে আনুন</button>
+        </div>
+        <ul></ul>
+      `;
+      const itemsList = listDiv.querySelector('ul');
+      list.items.forEach(item => renderItem(itemsList, item));
+      listsContainer.appendChild(listDiv);
+    });
+  }
+}
+
 // --- Event Handlers ---
+
+document.addEventListener('click', (e) => {
+  if (!e.target.matches('.dropbtn')) {
+    const dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+      const openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+});
 
 addListBtn.addEventListener('click', () => {
   const listName = listNameInput.value.trim();
@@ -136,10 +211,22 @@ addListBtn.addEventListener('click', () => {
   }
 });
 
+showArchiveBtn.addEventListener('click', () => {
+  renderArchive();
+});
+
+listsContainer.addEventListener('click', (e) => {
+  if (e.target.classList.contains('restore-list-btn')) {
+    const listId = e.target.dataset.listId;
+    restoreListFromArchive(listId);
+  }
+});
+
+// --- New Features Logic ---
+
 function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate) {
   const list = bazarLists.find(l => l.id === listId);
   if (list) {
-    // If no date is provided, use the current date
     const dateToSave = itemDate ? formatDate(new Date(itemDate)) : formatDate(new Date());
 
     const newItem = {
@@ -155,22 +242,29 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate) {
   }
 }
 
-// --- Trash functionality ---
-function moveToTrash(itemId) {
-  let itemToMove;
-  bazarLists.forEach(list => {
-    const itemIndex = list.items.findIndex(item => item.id === itemId);
-    if (itemIndex > -1) {
-      itemToMove = list.items.splice(itemIndex, 1)[0];
+function moveToTrash(itemId, type) {
+  if (type === 'item') {
+    let itemToMove;
+    bazarLists.forEach(list => {
+      const itemIndex = list.items.findIndex(item => item.id === itemId);
+      if (itemIndex > -1) {
+        itemToMove = list.items.splice(itemIndex, 1)[0];
+        if (itemToMove) {
+          trash.push(itemToMove);
+        }
+      }
+    });
+  } else if (type === 'list') {
+    const listIndex = bazarLists.findIndex(list => list.id === itemId);
+    if (listIndex > -1) {
+      const listToMove = bazarLists.splice(listIndex, 1)[0];
+      trash.push(listToMove); // Push the entire list object
     }
-  });
-
-  if (itemToMove) {
-    trash.push(itemToMove);
-    alert('আইটেমটি ট্র্যাশে সরানো হয়েছে।');
-    saveToLocalStorage();
-    renderAllLists();
   }
+  
+  alert('আইটেমটি ট্র্যাশে সরানো হয়েছে।');
+  saveToLocalStorage();
+  renderAllLists();
 }
 
 showTrashBtn.addEventListener('click', () => {
@@ -187,11 +281,16 @@ function renderTrashItems() {
   trash.forEach(item => {
     const trashItemDiv = document.createElement('div');
     trashItemDiv.className = 'list-item';
+    
+    // Check if it's a list or a single item
+    const isList = item.hasOwnProperty('items');
+    const nameText = isList ? item.name : `${item.name} (${item.price} টাকা) - ${item.date}`;
+    
     trashItemDiv.innerHTML = `
-      <span>${item.name} (${item.price} টাকা) - ${item.date}</span>
+      <span>${nameText}</span>
       <div class="item-buttons">
-        <button class="restore-btn" data-item-id="${item.id}">♻️ ফিরিয়ে আনুন</button>
-        <button class="permanent-delete-btn" data-item-id="${item.id}">❌ স্থায়ীভাবে মুছুন</button>
+        <button class="restore-btn" data-item-id="${item.id}" data-type="${isList ? 'list' : 'item'}">♻️ ফিরিয়ে আনুন</button>
+        <button class="permanent-delete-btn" data-item-id="${item.id}" data-type="${isList ? 'list' : 'item'}">❌ স্থায়ীভাবে মুছুন</button>
       </div>
     `;
     trashItemsContainer.appendChild(trashItemDiv);
@@ -205,11 +304,16 @@ trashModal.addEventListener('click', (e) => {
 });
 
 trashItemsContainer.addEventListener('click', (e) => {
+  const itemId = e.target.dataset.itemId;
+  const itemType = e.target.dataset.type;
+
   if (e.target.classList.contains('restore-btn')) {
-    const itemId = e.target.dataset.itemId;
-    restoreItemFromTrash(itemId);
+    if (itemType === 'item') {
+      restoreItemFromTrash(itemId);
+    } else {
+      restoreListFromTrash(itemId);
+    }
   } else if (e.target.classList.contains('permanent-delete-btn')) {
-    const itemId = e.target.dataset.itemId;
     if (confirm('আপনি কি এই আইটেমটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
       permanentDeleteItem(itemId);
     }
@@ -233,10 +337,42 @@ function restoreItemFromTrash(itemId) {
   }
 }
 
+function restoreListFromTrash(listId) {
+  const listIndex = trash.findIndex(list => list.id === listId);
+  if (listIndex > -1) {
+    const restoredList = trash.splice(listIndex, 1)[0];
+    bazarLists.push(restoredList);
+    saveToLocalStorage();
+    renderAllLists();
+    renderTrashItems();
+  }
+}
+
 function permanentDeleteItem(itemId) {
   trash = trash.filter(item => item.id !== itemId);
   saveToLocalStorage();
   renderTrashItems();
+}
+
+function archiveList(listId) {
+  const listIndex = bazarLists.findIndex(list => list.id === listId);
+  if (listIndex > -1) {
+    const listToArchive = bazarLists.splice(listIndex, 1)[0];
+    archivedLists.push(listToArchive);
+    alert('লিস্টটি আর্কাইভ করা হয়েছে!');
+    saveToLocalStorage();
+    renderAllLists();
+  }
+}
+
+function restoreListFromArchive(listId) {
+  const listIndex = archivedLists.findIndex(list => list.id === listId);
+  if (listIndex > -1) {
+    const restoredList = archivedLists.splice(listIndex, 1)[0];
+    bazarLists.push(restoredList);
+    saveToLocalStorage();
+    renderAllLists();
+  }
 }
 
 // --- Edit Modal Functionality ---
@@ -274,13 +410,6 @@ function showEditModal(item) {
 }
 
 // --- PDF Download Functionality ---
-listsContainer.addEventListener('click', (e) => {
-  if (e.target.classList.contains('pdf-btn')) {
-    const listId = e.target.dataset.listId;
-    downloadPDF(listId);
-  }
-});
-
 function downloadPDF(listId) {
   const list = bazarLists.find(l => l.id === listId);
   if (!list) return;
@@ -318,7 +447,8 @@ function downloadPDF(listId) {
 exportBtn.addEventListener('click', () => {
   const dataToExport = {
     bazarLists: bazarLists,
-    trash: trash
+    trash: trash,
+    archivedLists: archivedLists
   };
   const dataStr = JSON.stringify(dataToExport, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -343,9 +473,10 @@ importFile.addEventListener('change', (e) => {
     reader.onload = (event) => {
       try {
         const importedData = JSON.parse(event.target.result);
-        if (importedData.bazarLists && importedData.trash) {
+        if (importedData.bazarLists && importedData.trash && importedData.archivedLists) {
           bazarLists = importedData.bazarLists;
           trash = importedData.trash;
+          archivedLists = importedData.archivedLists;
           saveToLocalStorage();
           renderAllLists();
           alert('ডেটা সফলভাবে ইম্পোর্ট করা হয়েছে!');
@@ -370,6 +501,10 @@ function initializeApp() {
   const storedTrash = localStorage.getItem('bazarTrash');
   if (storedTrash) {
     trash = JSON.parse(storedTrash);
+  }
+  const storedArchived = localStorage.getItem('bazarArchived');
+  if (storedArchived) {
+    archivedLists = JSON.parse(storedArchived);
   }
   renderAllLists();
 }
