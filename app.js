@@ -192,7 +192,7 @@ function renderList(list) {
 
   // Event listener for archiving the list
   listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
-    const listId = e.target.dataset.l`istId;
+    const listId = e.target.dataset.listId;
     archiveList(listId);
   });
 
