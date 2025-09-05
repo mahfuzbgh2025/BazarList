@@ -433,8 +433,7 @@ function downloadPDF(listId) {
   const doc = new jsPDF();
   let y = 10;
   
-  // ✅ এখানে 'NotoSansBengali' এর পরিবর্তে 'NotoSansBengaliNormal' ব্যবহার করুন
-  doc.setFont('NotoSansBengaliNormal', 'normal');
+  doc.setFont('NotoSansBengali', 'normal');
   
   doc.setFontSize(16);
   doc.text(`বাজারের তালিকা: ${list.name}`, 10, y);
