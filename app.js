@@ -27,7 +27,6 @@ function saveToLocalStorage() {
 function updateTotalCost() {
   const total = bazarLists.reduce((sum, list) => {
     return sum + list.items.reduce((itemSum, item) => {
-      // Use parseFloat to handle potential non-numeric input
       return itemSum + (parseFloat(item.price) || 0);
     }, 0);
   }, 0);
