@@ -112,10 +112,13 @@ function updateTotalCost() {
 
 // Update UI based on user login status
 function updateUI(user) {
+    console.log('updateUI function called. User:', user);
     if (user) {
+        console.log('User is signed in. Email:', user.email);
         signInBtn.style.display = 'none';
         signOutBtn.style.display = 'inline-block';
     } else {
+        console.log('User is signed out.');
         signInBtn.style.display = 'inline-block';
         signOutBtn.style.display = 'none';
     }
@@ -307,12 +310,14 @@ signInBtn.addEventListener('click', () => {
     firebase.auth().signInWithPopup(provider)
         .then((result) => {
             const user = result.user;
-            console.log('User signed in:', user.displayName);
+            console.log('User signed in successfully with popup:', user.displayName, user.email);
             loadDataFromFirebase(user.uid);
             updateUI(user);
         })
         .catch((error) => {
             console.error('Sign-in failed:', error);
+            // Handle specific errors like "auth/popup-closed-by-user"
+            // or "auth/cancelled-popup-request"
         });
 });
 
@@ -623,9 +628,11 @@ importFile.addEventListener('change', (e) => {
 function initializeApp() {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
+            console.log('Authentication state changed: User is logged in.', user.email);
             updateUI(user);
             loadDataFromFirebase(user.uid);
         } else {
+            console.log('Authentication state changed: User is logged out.');
             updateUI(null);
             const storedData = localStorage.getItem('bazarLists');
             if (storedData) {
