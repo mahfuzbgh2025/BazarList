@@ -432,9 +432,9 @@ function downloadPDF(listId) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   let y = 10;
-
-  // Set the custom font
-  doc.setFont('BL-AdorshoLipi', 'normal');
+  
+  // ✅ এখানে 'NotoSansBengali' এর পরিবর্তে 'NotoSansBengaliNormal' ব্যবহার করুন
+  doc.setFont('NotoSansBengaliNormal', 'normal');
   
   doc.setFontSize(16);
   doc.text(`বাজারের তালিকা: ${list.name}`, 10, y);
