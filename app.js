@@ -307,7 +307,18 @@ listsContainer.addEventListener('click', (e) => {
 
 signInBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider); // Changed to signInWithRedirect
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log('User signed in successfully:', user.email);
+            // After successful sign-in, load user data and update UI
+            loadDataFromFirebase(user.uid);
+            updateUI(user);
+        })
+        .catch((error) => {
+            console.error('Sign-in failed:', error);
+            // Handle specific errors like "auth/popup-closed-by-user"
+        });
 });
 
 signOutBtn.addEventListener('click', () => {
