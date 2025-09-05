@@ -3,75 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BazarList</title>
-
-  <meta name="theme-color" content="#0d47a1">
-  <link rel="manifest" href="/BazarList/manifest.json">
-  <link rel="apple-touch-icon" href="/BazarList/AppImages/android/android-launchericon-192-192.png">
-
-  <link rel="icon" href="/BazarList/AppImages/android/android-launchericon-192-192.png" type="image/png">
-
+  <title>বাজার লিস্ট</title>
   <link rel="stylesheet" href="/BazarList/style.css">
 </head>
 <body>
-  <header>
-    <h1>🛒 BazarList</h1>
-    <p>দৈনন্দিন বাজার তালিকা রাখুন সহজে।</p>
-  </header>
-
-  <main>
-    <div class="input-container">
+  <div class="app-container">
+    <h1>🛒 আমার বাজার লিস্ট</h1>
+    <div class="controls">
       <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন">
-      <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
-    </div>
-    
-    <div class="button-container">
-      <button id="exportBtn">📂 ডেটা এক্সপোর্ট (.json)</button>
-      <input type="file" id="importFile" accept=".json" style="display:none;">
-      <button id="importBtn">📥 ডেটা ইম্পোর্ট (.json)</button>
-      <button id="showArchiveBtn">🗄️ আর্কাইভ</button>
+      <button id="addListBtn">➕ নতুন লিস্ট</button>
+      <button id="showArchiveBtn">📦 আর্কাইভ</button>
       <button id="showTrashBtn">🗑️ ট্র্যাশ</button>
+      <button id="exportBtn">⬇️ এক্সপোর্ট</button>
+      <button id="importBtn">⬆️ ইম্পোর্ট</button>
+      <input type="file" id="importFile" accept=".json" style="display: none;">
     </div>
-
     <div id="listsContainer"></div>
-    <div id="totalContainer">
-      <h3>মোট খরচ: <span id="totalAmount">0</span> টাকা</h3>
+    <div class="total-container">
+      <h3>সর্বমোট খরচ: <span id="totalAmount">0</span> টাকা</h3>
     </div>
-  </main>
+  </div>
 
-  <footer>
-    <p>© 2025 BazarList | Developed by Mahfuz Bgh</p>
-  </footer>
-
+  <!-- Trash Modal -->
   <div id="trashModal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
-      <h3>ট্র্যাশে থাকা আইটেমসমূহ</h3>
+      <h2>🗑️ ট্র্যাশ</h2>
       <div id="trashItemsContainer"></div>
     </div>
   </div>
 
+  <!-- Edit Modal -->
   <div id="editModal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
-      <h3>পণ্য পরিবর্তন করুন</h3>
-      <input type="text" id="editName">
-      <input type="text" id="editQuantity">
-      <input type="number" id="editPrice">
-      <input type="date" id="editDate">
-      <button id="saveEditBtn">সেভ করুন</button>
+      <h2>✏️ আইটেম সম্পাদনা</h2>
+      <label>নাম:</label>
+      <input type="text" id="editName"><br>
+      <label>পরিমাণ:</label>
+      <input type="text" id="editQuantity"><br>
+      <label>দাম:</label>
+      <input type="number" id="editPrice"><br>
+      <label>তারিখ:</label>
+      <input type="date" id="editDate"><br>
+      <button id="saveEditBtn">💾 সেভ করুন</button>
     </div>
   </div>
-  
-  <!-- jsPDF লাইব্রেরি -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
-  <!-- BL-AdorshoLipi font js যুক্ত -->
-  <script src="/BazarList/BL-AdorshoLipi-normal.js"></script>
-  
-  <!-- মূল app.js -->
-  <script src="/BazarList/app.js"></script>
 
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="/BazarList/BL-AdorshoLipi-normal.js"></script>
+  <script src="/BazarList/app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
