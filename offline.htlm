@@ -3,20 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Offline - BazarList</title>
+  <title>BazarList - অফলাইন</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #1c2e4a, #0f4c81);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
       text-align: center;
-      padding: 40px;
-      background: #f4f4f4;
     }
-    h1 { color: #d32f2f; }
-    p { color: #333; }
+    h1 {
+      font-size: 2.5rem;
+    }
+    p {
+      font-size: 1.2rem;
+      max-width: 400px;
+    }
   </style>
 </head>
 <body>
-  <h1>📴 আপনি অফলাইনে আছেন</h1>
-  <p>ইন্টারনেট কানেকশন নেই। অনুগ্রহ করে পরে চেষ্টা করুন।</p>
+  <h1>আপনি অফলাইনে আছেন!</h1>
+  <p>দয়া করে ইন্টারনেট সংযোগ পরীক্ষা করুন। আপনার ডেটা নিরাপদে ডিভাইসে সংরক্ষিত আছে।</p>
 </body>
 </html>
