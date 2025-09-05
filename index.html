@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BazarList</title>
 
-  <!-- Theme & Manifest -->
   <meta name="theme-color" content="#0d47a1">
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="./AppImages/android/android-launchericon-192-192.png">
 
-  <!-- Favicon -->
   <link rel="icon" href="./AppImages/android/android-launchericon-192-192.png" type="image/png">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,12 +20,16 @@
   </header>
 
   <main>
-    <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন">
-    <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
-
-    <button id="exportBtn">📂 Backup Export (.json)</button>
-    <input type="file" id="importFile" accept=".json" style="display:none;">
-    <button id="importBtn">📥 Import Restore (.json)</button>
+    <div class="input-container">
+      <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন">
+      <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
+    </div>
+    
+    <div class="button-container">
+      <button id="exportBtn">📂 ডেটা এক্সপোর্ট (.json)</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;">
+      <button id="importBtn">📥 ডেটা ইম্পোর্ট (.json)</button>
+    </div>
 
     <div id="listsContainer"></div>
     <div id="totalContainer">
@@ -40,5 +42,15 @@
   </footer>
 
   <script src="app.js"></script>
+  <script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/BazarList/sw.js')
+          .then(reg => console.log('Service Worker: Registered'))
+          .catch(err => console.log(`Service Worker: Error: ${err}`));
+      });
+    }
+  </script>
 </body>
 </html>
