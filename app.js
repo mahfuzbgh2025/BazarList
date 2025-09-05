@@ -41,7 +41,7 @@ function saveToLocalStorage() {
   updateTotalCost();
 }
 
-// Function to update the total cost display
+// Function to update the overall total cost display
 function updateTotalCost() {
   const total = bazarLists.reduce((sum, list) => {
     return sum + list.items.reduce((itemSum, item) => {
@@ -57,15 +57,19 @@ function renderList(list) {
   const listDiv = document.createElement('div');
   listDiv.className = 'list';
   listDiv.id = list.id;
+
+  // Calculate total price for this specific list
+  const listTotal = list.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+
   listDiv.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h2>${list.name}</h2>
       <div class="dropdown">
         <button class="dropbtn">⋮</button>
         <div class="dropdown-content">
-          <button class="edit-list-name-btn">নাম পরিবর্তন</button>
-          <button class="pdf-btn">📄 PDF ডাউনলোড</button>
-          <button class="delete-list-btn">🗑️ লিস্ট ডিলিট</button>
+          <button class="edit-list-name-btn" data-list-id="${list.id}">নাম পরিবর্তন</button>
+          <button class="pdf-btn" data-list-id="${list.id}">📄 PDF ডাউনলোড</button>
+          <button class="delete-list-btn" data-list-id="${list.id}">🗑️ লিস্ট ডিলিট</button>
         </div>
       </div>
     </div>
@@ -78,7 +82,8 @@ function renderList(list) {
     </form>
     <ul></ul>
     <div style="text-align: right; margin-top: 10px;">
-      <button class="archive-list-btn">✓ আর্কাইভ</button>
+      <h4>মোট খরচ: ${listTotal.toFixed(2)} টাকা</h4>
+      <button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>
     </div>
   `;
   
@@ -92,28 +97,33 @@ function renderList(list) {
   });
 
   // Event listeners for dropdown menu actions
-  listDiv.querySelector('.edit-list-name-btn').addEventListener('click', () => {
-    const newName = prompt("লিস্টের নতুন নাম লিখুন:", list.name);
+  listDiv.querySelector('.edit-list-name-btn').addEventListener('click', (e) => {
+    const listId = e.target.dataset.listId;
+    const listToEdit = bazarLists.find(l => l.id === listId);
+    const newName = prompt("লিস্টের নতুন নাম লিখুন:", listToEdit.name);
     if (newName) {
-      list.name = newName;
+      listToEdit.name = newName;
       saveToLocalStorage();
       renderAllLists();
     }
   });
 
-  listDiv.querySelector('.pdf-btn').addEventListener('click', () => {
-    downloadPDF(list.id);
+  listDiv.querySelector('.pdf-btn').addEventListener('click', (e) => {
+    const listId = e.target.dataset.listId;
+    downloadPDF(listId);
   });
 
-  listDiv.querySelector('.delete-list-btn').addEventListener('click', () => {
+  listDiv.querySelector('.delete-list-btn').addEventListener('click', (e) => {
+    const listId = e.target.dataset.listId;
     if (confirm('আপনি কি এই লিস্টটি মুছে ফেলতে চান?')) {
-      moveToTrash(list.id, 'list');
+      moveToTrash(listId, 'list');
     }
   });
 
   // Event listener for archiving the list
-  listDiv.querySelector('.archive-list-btn').addEventListener('click', () => {
-    archiveList(list.id);
+  listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
+    const listId = e.target.dataset.listId;
+    archiveList(listId);
   });
 
   form.addEventListener('submit', (e) => {
@@ -258,7 +268,7 @@ function moveToTrash(itemId, type) {
     const listIndex = bazarLists.findIndex(list => list.id === itemId);
     if (listIndex > -1) {
       const listToMove = bazarLists.splice(listIndex, 1)[0];
-      trash.push(listToMove); // Push the entire list object
+      trash.push(listToMove);
     }
   }
   
@@ -282,7 +292,6 @@ function renderTrashItems() {
     const trashItemDiv = document.createElement('div');
     trashItemDiv.className = 'list-item';
     
-    // Check if it's a list or a single item
     const isList = item.hasOwnProperty('items');
     const nameText = isList ? item.name : `${item.name} (${item.price} টাকা) - ${item.date}`;
     
@@ -414,6 +423,12 @@ function downloadPDF(listId) {
   const list = bazarLists.find(l => l.id === listId);
   if (!list) return;
 
+  // Check for internet connection before downloading
+  if (!navigator.onLine) {
+    alert("পিডিএফ ডাউনলোড করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
+    return;
+  }
+  
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   let y = 10;
@@ -445,6 +460,12 @@ function downloadPDF(listId) {
 // --- Import/Export Functionality ---
 
 exportBtn.addEventListener('click', () => {
+  // Check for internet connection before exporting
+  if (!navigator.onLine) {
+    alert("ডেটা এক্সপোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
+    return;
+  }
+
   const dataToExport = {
     bazarLists: bazarLists,
     trash: trash,
@@ -463,6 +484,11 @@ exportBtn.addEventListener('click', () => {
 });
 
 importBtn.addEventListener('click', () => {
+  // Check for internet connection before importing
+  if (!navigator.onLine) {
+    alert("ডেটা ইম্পোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
+    return;
+  }
   importFile.click();
 });
 
