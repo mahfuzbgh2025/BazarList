@@ -23,6 +23,8 @@
             <small id="userEmail"></small>
         </div>
         <div class="sidebar-options">
+            <button id="showBazarListBtn" class="sidebar-btn active">📝 বাজারের তালিকা</button>
+            <button id="showDokanBakiiBtn" class="sidebar-btn">🧾 দোকান বাকি</button>
             <button id="showArchiveBtn" class="sidebar-btn">📦 আর্কাইভ</button>
             <button id="showTrashBtn" class="sidebar-btn">🗑️ ট্র্যাশ</button>
             <button id="openSettingsModalBtn" class="sidebar-btn">⚙️ সেটিংস</button>
@@ -46,16 +48,31 @@
         </header>
 
         <main>
-            <div class="add-list-section">
-                <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন...">
-                <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
-            </div>
-            <div id="listsContainer" class="lists-container">
+            <section id="bazarListSection">
+                <div class="add-list-section">
+                    <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন...">
+                    <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
                 </div>
+                <div id="listsContainer" class="lists-container">
+                    </div>
+            </section>
+
+            <section id="dokanBakiiSection" style="display: none;">
+                <div class="add-list-section">
+                    <input type="text" id="dokanNameInput" placeholder="দোকানের নাম লিখুন...">
+                    <button id="addDokanBakiiBtn">➕ দোকান যোগ করুন</button>
+                </div>
+                <div id="dokanBakiiContainer" class="lists-container">
+                    </div>
+            </section>
         </main>
     </div>
 
 </div>
+
+<footer>
+    Developed by Mahfuz Bgh
+</footer>
 
 <div id="trashModal" class="modal">
     <div class="modal-content">
