@@ -18,9 +18,13 @@
 
     <div id="sidebar" class="sidebar">
         <button id="closeSidebarBtn" class="close-btn">&times;</button>
-        <div class="sidebar-header">
+        <div id="sidebarHeader" class="sidebar-header clickable-header">
             <h2 id="userDisplayName">লগইন করুন</h2>
             <small id="userEmail"></small>
+            <button id="signInBtn" class="auth-btn" style="display: none;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon">
+                Google দিয়ে লগইন করুন
+            </button>
         </div>
         <div class="sidebar-options">
             <button id="showBazarListBtn" class="sidebar-btn active">📝 বাজারের তালিকা</button>
@@ -30,10 +34,6 @@
             <button id="openSettingsModalBtn" class="sidebar-btn">⚙️ সেটিংস</button>
         </div>
         <div class="sidebar-auth-buttons">
-            <button id="signInBtn" class="auth-btn">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon">
-                Google দিয়ে লগইন করুন
-            </button>
             <button id="signOutBtn" class="auth-btn" style="display: none;">লগআউট</button>
         </div>
     </div>
