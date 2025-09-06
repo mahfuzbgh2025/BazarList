@@ -1,72 +1,29 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>বাজার লিস্ট</title>
-  <link rel="stylesheet" href="/BazarList/style.css">
-</head>
-<body>
-  <div class="app-container">
-    <h1>🛒 আমার বাজার লিস্ট</h1>
-    <div class="controls">
-      <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন">
-      <button id="addListBtn">➕ নতুন লিস্ট</button>
-      <button id="showArchiveBtn">📦 আর্কাইভ</button>
-      <button id="showTrashBtn">🗑️ ট্র্যাশ</button>
-      <button id="exportBtn">⬇️ এক্সপোর্ট</button>
-      <button id="importBtn">⬆️ ইম্পোর্ট</button>
+<button id="settingsBtn">⚙️ সেটিংস</button>
+
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>সেটিংস</h2>
+    <hr>
+    
+    <div class="setting-item">
+      <h3>ডেটা ব্যাকআপ</h3>
+      <p>আপনার সমস্ত ডেটা JSON ফাইল হিসেবে ডাউনলোড করুন।</p>
+      <button id="exportBtn">📁 ডেটা এক্সপোর্ট</button>
+    </div>
+    
+    <div class="setting-item">
+      <h3>ডেটা রিস্টোর</h3>
+      <p>ব্যাকআপ করা JSON ফাইল থেকে ডেটা রিস্টোর করুন।</p>
       <input type="file" id="importFile" accept=".json" style="display: none;">
+      <button id="importBtn">📂 ডেটা ইমপোর্ট</button>
     </div>
-    <div class="auth-controls">
-      <button id="signInBtn">সাইন ইন (Gmail)</button>
-      <button id="signOutBtn" style="display: none;">সাইন আউট</button>
+    
+    <div class="setting-item">
+      <h3>ডেটা রিসেট</h3>
+      <p class="warning">সতর্কতা: এই কাজটি আপনার সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলবে।</p>
+      <button id="resetDataBtn">🗑️ সমস্ত ডেটা মুছে ফেলুন</button>
     </div>
-    <div id="listsContainer"></div>
-    <div class="total-container">
-      <h3>সর্বমোট খরচ: <span id="totalAmount">0</span> টাকা</h3>
-    </div>
-  </div>
 
-  <div id="trashModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h2>🗑️ ট্র্যাশ</h2>
-      <div id="trashItemsContainer"></div>
-    </div>
   </div>
-
-  <div id="editModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h2>✏️ আইটেম সম্পাদনা</h2>
-      <label>নাম:</label>
-      <input type="text" id="editName"><br>
-      <label>পরিমাণ:</label>
-      <input type="text" id="editQuantity"><br>
-      <label>দাম:</label>
-      <input type="number" id="editPrice"><br>
-      <label>তারিখ:</label>
-      <input type="date" id="editDate"><br>
-      <button id="saveEditBtn">💾 সেভ করুন</button>
-    </div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="/BazarList/NotoSansBengali-normal.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-  
-  <script src="/BazarList/app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/BazarList/sw.js')
-          .then(reg => console.log('Service Worker: Registered'))
-          .catch(err => console.log(`Service Worker: Error: ${err}`));
-      });
-    }
-  </script>
-</body>
-</html>
+</div>
