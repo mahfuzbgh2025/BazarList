@@ -42,7 +42,7 @@ const showBazarListBtn = document.getElementById('showBazarListBtn');
 const showDokanBakiiBtn = document.getElementById('showDokanBakiiBtn');
 const bazarListSection = document.getElementById('bazarListSection');
 const dokanBakiiSection = document.getElementById('dokanBakiiSection');
-
+const sidebarHeader = document.getElementById('sidebarHeader');
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -93,10 +93,10 @@ function saveToFirebase(uid) {
             archived: archivedLists
         })
         .then(() => {
-            console.log('Data saved to Firebase successfully.');
+            alert('আপনার ডেটা ক্লাউডে সফলভাবে সেভ হয়েছে! ☁️');
         })
         .catch((error) => {
-            console.error('Error saving data:', error);
+            alert('ডেটা সেভ করার সময় একটি সমস্যা হয়েছে: ' + error.message);
         });
     }
 }
@@ -138,19 +138,18 @@ function updateTotalCost() {
 
 // Update UI based on user login status
 function updateUI(user) {
-    console.log('updateUI function called. User:', user);
     if (user) {
-        console.log('User is signed in. Email:', user.email);
         signInBtn.style.display = 'none';
         signOutBtn.style.display = 'inline-block';
         userDisplayName.textContent = user.displayName || 'লগইন করা হয়েছে';
         userEmail.textContent = user.email;
+        sidebarHeader.classList.add('clickable-header');
     } else {
-        console.log('User is signed out.');
         signInBtn.style.display = 'inline-block';
         signOutBtn.style.display = 'none';
         userDisplayName.textContent = 'লগইন করুন';
         userEmail.textContent = '';
+        sidebarHeader.classList.remove('clickable-header');
     }
 }
 
@@ -433,6 +432,14 @@ signOutBtn.addEventListener('click', () => {
         .catch((error) => {
             console.error('Sign-out failed:', error);
         });
+});
+
+// New one-click backup feature
+sidebarHeader.addEventListener('click', () => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+        saveToFirebase(user.uid);
+    }
 });
 
 // --- New Features Logic ---
