@@ -14,8 +14,11 @@ function formatDate(date) {
 
 // Global variables for DOM elements
 const listNameInput = document.getElementById('listNameInput');
+const dokanNameInput = document.getElementById('dokanNameInput');
 const addListBtn = document.getElementById('addListBtn');
+const addDokanBakiiBtn = document.getElementById('addDokanBakiiBtn');
 const listsContainer = document.getElementById('listsContainer');
+const dokanBakiiContainer = document.getElementById('dokanBakiiContainer');
 const totalAmountSpan = document.getElementById('totalAmount');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
@@ -35,6 +38,11 @@ const signOutBtn = document.getElementById('signOutBtn');
 const userDisplayName = document.getElementById('userDisplayName');
 const userEmail = document.getElementById('userEmail');
 const resetDataBtn = document.getElementById('resetDataBtn');
+const showBazarListBtn = document.getElementById('showBazarListBtn');
+const showDokanBakiiBtn = document.getElementById('showDokanBakiiBtn');
+const bazarListSection = document.getElementById('bazarListSection');
+const dokanBakiiSection = document.getElementById('dokanBakiiSection');
+
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -54,6 +62,7 @@ const database = firebase.database();
 
 // Data structure to hold all the lists and items
 let bazarLists = [];
+let dokanBakiiLists = [];
 let trash = [];
 let archivedLists = [];
 
@@ -62,6 +71,7 @@ let archivedLists = [];
 // Function to save data to local storage
 function saveToLocalStorage() {
   localStorage.setItem('bazarLists', JSON.stringify(bazarLists));
+  localStorage.setItem('dokanBakiiLists', JSON.stringify(dokanBakiiLists));
   localStorage.setItem('bazarTrash', JSON.stringify(trash));
   localStorage.setItem('bazarArchived', JSON.stringify(archivedLists));
   updateTotalCost();
@@ -78,6 +88,7 @@ function saveToFirebase(uid) {
     if (uid) {
         database.ref('users/' + uid).set({
             lists: bazarLists,
+            dokanBakii: dokanBakiiLists,
             trash: trash,
             archived: archivedLists
         })
@@ -97,6 +108,7 @@ function loadDataFromFirebase(uid) {
             const data = snapshot.val();
             if (data) {
                 bazarLists = data.lists || [];
+                dokanBakiiLists = data.dokanBakii || [];
                 trash = data.trash || [];
                 archivedLists = data.archived || [];
                 renderAllLists();
@@ -115,7 +127,13 @@ function updateTotalCost() {
       return itemSum + (parseFloat(item.price) || 0);
     }, 0);
   }, 0);
-  totalAmountSpan.textContent = total.toFixed(2);
+  const dokanTotal = dokanBakiiLists.reduce((sum, list) => {
+    return sum + list.items.reduce((itemSum, item) => {
+      return itemSum + (parseFloat(item.price) || 0);
+    }, 0);
+  }, 0);
+
+  totalAmountSpan.textContent = (total + dokanTotal).toFixed(2);
 }
 
 // Update UI based on user login status
@@ -138,13 +156,14 @@ function updateUI(user) {
 
 // --- Main Rendering Functions ---
 
-function renderList(list) {
+function renderList(list, containerId) {
   const listDiv = document.createElement('div');
   listDiv.className = 'list';
   listDiv.id = list.id;
 
   // Calculate total price for this specific list
   const listTotal = list.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+  const totalLabel = containerId === 'dokanBakiiContainer' ? 'মোট বাকি' : 'মোট খরচ';
 
   listDiv.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -152,13 +171,13 @@ function renderList(list) {
       <div class="dropdown">
         <button class="dropbtn">⋮</button>
         <div class="dropdown-content">
-          <button class="edit-list-name-btn" data-list-id="${list.id}">নাম পরিবর্তন</button>
-          <button class="pdf-btn" data-list-id="${list.id}">📄 PDF ডাউনলোড</button>
-          <button class="delete-list-btn" data-list-id="${list.id}">🗑️ লিস্ট ডিলিট</button>
+          <button class="edit-list-name-btn" data-list-id="${list.id}" data-container-id="${containerId}">নাম পরিবর্তন</button>
+          <button class="pdf-btn" data-list-id="${list.id}" data-container-id="${containerId}">📄 PDF ডাউনলোড</button>
+          <button class="delete-list-btn" data-list-id="${list.id}" data-container-id="${containerId}">🗑️ লিস্ট ডিলিট</button>
         </div>
       </div>
     </div>
-    <form class="item-form">
+    <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
       <input type="text" placeholder="পণ্যের নাম" required>
       <input type="text" placeholder="পরিমাণ" style="width: 15%;">
       <input type="number" placeholder="দাম (টাকা)" required>
@@ -167,8 +186,8 @@ function renderList(list) {
     </form>
     <ul></ul>
     <div style="text-align: right; margin-top: 10px;">
-      <h4>মোট খরচ: ${listTotal.toFixed(2)} টাকা</h4>
-      <button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>
+      <h4>${totalLabel}: ${listTotal.toFixed(2)} টাকা</h4>
+      ${containerId === 'listsContainer' ? `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>` : ''}
     </div>
   `;
   
@@ -184,7 +203,14 @@ function renderList(list) {
   // Event listeners for dropdown menu actions
   listDiv.querySelector('.edit-list-name-btn').addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
-    const listToEdit = bazarLists.find(l => l.id === listId);
+    const containerId = e.target.dataset.containerId;
+    let listToEdit = [];
+    if (containerId === 'listsContainer') {
+      listToEdit = bazarLists.find(l => l.id === listId);
+    } else {
+      listToEdit = dokanBakiiLists.find(l => l.id === listId);
+    }
+
     const newName = prompt("লিস্টের নতুন নাম লিখুন:", listToEdit.name);
     if (newName) {
       listToEdit.name = newName;
@@ -195,37 +221,52 @@ function renderList(list) {
 
   listDiv.querySelector('.pdf-btn').addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
-    downloadPDF(listId);
+    const containerId = e.target.dataset.containerId;
+    let listToDownload = [];
+    if (containerId === 'listsContainer') {
+      listToDownload = bazarLists.find(l => l.id === listId);
+    } else {
+      listToDownload = dokanBakiiLists.find(l => l.id === listId);
+    }
+    downloadPDF(listToDownload, containerId);
   });
 
   listDiv.querySelector('.delete-list-btn').addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
+    const containerId = e.target.dataset.containerId;
     if (confirm('আপনি কি এই লিস্টটি মুছে ফেলতে চান?')) {
-      moveToTrash(listId, 'list');
+      moveToTrash(listId, 'list', containerId);
     }
   });
 
   // Event listener for archiving the list
-  listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
-    const listId = e.target.dataset.listId;
-    archiveList(listId);
-  });
+  if (containerId === 'listsContainer') {
+    listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
+      const listId = e.target.dataset.listId;
+      archiveList(listId);
+    });
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const listId = e.target.dataset.listId;
+    const containerId = e.target.dataset.containerId;
     const [nameInput, quantityInput, priceInput, dateInput] = e.target.querySelectorAll('input');
-    addItemToList(list.id, nameInput.value, quantityInput.value, priceInput.value, dateInput.value);
+    addItemToList(listId, nameInput.value, quantityInput.value, priceInput.value, dateInput.value, containerId);
     e.target.reset();
   });
   
   list.items.forEach(item => {
-    renderItem(itemsList, item);
+    renderItem(itemsList, item, containerId);
   });
   
-  listsContainer.appendChild(listDiv);
+  const targetContainer = document.getElementById(containerId);
+  if (targetContainer) {
+    targetContainer.appendChild(listDiv);
+  }
 }
 
-function renderItem(parentListElement, item) {
+function renderItem(parentListElement, item, containerId) {
   const listItem = document.createElement('li');
   listItem.innerHTML = `
     <div class="item-details">
@@ -233,17 +274,17 @@ function renderItem(parentListElement, item) {
       <div class="item-meta">তারিখ: ${item.date}</div>
     </div>
     <div class="item-buttons">
-      <button class="edit-btn" data-item-id="${item.id}">🖊️</button>
-      <button class="delete-btn" data-item-id="${item.id}">❌</button>
+      <button class="edit-btn" data-item-id="${item.id}" data-container-id="${containerId}">🖊️</button>
+      <button class="delete-btn" data-item-id="${item.id}" data-container-id="${containerId}">❌</button>
     </div>
   `;
   
   listItem.querySelector('.delete-btn').addEventListener('click', () => {
-    moveToTrash(item.id, 'item');
+    moveToTrash(item.id, 'item', containerId);
   });
   
   listItem.querySelector('.edit-btn').addEventListener('click', () => {
-    showEditModal(item);
+    showEditModal(item, containerId);
   });
 
   parentListElement.appendChild(listItem);
@@ -251,7 +292,9 @@ function renderItem(parentListElement, item) {
 
 function renderAllLists() {
   listsContainer.innerHTML = '';
-  bazarLists.forEach(list => renderList(list));
+  dokanBakiiContainer.innerHTML = '';
+  bazarLists.forEach(list => renderList(list, 'listsContainer'));
+  dokanBakiiLists.forEach(list => renderList(list, 'dokanBakiiContainer'));
   updateTotalCost();
 }
 
@@ -271,7 +314,7 @@ function renderArchive() {
         <ul></ul>
       `;
       const itemsList = listDiv.querySelector('ul');
-      list.items.forEach(item => renderItem(itemsList, item));
+      list.items.forEach(item => renderItem(itemsList, item, 'listsContainer'));
       listsContainer.appendChild(listDiv);
     });
   }
@@ -306,11 +349,44 @@ addListBtn.addEventListener('click', () => {
   }
 });
 
+addDokanBakiiBtn.addEventListener('click', () => {
+  const dokanName = dokanNameInput.value.trim();
+  if (dokanName) {
+    const newDokan = {
+      id: generateId(),
+      name: dokanName,
+      items: []
+    };
+    dokanBakiiLists.push(newDokan);
+    dokanNameInput.value = '';
+    saveToLocalStorage();
+    renderAllLists();
+  }
+});
+
 openSidebarBtn.addEventListener('click', () => {
     sidebar.classList.add('active');
 });
 
 closeSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+});
+
+showBazarListBtn.addEventListener('click', () => {
+    bazarListSection.style.display = 'block';
+    dokanBakiiSection.style.display = 'none';
+    showBazarListBtn.classList.add('active');
+    showDokanBakiiBtn.classList.remove('active');
+    renderAllLists();
+    sidebar.classList.remove('active');
+});
+
+showDokanBakiiBtn.addEventListener('click', () => {
+    bazarListSection.style.display = 'none';
+    dokanBakiiSection.style.display = 'block';
+    showDokanBakiiBtn.classList.add('active');
+    showBazarListBtn.classList.remove('active');
+    renderAllLists();
     sidebar.classList.remove('active');
 });
 
@@ -347,6 +423,7 @@ signOutBtn.addEventListener('click', () => {
         .then(() => {
             console.log('User signed out.');
             bazarLists = [];
+            dokanBakiiLists = [];
             trash = [];
             archivedLists = [];
             saveToLocalStorage();
@@ -360,8 +437,14 @@ signOutBtn.addEventListener('click', () => {
 
 // --- New Features Logic ---
 
-function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate) {
-  const list = bazarLists.find(l => l.id === listId);
+function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, containerId) {
+  let targetListArray = [];
+  if (containerId === 'listsContainer') {
+    targetListArray = bazarLists;
+  } else {
+    targetListArray = dokanBakiiLists;
+  }
+  const list = targetListArray.find(l => l.id === listId);
   if (list) {
     const dateToSave = itemDate ? formatDate(new Date(itemDate)) : formatDate(new Date());
 
@@ -378,10 +461,17 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate) {
   }
 }
 
-function moveToTrash(itemId, type) {
+function moveToTrash(itemId, type, containerId) {
   if (type === 'item') {
     let itemToMove;
-    bazarLists.forEach(list => {
+    let targetListArray = [];
+    if (containerId === 'listsContainer') {
+      targetListArray = bazarLists;
+    } else {
+      targetListArray = dokanBakiiLists;
+    }
+
+    targetListArray.forEach(list => {
       const itemIndex = list.items.findIndex(item => item.id === itemId);
       if (itemIndex > -1) {
         itemToMove = list.items.splice(itemIndex, 1)[0];
@@ -391,9 +481,16 @@ function moveToTrash(itemId, type) {
       }
     });
   } else if (type === 'list') {
-    const listIndex = bazarLists.findIndex(list => list.id === itemId);
+    let targetListArray = [];
+    if (containerId === 'listsContainer') {
+      targetListArray = bazarLists;
+    } else {
+      targetListArray = dokanBakiiLists;
+    }
+
+    const listIndex = targetListArray.findIndex(list => list.id === itemId);
     if (listIndex > -1) {
-      const listToMove = bazarLists.splice(listIndex, 1)[0];
+      const listToMove = targetListArray.splice(listIndex, 1)[0];
       trash.push(listToMove);
     }
   }
@@ -512,7 +609,7 @@ function restoreListFromArchive(listId) {
 }
 
 // --- Edit Modal Functionality ---
-function showEditModal(item) {
+function showEditModal(item, containerId) {
   const editModal = document.getElementById('editModal');
   editModal.style.display = 'block';
 
@@ -527,7 +624,14 @@ function showEditModal(item) {
     const newPrice = document.getElementById('editPrice').value;
     const newDate = document.getElementById('editDate').value;
     
-    const list = bazarLists.find(l => l.items.find(i => i.id === item.id));
+    let targetListArray = [];
+    if (containerId === 'listsContainer') {
+      targetListArray = bazarLists;
+    } else {
+      targetListArray = dokanBakiiLists;
+    }
+
+    const list = targetListArray.find(l => l.items.find(i => i.id === item.id));
     if (list) {
       const existingItem = list.items.find(i => i.id === item.id);
       existingItem.name = newName;
@@ -546,8 +650,7 @@ function showEditModal(item) {
 }
 
 // --- PDF Download Functionality ---
-function downloadPDF(listId) {
-  const list = bazarLists.find(l => l.id === listId);
+function downloadPDF(list, containerId) {
   if (!list) return;
 
   // Check for internet connection before downloading
@@ -562,8 +665,9 @@ function downloadPDF(listId) {
   
   doc.setFont('NotoSansBengaliNormal', 'normal');
   
+  const title = containerId === 'dokanBakiiContainer' ? `বাকি: ${list.name}` : `বাজারের তালিকা: ${list.name}`;
   doc.setFontSize(16);
-  doc.text(`বাজারের তালিকা: ${list.name}`, 10, y);
+  doc.text(title, 10, y);
   y += 10;
 
   let totalListPrice = 0;
@@ -580,7 +684,8 @@ function downloadPDF(listId) {
 
   doc.setFontSize(14);
   y += 5;
-  doc.text(`মোট খরচ: ${totalListPrice.toFixed(2)} টাকা`, 10, y);
+  const totalLabel = containerId === 'dokanBakiiContainer' ? 'মোট বাকি' : 'মোট খরচ';
+  doc.text(`${totalLabel}: ${totalListPrice.toFixed(2)} টাকা`, 10, y);
   y += 10;
 
   doc.save(`${list.name}.pdf`);
@@ -596,6 +701,7 @@ exportBtn.addEventListener('click', () => {
 
   const dataToExport = {
     bazarLists: bazarLists,
+    dokanBakiiLists: dokanBakiiLists,
     trash: trash,
     archivedLists: archivedLists
   };
@@ -627,8 +733,9 @@ importFile.addEventListener('change', (e) => {
     reader.onload = (event) => {
       try {
         const importedData = JSON.parse(event.target.result);
-        if (importedData.bazarLists && importedData.trash && importedData.archivedLists) {
+        if (importedData.bazarLists && importedData.dokanBakiiLists && importedData.trash && importedData.archivedLists) {
           bazarLists = importedData.bazarLists;
+          dokanBakiiLists = importedData.dokanBakiiLists;
           trash = importedData.trash;
           archivedLists = importedData.archivedLists;
           saveToLocalStorage();
@@ -660,6 +767,7 @@ settingsModal.addEventListener('click', (e) => {
 resetDataBtn.addEventListener('click', () => {
     if (confirm('আপনি কি নিশ্চিত যে আপনি সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলতে চান? এই কাজটি ফিরিয়ে আনা যাবে না।')) {
         bazarLists = [];
+        dokanBakiiLists = [];
         trash = [];
         archivedLists = [];
         saveToLocalStorage();
@@ -684,6 +792,10 @@ function initializeApp() {
             const storedData = localStorage.getItem('bazarLists');
             if (storedData) {
                 bazarLists = JSON.parse(storedData);
+            }
+            const storedDokanBakii = localStorage.getItem('dokanBakiiLists');
+            if (storedDokanBakii) {
+                dokanBakiiLists = JSON.parse(storedDokanBakii);
             }
             const storedTrash = localStorage.getItem('bazarTrash');
             if (storedTrash) {
