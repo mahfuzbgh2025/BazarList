@@ -50,6 +50,10 @@ body {
     border-bottom: 1px solid #444;
 }
 
+.clickable-header {
+    cursor: pointer;
+}
+
 .sidebar-options {
     flex-grow: 1;
     margin-top: 20px;
