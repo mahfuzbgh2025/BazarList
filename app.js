@@ -401,20 +401,11 @@ listsContainer.addEventListener('click', (e) => {
   }
 });
 
+// *** UPDATED LOGIN LOGIC ***
 signInBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-            const user = result.user;
-            console.log('User signed in successfully:', user.email);
-            // After successful sign-in, load user data and update UI
-            loadDataFromFirebase(user.uid);
-            updateUI(user);
-        })
-        .catch((error) => {
-            console.error('Sign-in failed:', error);
-            // Handle specific errors like "auth/popup-closed-by-user"
-        });
+    // Use signInWithRedirect instead of signInWithPopup
+    firebase.auth().signInWithRedirect(provider);
 });
 
 signOutBtn.addEventListener('click', () => {
@@ -788,32 +779,47 @@ resetDataBtn.addEventListener('click', () => {
 // --- Initial Setup ---
 
 function initializeApp() {
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            console.log('Authentication state changed: User is logged in.', user.email);
-            updateUI(user);
+    // This part handles the redirect after Google login
+    firebase.auth().getRedirectResult().then((result) => {
+        if (result.credential) {
+            // A user successfully signed in via redirect.
+            const user = result.user;
+            console.log('User signed in via redirect:', user.email);
             loadDataFromFirebase(user.uid);
+            updateUI(user);
         } else {
-            console.log('Authentication state changed: User is logged out.');
-            updateUI(null);
-            const storedData = localStorage.getItem('bazarLists');
-            if (storedData) {
-                bazarLists = JSON.parse(storedData);
-            }
-            const storedDokanBakii = localStorage.getItem('dokanBakiiLists');
-            if (storedDokanBakii) {
-                dokanBakiiLists = JSON.parse(storedDokanBakii);
-            }
-            const storedTrash = localStorage.getItem('bazarTrash');
-            if (storedTrash) {
-                trash = JSON.parse(storedTrash);
-            }
-            const storedArchived = localStorage.getItem('bazarArchived');
-            if (storedArchived) {
-                archivedLists = JSON.parse(storedArchived);
-            }
-            renderAllLists();
+            // Check if a user is already authenticated (e.g., from a previous session)
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('Authentication state changed: User is logged in.', user.email);
+                    updateUI(user);
+                    loadDataFromFirebase(user.uid);
+                } else {
+                    console.log('Authentication state changed: User is logged out.');
+                    updateUI(null);
+                    const storedData = localStorage.getItem('bazarLists');
+                    if (storedData) {
+                        bazarLists = JSON.parse(storedData);
+                    }
+                    const storedDokanBakii = localStorage.getItem('dokanBakiiLists');
+                    if (storedDokanBakii) {
+                        dokanBakiiLists = JSON.parse(storedDokanBakii);
+                    }
+                    const storedTrash = localStorage.getItem('bazarTrash');
+                    if (storedTrash) {
+                        trash = JSON.parse(storedTrash);
+                    }
+                    const storedArchived = localStorage.getItem('bazarArchived');
+                    if (storedArchived) {
+                        archivedLists = JSON.parse(storedArchived);
+                    }
+                    renderAllLists();
+                }
+            });
         }
+    }).catch((error) => {
+        // Handle any errors from the redirect result
+        console.error('Redirect result error:', error);
     });
 }
 
