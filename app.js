@@ -401,10 +401,9 @@ listsContainer.addEventListener('click', (e) => {
   }
 });
 
-// *** UPDATED LOGIN LOGIC ***
+// UPDATED LOGIN LOGIC - USE signInWithRedirect
 signInBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    // Use signInWithRedirect instead of signInWithPopup
     firebase.auth().signInWithRedirect(provider);
 });
 
@@ -777,50 +776,48 @@ resetDataBtn.addEventListener('click', () => {
 
 
 // --- Initial Setup ---
-
 function initializeApp() {
-    // This part handles the redirect after Google login
+    // 1. Handle redirect result first. This runs after a successful redirect.
     firebase.auth().getRedirectResult().then((result) => {
         if (result.credential) {
-            // A user successfully signed in via redirect.
-            const user = result.user;
-            console.log('User signed in via redirect:', user.email);
-            loadDataFromFirebase(user.uid);
-            updateUI(user);
-        } else {
-            // Check if a user is already authenticated (e.g., from a previous session)
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    console.log('Authentication state changed: User is logged in.', user.email);
-                    updateUI(user);
-                    loadDataFromFirebase(user.uid);
-                } else {
-                    console.log('Authentication state changed: User is logged out.');
-                    updateUI(null);
-                    const storedData = localStorage.getItem('bazarLists');
-                    if (storedData) {
-                        bazarLists = JSON.parse(storedData);
-                    }
-                    const storedDokanBakii = localStorage.getItem('dokanBakiiLists');
-                    if (storedDokanBakii) {
-                        dokanBakiiLists = JSON.parse(storedDokanBakii);
-                    }
-                    const storedTrash = localStorage.getItem('bazarTrash');
-                    if (storedTrash) {
-                        trash = JSON.parse(storedTrash);
-                    }
-                    const storedArchived = localStorage.getItem('bazarArchived');
-                    if (storedArchived) {
-                        archivedLists = JSON.parse(storedArchived);
-                    }
-                    renderAllLists();
-                }
-            });
+            console.log('User signed in via redirect.');
+            // No need to do anything here, onAuthStateChanged will handle the UI update.
         }
     }).catch((error) => {
-        // Handle any errors from the redirect result
         console.error('Redirect result error:', error);
+    });
+
+    // 2. onAuthStateChanged listener to handle all authentication state changes.
+    // This is the most reliable way to check login status.
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log('Authentication state changed: User is logged in.', user.email);
+            updateUI(user);
+            loadDataFromFirebase(user.uid);
+        } else {
+            console.log('Authentication state changed: User is logged out.');
+            updateUI(null);
+            // Load local data if user is not logged in.
+            const storedData = localStorage.getItem('bazarLists');
+            if (storedData) {
+                bazarLists = JSON.parse(storedData);
+            }
+            const storedDokanBakii = localStorage.getItem('dokanBakiiLists');
+            if (storedDokanBakii) {
+                dokanBakiiLists = JSON.parse(storedDokanBakii);
+            }
+            const storedTrash = localStorage.getItem('bazarTrash');
+            if (storedTrash) {
+                trash = JSON.parse(storedTrash);
+            }
+            const storedArchived = localStorage.getItem('bazarArchived');
+            if (storedArchived) {
+                archivedLists = JSON.parse(storedArchived);
+            }
+            renderAllLists();
+        }
     });
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
+
