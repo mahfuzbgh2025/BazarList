@@ -95,12 +95,22 @@
     </div>
     
     <div id="settingsModal" class="modal">
-      <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h2>সেটিংস</h2>
-          <button id="resetDataBtn" class="danger-btn">সব ডেটা মুছুন</button>
-      </div>
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>সেটিংস</h2>
+        
+        <div class="theme-settings">
+            <h4>থিম পরিবর্তন করুন</h4>
+            <div class="theme-options">
+                <button class="theme-btn" data-theme="default">ডিফল্ট থিম</button>
+                <button class="theme-btn" data-theme="dark">ডার্ক থিম</button>
+            </div>
+        </div>
+
+        <button id="resetDataBtn" class="danger-btn">সব ডেটা মুছুন</button>
     </div>
+</div>
+
     
     <script src="app.js"></script>
 </body>
