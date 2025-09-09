@@ -820,7 +820,7 @@ header {
 /* Footer Styles */
 footer {
     text-align: center;
-    padding: 20px 0;
+    padding: 20px;
     margin-top: 20px;
     border-top: 1px solid var(--border-color);
     background-color: var(--card-bg);
