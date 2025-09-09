@@ -3,125 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বাজারের তালিকা</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-    <script src="https://unpkg.com/jspdf-autotable@3.5.14/dist/jspdf.plugin.autotable.min.js"></script>
+    <title>বাজার ও হিসাব</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
-<div class="main-container">
-
-    <div id="sidebar" class="sidebar">
-        <button id="closeSidebarBtn" class="close-btn">&times;</button>
-        <div id="sidebarHeader" class="sidebar-header clickable-header">
-            <h2 id="userDisplayName">লগইন করুন</h2>
-            <small id="userEmail"></small>
-            <button id="signInBtn" class="auth-btn" style="display: none;">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon">
-                Google দিয়ে লগইন করুন
-            </button>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header" id="sidebarHeader">
+            <h3 id="userDisplayName">লগইন করুন</h3>
+            <p id="userEmail"></p>
         </div>
-        <div class="sidebar-options">
-            <button id="showBazarListBtn" class="sidebar-btn active">📝 বাজারের তালিকা</button>
-            <button id="showDokanBakiiBtn" class="sidebar-btn">🧾 দোকান বাকি</button>
-            <button id="showArchiveBtn" class="sidebar-btn">📦 আর্কাইভ</button>
-            <button id="showTrashBtn" class="sidebar-btn">🗑️ ট্র্যাশ</button>
-            <button id="openSettingsModalBtn" class="sidebar-btn">⚙️ সেটিংস</button>
-        </div>
-        <div class="sidebar-auth-buttons">
-            <button id="signOutBtn" class="auth-btn" style="display: none;">লগআউট</button>
-        </div>
+        <button class="close-btn" id="closeSidebarBtn">&times;</button>
+        <button class="nav-btn" id="showBazarListBtn">বাজারের তালিকা</button>
+        <button class="nav-btn" id="showDokanBakiiBtn">দোকান বাকী</button>
+        <button class="nav-btn" id="showBillPaymentBtn">বিল পরিশোধ</button>
+        <div class="sidebar-divider"></div>
+        <button class="nav-btn" id="showTrashBtn">ট্র্যাশ</button>
+        <button class="nav-btn" id="showArchiveBtn">আর্কাইভ</button>
+        <div class="sidebar-divider"></div>
+        <button class="nav-btn" id="openSettingsModalBtn">সেটিংস</button>
+        <button class="nav-btn" id="exportBtn">ডেটা এক্সপোর্ট</button>
+        <button class="nav-btn" id="importBtn">ডেটা ইম্পোর্ট</button>
+        <div class="sidebar-divider"></div>
+        <button class="sign-btn" id="signInBtn">গুগল দিয়ে লগইন করুন</button>
+        <button class="sign-btn" id="signOutBtn">লগআউট</button>
     </div>
 
-    <div id="main-content" class="main-content">
+    <div class="main-content">
         <header>
             <button id="openSidebarBtn" class="menu-btn">☰</button>
-            <h1>বাজারের তালিকা</h1>
-            <div class="total-amount">
+            <h1 class="app-title">বাজার ও হিসাব</h1>
+            <h2 class="total-amount-display">
                 মোট খরচ: <span id="totalAmount">0.00</span> টাকা
-            </div>
+            </h2>
         </header>
-
+    
         <main>
             <section id="bazarListSection">
-                <div class="add-list-section">
-                    <input type="text" id="listNameInput" placeholder="নতুন লিস্টের নাম লিখুন...">
-                    <button id="addListBtn">➕ লিস্ট যোগ করুন</button>
+                <div class="input-section">
+                    <input type="text" id="listNameInput" placeholder="নতুন বাজারের তালিকার নাম">
+                    <button id="addListBtn">➕ নতুন তালিকা</button>
                 </div>
-                <div id="listsContainer" class="lists-container">
-                    </div>
+                <div class="lists-container" id="listsContainer"></div>
             </section>
-
+    
             <section id="dokanBakiiSection" style="display: none;">
-                <div class="add-list-section">
-                    <input type="text" id="dokanNameInput" placeholder="দোকানের নাম লিখুন...">
-                    <button id="addDokanBakiiBtn">➕ দোকান যোগ করুন</button>
+                <div class="input-section">
+                    <input type="text" id="dokanNameInput" placeholder="দোকানের নাম">
+                    <button id="addDokanBakiiBtn">➕ নতুন বাকি</button>
                 </div>
-                <div id="dokanBakiiContainer" class="lists-container">
-                    </div>
+                <div class="lists-container" id="dokanBakiiContainer"></div>
+            </section>
+    
+            <section id="billPaymentSection" style="display: none;">
+                <div class="input-section">
+                    <input type="text" id="billNameInput" placeholder="বিলের নাম">
+                    <button id="addBillPaymentBtn">➕ নতুন বিল</button>
+                </div>
+                <div class="lists-container" id="billPaymentContainer"></div>
             </section>
         </main>
     </div>
-
-</div>
-
-<footer>
-    Developed by Mahfuz Bgh
-</footer>
-
-<div id="trashModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>ট্র্যাশ</h2>
-        <div id="trashItemsContainer"></div>
-    </div>
-</div>
-
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>আইটেম সম্পাদনা</h2>
-        <input type="text" id="editName" placeholder="পণ্যের নাম">
-        <input type="text" id="editQuantity" placeholder="পরিমাণ">
-        <input type="number" id="editPrice" placeholder="দাম">
-        <input type="date" id="editDate" placeholder="তারিখ">
-        <button id="saveEditBtn">সংরক্ষণ করুন</button>
-    </div>
-</div>
-
-<div id="settingsModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn">&times;</span>
-    <h2>সেটিংস</h2>
-    <hr>
     
-    <div class="setting-item">
-      <h3>ডেটা ব্যাকআপ</h3>
-      <p>আপনার সমস্ত ডেটা JSON ফাইল হিসেবে ডাউনলোড করুন।</p>
-      <button id="exportBtn">📁 ডেটা এক্সপোর্ট</button>
+    <div id="trashModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>ট্র্যাশ</h2>
+            <div id="trashItemsContainer"></div>
+        </div>
     </div>
     
-    <div class="setting-item">
-      <h3>ডেটা রিস্টোর</h3>
-      <p>ব্যাকআপ করা JSON ফাইল থেকে ডেটা রিস্টোর করুন।</p>
-      <input type="file" id="importFile" accept=".json" style="display: none;">
-      <button id="importBtn">📂 ডেটা ইমপোর্ট</button>
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+          <span class="close-btn">&times;</span>
+          <h2>আইটেম এডিট করুন</h2>
+          <input type="text" id="editName" placeholder="পণ্যের নাম">
+          <input type="text" id="editQuantity" placeholder="পরিমাণ">
+          <input type="number" id="editPrice" placeholder="দাম (টাকা)">
+          <input type="date" id="editDate">
+          <button id="saveEditBtn">সংরক্ষণ করুন</button>
+      </div>
     </div>
     
-    <div class="setting-item">
-      <h3>ডেটা রিসেট</h3>
-      <p class="warning">সতর্কতা: এই কাজটি আপনার সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলবে।</p>
-      <button id="resetDataBtn">🗑️ সমস্ত ডেটা মুছে ফেলুন</button>
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+          <span class="close-btn">&times;</span>
+          <h2>সেটিংস</h2>
+          <button id="resetDataBtn" class="danger-btn">সব ডেটা মুছুন</button>
+      </div>
     </div>
-
-  </div>
-</div>
-
-<script src="app.js"></script>
+    
+    <script src="app.js"></script>
 </body>
 </html>
