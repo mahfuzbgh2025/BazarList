@@ -16,6 +16,7 @@ function formatDate(date) {
 const listNameInput = document.getElementById('listNameInput');
 const dokanNameInput = document.getElementById('dokanNameInput');
 const billNameInput = document.getElementById('billNameInput');
+const dokanImageInput = document.getElementById('dokanImageInput');
 const addListBtn = document.getElementById('addListBtn');
 const addDokanBakiiBtn = document.getElementById('addDokanBakiiBtn');
 const addBillPaymentBtn = document.getElementById('addBillPaymentBtn');
@@ -191,10 +192,6 @@ function renderList(list, containerId) {
           <input type="text" placeholder="পরিমাণ" style="width: 15%;">
           <input type="number" placeholder="দাম (টাকা)" required>
           <input type="date" placeholder="তারিখ">
-          <label class="image-upload-label">
-              <i class="fas fa-image"></i> ছবি
-              <input type="file" class="image-upload-input" accept="image/*">
-          </label>
           <button type="submit">➕</button>
       </form>
       `;
@@ -223,6 +220,9 @@ function renderList(list, containerId) {
       archiveButtonHTML = `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>`;
   }
 
+  // Check if it's dokan bakii list and has an image
+  const imageDisplayHTML = list.imageURL ? `<img src="${list.imageURL}" alt="${list.name}" class="item-image" style="margin-top: 10px;">` : '';
+
   listDiv.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h2>${list.name}</h2>
@@ -230,11 +230,17 @@ function renderList(list, containerId) {
         <button class="dropbtn">⋮</button>
         <div class="dropdown-content">
           <button class="edit-list-name-btn" data-list-id="${list.id}" data-container-id="${containerId}">নাম পরিবর্তন</button>
+          ${list.imageURL ? `<button class="view-image-btn" data-image-url="${list.imageURL}">🖼️ ছবি দেখুন</button>` : ''}
+          ${containerId === 'dokanBakiiContainer' ? `<label for="image-upload-${list.id}" class="image-upload-label">
+              <input type="file" id="image-upload-${list.id}" class="dokan-image-edit-input" data-list-id="${list.id}" accept="image/*" style="display:none;">
+              <i class="fas fa-camera"></i> ছবি পরিবর্তন
+          </label>` : ''}
           <button class="pdf-btn" data-list-id="${list.id}" data-container-id="${containerId}">📄 PDF ডাউনলোড</button>
           <button class="delete-list-btn" data-list-id="${list.id}" data-container-id="${containerId}">🗑️ লিস্ট ডিলিট</button>
         </div>
       </div>
     </div>
+    ${imageDisplayHTML}
     ${formHTML}
     <ul></ul>
     <div style="text-align: right; margin-top: 10px;">
@@ -272,6 +278,27 @@ function renderList(list, containerId) {
     }
   });
 
+  // Event listener for view image button
+  const viewImageBtn = listDiv.querySelector('.view-image-btn');
+  if (viewImageBtn) {
+      viewImageBtn.addEventListener('click', () => {
+          const imageUrl = viewImageBtn.dataset.imageUrl;
+          window.open(imageUrl, '_blank');
+      });
+  }
+
+  // Event listener for dokan image edit input
+  const dokanImageEditInput = listDiv.querySelector('.dokan-image-edit-input');
+  if (dokanImageEditInput) {
+      dokanImageEditInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          const listId = e.target.dataset.listId;
+          if (file) {
+              uploadDokanImage(listId, file);
+          }
+      });
+  }
+
   listDiv.querySelector('.pdf-btn').addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
     const containerId = e.target.dataset.containerId;
@@ -302,19 +329,20 @@ function renderList(list, containerId) {
     });
   }
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const listId = e.target.dataset.listId;
-    const containerId = e.target.dataset.containerId;
-    const nameInput = e.target.querySelector('input[type="text"]');
-    const quantityInput = e.target.querySelector('input[placeholder="পরিমাণ"]');
-    const priceInput = e.target.querySelector('input[type="number"]');
-    const dateInput = e.target.querySelector('input[type="date"]');
-    const imageInput = e.target.querySelector('.image-upload-input');
-    
-    addItemToList(listId, nameInput.value, quantityInput ? quantityInput.value : null, priceInput.value, dateInput.value, imageInput ? imageInput.files[0] : null, containerId);
-    e.target.reset();
-  });
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const listId = e.target.dataset.listId;
+      const containerId = e.target.dataset.containerId;
+      const nameInput = e.target.querySelector('input[type="text"]');
+      const quantityInput = e.target.querySelector('input[placeholder="পরিমাণ"]');
+      const priceInput = e.target.querySelector('input[type="number"]');
+      const dateInput = e.target.querySelector('input[type="date"]');
+      
+      addItemToList(listId, nameInput.value, quantityInput ? quantityInput.value : null, priceInput.value, dateInput.value, containerId);
+      e.target.reset();
+    });
+  }
   
   list.items.forEach(item => {
     renderItem(itemsList, item, containerId);
@@ -328,13 +356,11 @@ function renderList(list, containerId) {
 
 function renderItem(parentListElement, item, containerId) {
   const listItem = document.createElement('li');
-  let imageHTML = item.imageURL ? `<img src="${item.imageURL}" alt="${item.name}" class="item-image">` : '';
   
   listItem.innerHTML = `
     <div class="item-details">
       <span>${item.name} (${item.quantity || 'N/A'}) - ${item.price} টাকা</span>
       <div class="item-meta">তারিখ: ${item.date}</div>
-      ${imageHTML}
     </div>
     <div class="item-buttons">
       <button class="edit-btn" data-item-id="${item.id}" data-container-id="${containerId}">🖊️</button>
@@ -416,18 +442,33 @@ addListBtn.addEventListener('click', () => {
 
 addDokanBakiiBtn.addEventListener('click', () => {
   const dokanName = dokanNameInput.value.trim();
+  const dokanImageFile = dokanImageInput.files[0];
+
   if (dokanName) {
     const newDokan = {
       id: generateId(),
       name: dokanName,
+      imageURL: null,
       items: []
     };
-    dokanBakiiLists.push(newDokan);
-    dokanNameInput.value = '';
-    saveToLocalStorage();
-    renderAllLists();
+
+    if (dokanImageFile) {
+        uploadDokanImage(newDokan.id, dokanImageFile, () => {
+            dokanBakiiLists.push(newDokan);
+            dokanNameInput.value = '';
+            dokanImageInput.value = '';
+            saveToLocalStorage();
+            renderAllLists();
+        });
+    } else {
+        dokanBakiiLists.push(newDokan);
+        dokanNameInput.value = '';
+        saveToLocalStorage();
+        renderAllLists();
+    }
   }
 });
+
 
 addBillPaymentBtn.addEventListener('click', () => {
   const billName = billNameInput.value.trim();
@@ -531,7 +572,34 @@ sidebarHeader.addEventListener('click', () => {
 
 // --- New Features Logic ---
 
-function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, imageFile, containerId) {
+function uploadDokanImage(listId, file, callback) {
+    const storageRef = storage.ref(`images/${listId}-${file.name}`);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed', 
+        (snapshot) => {
+            // Optional: Handle progress
+        },
+        (error) => {
+            console.error("Image upload failed:", error);
+            alert("ছবি আপলোড করতে ব্যর্থ হয়েছে।");
+        },
+        () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                const dokanList = dokanBakiiLists.find(l => l.id === listId);
+                if (dokanList) {
+                    dokanList.imageURL = downloadURL;
+                    saveToLocalStorage();
+                    renderAllLists();
+                    alert("ছবি সফলভাবে আপলোড হয়েছে এবং সেভ হয়েছে!");
+                }
+                if (callback) callback();
+            });
+        }
+    );
+}
+
+function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, containerId) {
   let targetListArray;
   if (containerId === 'listsContainer') {
     targetListArray = bazarLists;
@@ -549,38 +617,11 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, imag
       name: itemName,
       quantity: itemQuantity,
       price: itemPrice,
-      date: dateToSave,
-      imageURL: null // Placeholder for image URL
+      date: dateToSave
     };
-    
-    if (imageFile && containerId === 'dokanBakiiContainer') {
-        const storageRef = storage.ref(`images/${newItem.id}-${imageFile.name}`);
-        const uploadTask = storageRef.put(imageFile);
-        uploadTask.on('state_changed',
-            (snapshot) => {
-                // You can add a progress bar here if you want
-            },
-            (error) => {
-                console.error("Image upload failed:", error);
-                alert("ছবি আপলোড করতে ব্যর্থ হয়েছে।");
-                list.items.push(newItem);
-                saveToLocalStorage();
-                renderAllLists();
-            },
-            () => {
-                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    newItem.imageURL = downloadURL;
-                    list.items.push(newItem);
-                    saveToLocalStorage();
-                    renderAllLists();
-                });
-            }
-        );
-    } else {
-        list.items.push(newItem);
-        saveToLocalStorage();
-        renderAllLists();
-    }
+    list.items.push(newItem);
+    saveToLocalStorage();
+    renderAllLists();
   }
 }
 
