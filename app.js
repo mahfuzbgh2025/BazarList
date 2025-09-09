@@ -15,10 +15,13 @@ function formatDate(date) {
 // Global variables for DOM elements
 const listNameInput = document.getElementById('listNameInput');
 const dokanNameInput = document.getElementById('dokanNameInput');
+const billNameInput = document.getElementById('billNameInput');
 const addListBtn = document.getElementById('addListBtn');
 const addDokanBakiiBtn = document.getElementById('addDokanBakiiBtn');
+const addBillPaymentBtn = document.getElementById('addBillPaymentBtn');
 const listsContainer = document.getElementById('listsContainer');
 const dokanBakiiContainer = document.getElementById('dokanBakiiContainer');
+const billPaymentContainer = document.getElementById('billPaymentContainer');
 const totalAmountSpan = document.getElementById('totalAmount');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
@@ -40,8 +43,10 @@ const userEmail = document.getElementById('userEmail');
 const resetDataBtn = document.getElementById('resetDataBtn');
 const showBazarListBtn = document.getElementById('showBazarListBtn');
 const showDokanBakiiBtn = document.getElementById('showDokanBakiiBtn');
+const showBillPaymentBtn = document.getElementById('showBillPaymentBtn');
 const bazarListSection = document.getElementById('bazarListSection');
 const dokanBakiiSection = document.getElementById('dokanBakiiSection');
+const billPaymentSection = document.getElementById('billPaymentSection');
 const sidebarHeader = document.getElementById('sidebarHeader');
 
 // Firebase Configuration
@@ -59,10 +64,12 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+const storage = firebase.storage();
 
 // Data structure to hold all the lists and items
 let bazarLists = [];
 let dokanBakiiLists = [];
+let billPaymentsLists = [];
 let trash = [];
 let archivedLists = [];
 
@@ -72,6 +79,7 @@ let archivedLists = [];
 function saveToLocalStorage() {
   localStorage.setItem('bazarLists', JSON.stringify(bazarLists));
   localStorage.setItem('dokanBakiiLists', JSON.stringify(dokanBakiiLists));
+  localStorage.setItem('billPaymentsLists', JSON.stringify(billPaymentsLists));
   localStorage.setItem('bazarTrash', JSON.stringify(trash));
   localStorage.setItem('bazarArchived', JSON.stringify(archivedLists));
   updateTotalCost();
@@ -89,6 +97,7 @@ function saveToFirebase(uid) {
         database.ref('users/' + uid).set({
             lists: bazarLists,
             dokanBakii: dokanBakiiLists,
+            billPayments: billPaymentsLists,
             trash: trash,
             archived: archivedLists
         })
@@ -109,6 +118,7 @@ function loadDataFromFirebase(uid) {
             if (data) {
                 bazarLists = data.lists || [];
                 dokanBakiiLists = data.dokanBakii || [];
+                billPaymentsLists = data.billPayments || [];
                 trash = data.trash || [];
                 archivedLists = data.archived || [];
                 renderAllLists();
@@ -132,8 +142,13 @@ function updateTotalCost() {
       return itemSum + (parseFloat(item.price) || 0);
     }, 0);
   }, 0);
+  const billTotal = billPaymentsLists.reduce((sum, list) => {
+    return sum + list.items.reduce((itemSum, item) => {
+      return itemSum + (parseFloat(item.price) || 0);
+    }, 0);
+  }, 0);
 
-  totalAmountSpan.textContent = (total + dokanTotal).toFixed(2);
+  totalAmountSpan.textContent = (total + dokanTotal + billTotal).toFixed(2);
 }
 
 // Update UI based on user login status
@@ -162,7 +177,49 @@ function renderList(list, containerId) {
 
   // Calculate total price for this specific list
   const listTotal = list.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
-  const totalLabel = containerId === 'dokanBakiiContainer' ? 'মোট বাকি' : 'মোট খরচ';
+  let totalLabel;
+  let formHTML;
+  let archiveButtonHTML = '';
+
+  if (containerId === 'dokanBakiiContainer') {
+    totalLabel = 'মোট বাকি';
+    formHTML = `
+      <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
+        <input type="text" placeholder="পণ্যের নাম" required>
+        <input type="text" placeholder="পরিমাণ" style="width: 15%;">
+        <input type="number" placeholder="দাম (টাকা)" required>
+        <input type="date" placeholder="তারিখ">
+        <label class="image-upload-label">
+            ছবি আপলোড
+            <input type="file" class="image-upload-input" accept="image/*">
+        </label>
+        <button type="submit">➕ যোগ করুন</button>
+      </form>
+    `;
+  } else if (containerId === 'billPaymentContainer') {
+    totalLabel = 'মোট বিল';
+    formHTML = `
+      <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
+        <input type="text" placeholder="বিলের নাম" required>
+        <input type="text" placeholder="পণ্যের নাম">
+        <input type="number" placeholder="দাম (টাকা)" required>
+        <input type="date" placeholder="তারিখ">
+        <button type="submit">➕ যোগ করুন</button>
+      </form>
+    `;
+  } else {
+    totalLabel = 'মোট খরচ';
+    formHTML = `
+      <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
+        <input type="text" placeholder="পণ্যের নাম" required>
+        <input type="text" placeholder="পরিমাণ" style="width: 15%;">
+        <input type="number" placeholder="দাম (টাকা)" required>
+        <input type="date" placeholder="তারিখ">
+        <button type="submit">➕ যোগ করুন</button>
+      </form>
+    `;
+    archiveButtonHTML = `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>`;
+  }
 
   listDiv.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -176,17 +233,11 @@ function renderList(list, containerId) {
         </div>
       </div>
     </div>
-    <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
-      <input type="text" placeholder="পণ্যের নাম" required>
-      <input type="text" placeholder="পরিমাণ" style="width: 15%;">
-      <input type="number" placeholder="দাম (টাকা)" required>
-      <input type="date" placeholder="তারিখ">
-      <button type="submit">➕ যোগ করুন</button>
-    </form>
+    ${formHTML}
     <ul></ul>
     <div style="text-align: right; margin-top: 10px;">
       <h4>${totalLabel}: ${listTotal.toFixed(2)} টাকা</h4>
-      ${containerId === 'listsContainer' ? `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>` : ''}
+      ${archiveButtonHTML}
     </div>
   `;
   
@@ -206,10 +257,11 @@ function renderList(list, containerId) {
     let listToEdit = [];
     if (containerId === 'listsContainer') {
       listToEdit = bazarLists.find(l => l.id === listId);
-    } else {
+    } else if (containerId === 'dokanBakiiContainer') {
       listToEdit = dokanBakiiLists.find(l => l.id === listId);
+    } else {
+      listToEdit = billPaymentsLists.find(l => l.id === listId);
     }
-
     const newName = prompt("লিস্টের নতুন নাম লিখুন:", listToEdit.name);
     if (newName) {
       listToEdit.name = newName;
@@ -224,8 +276,10 @@ function renderList(list, containerId) {
     let listToDownload = [];
     if (containerId === 'listsContainer') {
       listToDownload = bazarLists.find(l => l.id === listId);
-    } else {
+    } else if (containerId === 'dokanBakiiContainer') {
       listToDownload = dokanBakiiLists.find(l => l.id === listId);
+    } else {
+      listToDownload = billPaymentsLists.find(l => l.id === listId);
     }
     downloadPDF(listToDownload, containerId);
   });
@@ -250,8 +304,13 @@ function renderList(list, containerId) {
     e.preventDefault();
     const listId = e.target.dataset.listId;
     const containerId = e.target.dataset.containerId;
-    const [nameInput, quantityInput, priceInput, dateInput] = e.target.querySelectorAll('input');
-    addItemToList(listId, nameInput.value, quantityInput.value, priceInput.value, dateInput.value, containerId);
+    const nameInput = e.target.querySelector('input[type="text"]');
+    const quantityInput = e.target.querySelector('input[placeholder="পরিমাণ"]');
+    const priceInput = e.target.querySelector('input[type="number"]');
+    const dateInput = e.target.querySelector('input[type="date"]');
+    const imageInput = e.target.querySelector('.image-upload-input');
+    
+    addItemToList(listId, nameInput.value, quantityInput ? quantityInput.value : null, priceInput.value, dateInput.value, imageInput ? imageInput.files[0] : null, containerId);
     e.target.reset();
   });
   
@@ -267,9 +326,12 @@ function renderList(list, containerId) {
 
 function renderItem(parentListElement, item, containerId) {
   const listItem = document.createElement('li');
+  let imageHTML = item.imageURL ? `<img src="${item.imageURL}" alt="${item.name}" class="item-image">` : '';
+  
   listItem.innerHTML = `
     <div class="item-details">
-      <span>${item.name} (${item.quantity}) - ${item.price} টাকা</span>
+      ${imageHTML}
+      <span>${item.name} (${item.quantity || 'N/A'}) - ${item.price} টাকা</span>
       <div class="item-meta">তারিখ: ${item.date}</div>
     </div>
     <div class="item-buttons">
@@ -292,8 +354,10 @@ function renderItem(parentListElement, item, containerId) {
 function renderAllLists() {
   listsContainer.innerHTML = '';
   dokanBakiiContainer.innerHTML = '';
+  billPaymentContainer.innerHTML = '';
   bazarLists.forEach(list => renderList(list, 'listsContainer'));
   dokanBakiiLists.forEach(list => renderList(list, 'dokanBakiiContainer'));
+  billPaymentsLists.forEach(list => renderList(list, 'billPaymentContainer'));
   updateTotalCost();
 }
 
@@ -363,6 +427,21 @@ addDokanBakiiBtn.addEventListener('click', () => {
   }
 });
 
+addBillPaymentBtn.addEventListener('click', () => {
+  const billName = billNameInput.value.trim();
+  if (billName) {
+    const newBill = {
+      id: generateId(),
+      name: billName,
+      items: []
+    };
+    billPaymentsLists.push(newBill);
+    billNameInput.value = '';
+    saveToLocalStorage();
+    renderAllLists();
+  }
+});
+
 openSidebarBtn.addEventListener('click', () => {
     sidebar.classList.add('active');
 });
@@ -374,8 +453,10 @@ closeSidebarBtn.addEventListener('click', () => {
 showBazarListBtn.addEventListener('click', () => {
     bazarListSection.style.display = 'block';
     dokanBakiiSection.style.display = 'none';
+    billPaymentSection.style.display = 'none';
     showBazarListBtn.classList.add('active');
     showDokanBakiiBtn.classList.remove('active');
+    showBillPaymentBtn.classList.remove('active');
     renderAllLists();
     sidebar.classList.remove('active');
 });
@@ -383,8 +464,21 @@ showBazarListBtn.addEventListener('click', () => {
 showDokanBakiiBtn.addEventListener('click', () => {
     bazarListSection.style.display = 'none';
     dokanBakiiSection.style.display = 'block';
+    billPaymentSection.style.display = 'none';
     showDokanBakiiBtn.classList.add('active');
     showBazarListBtn.classList.remove('active');
+    showBillPaymentBtn.classList.remove('active');
+    renderAllLists();
+    sidebar.classList.remove('active');
+});
+
+showBillPaymentBtn.addEventListener('click', () => {
+    bazarListSection.style.display = 'none';
+    dokanBakiiSection.style.display = 'none';
+    billPaymentSection.style.display = 'block';
+    showBillPaymentBtn.classList.add('active');
+    showBazarListBtn.classList.remove('active');
+    showDokanBakiiBtn.classList.remove('active');
     renderAllLists();
     sidebar.classList.remove('active');
 });
@@ -413,6 +507,7 @@ signOutBtn.addEventListener('click', () => {
             console.log('User signed out.');
             bazarLists = [];
             dokanBakiiLists = [];
+            billPaymentsLists = [];
             trash = [];
             archivedLists = [];
             saveToLocalStorage();
@@ -434,40 +529,71 @@ sidebarHeader.addEventListener('click', () => {
 
 // --- New Features Logic ---
 
-function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, containerId) {
-  let targetListArray = [];
+function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, imageFile, containerId) {
+  let targetListArray;
   if (containerId === 'listsContainer') {
     targetListArray = bazarLists;
-  } else {
+  } else if (containerId === 'dokanBakiiContainer') {
     targetListArray = dokanBakiiLists;
+  } else {
+    targetListArray = billPaymentsLists;
   }
+
   const list = targetListArray.find(l => l.id === listId);
   if (list) {
     const dateToSave = itemDate ? formatDate(new Date(itemDate)) : formatDate(new Date());
-
     const newItem = {
       id: generateId(),
       name: itemName,
       quantity: itemQuantity,
       price: itemPrice,
-      date: dateToSave
+      date: dateToSave,
+      imageURL: null // Placeholder for image URL
     };
-    list.items.push(newItem);
-    saveToLocalStorage();
-    renderAllLists();
+    
+    if (imageFile && containerId === 'dokanBakiiContainer') {
+        const storageRef = storage.ref(`images/${newItem.id}-${imageFile.name}`);
+        const uploadTask = storageRef.put(imageFile);
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // You can add a progress bar here if you want
+            },
+            (error) => {
+                console.error("Image upload failed:", error);
+                alert("ছবি আপলোড করতে ব্যর্থ হয়েছে।");
+                list.items.push(newItem);
+                saveToLocalStorage();
+                renderAllLists();
+            },
+            () => {
+                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    newItem.imageURL = downloadURL;
+                    list.items.push(newItem);
+                    saveToLocalStorage();
+                    renderAllLists();
+                });
+            }
+        );
+    } else {
+        list.items.push(newItem);
+        saveToLocalStorage();
+        renderAllLists();
+    }
   }
 }
+
 
 function moveToTrash(itemId, type, containerId) {
   if (type === 'item') {
     let itemToMove;
-    let targetListArray = [];
+    let targetListArray;
     if (containerId === 'listsContainer') {
       targetListArray = bazarLists;
-    } else {
+    } else if (containerId === 'dokanBakiiContainer') {
       targetListArray = dokanBakiiLists;
+    } else {
+      targetListArray = billPaymentsLists;
     }
-
     targetListArray.forEach(list => {
       const itemIndex = list.items.findIndex(item => item.id === itemId);
       if (itemIndex > -1) {
@@ -478,13 +604,14 @@ function moveToTrash(itemId, type, containerId) {
       }
     });
   } else if (type === 'list') {
-    let targetListArray = [];
+    let targetListArray;
     if (containerId === 'listsContainer') {
       targetListArray = bazarLists;
-    } else {
+    } else if (containerId === 'dokanBakiiContainer') {
       targetListArray = dokanBakiiLists;
+    } else {
+      targetListArray = billPaymentsLists;
     }
-
     const listIndex = targetListArray.findIndex(list => list.id === itemId);
     if (listIndex > -1) {
       const listToMove = targetListArray.splice(listIndex, 1)[0];
@@ -621,11 +748,13 @@ function showEditModal(item, containerId) {
     const newPrice = document.getElementById('editPrice').value;
     const newDate = document.getElementById('editDate').value;
     
-    let targetListArray = [];
+    let targetListArray;
     if (containerId === 'listsContainer') {
       targetListArray = bazarLists;
-    } else {
+    } else if (containerId === 'dokanBakiiContainer') {
       targetListArray = dokanBakiiLists;
+    } else {
+      targetListArray = billPaymentsLists;
     }
 
     const list = targetListArray.find(l => l.items.find(i => i.id === item.id));
@@ -650,7 +779,6 @@ function showEditModal(item, containerId) {
 function downloadPDF(list, containerId) {
   if (!list) return;
 
-  // Check for internet connection before downloading
   if (!navigator.onLine) {
     alert("পিডিএফ ডাউনলোড করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
     return;
@@ -674,7 +802,11 @@ function downloadPDF(list, containerId) {
   y += 10;
   
   list.items.forEach(item => {
-    doc.text(`- ${item.name} (${item.quantity}) - ${item.price} টাকা | তারিখ: ${item.date}`, 15, y);
+    doc.text(`- ${item.name} (${item.quantity || ''}) - ${item.price} টাকা | তারিখ: ${item.date}`, 15, y);
+    if (item.imageURL) {
+      doc.text(`ছবি: ${item.imageURL}`, 20, y + 5);
+      y += 5;
+    }
     totalListPrice += parseFloat(item.price) || 0;
     y += 7;
   });
@@ -699,6 +831,7 @@ exportBtn.addEventListener('click', () => {
   const dataToExport = {
     bazarLists: bazarLists,
     dokanBakiiLists: dokanBakiiLists,
+    billPaymentsLists: billPaymentsLists,
     trash: trash,
     archivedLists: archivedLists
   };
@@ -730,9 +863,10 @@ importFile.addEventListener('change', (e) => {
     reader.onload = (event) => {
       try {
         const importedData = JSON.parse(event.target.result);
-        if (importedData.bazarLists && importedData.dokanBakiiLists && importedData.trash && importedData.archivedLists) {
+        if (importedData.bazarLists && importedData.dokanBakiiLists && importedData.billPaymentsLists && importedData.trash && importedData.archivedLists) {
           bazarLists = importedData.bazarLists;
           dokanBakiiLists = importedData.dokanBakiiLists;
+          billPaymentsLists = importedData.billPaymentsLists;
           trash = importedData.trash;
           archivedLists = importedData.archivedLists;
           saveToLocalStorage();
@@ -765,6 +899,7 @@ resetDataBtn.addEventListener('click', () => {
     if (confirm('আপনি কি নিশ্চিত যে আপনি সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলতে চান? এই কাজটি ফিরিয়ে আনা যাবে না।')) {
         bazarLists = [];
         dokanBakiiLists = [];
+        billPaymentsLists = [];
         trash = [];
         archivedLists = [];
         saveToLocalStorage();
@@ -777,18 +912,6 @@ resetDataBtn.addEventListener('click', () => {
 
 // --- Initial Setup ---
 function initializeApp() {
-    // 1. Handle redirect result first. This runs after a successful redirect.
-    firebase.auth().getRedirectResult().then((result) => {
-        if (result.credential) {
-            console.log('User signed in via redirect.');
-            // No need to do anything here, onAuthStateChanged will handle the UI update.
-        }
-    }).catch((error) => {
-        console.error('Redirect result error:', error);
-    });
-
-    // 2. onAuthStateChanged listener to handle all authentication state changes.
-    // This is the most reliable way to check login status.
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             console.log('Authentication state changed: User is logged in.', user.email);
@@ -806,6 +929,10 @@ function initializeApp() {
             if (storedDokanBakii) {
                 dokanBakiiLists = JSON.parse(storedDokanBakii);
             }
+            const storedBillPayments = localStorage.getItem('billPaymentsLists');
+            if (storedBillPayments) {
+                billPaymentsLists = JSON.parse(storedBillPayments);
+            }
             const storedTrash = localStorage.getItem('bazarTrash');
             if (storedTrash) {
                 trash = JSON.parse(storedTrash);
@@ -820,4 +947,3 @@ function initializeApp() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
-
