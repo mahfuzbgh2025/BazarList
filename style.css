@@ -268,3 +268,73 @@ footer {
     bottom: 0;
     width: 100%;
 }
+/* থিম কালার ভেরিয়েবল */
+:root {
+    --bg-color: #f4f7f6;
+    --main-color: #007bff;
+    --text-color: #333;
+    --card-bg: #fff;
+    --border-color: #ddd;
+    --hover-bg: #e2e6ea;
+}
+
+.dark-theme {
+    --bg-color: #1a1a1a;
+    --main-color: #4a90e2;
+    --text-color: #f4f7f6;
+    --card-bg: #2d2d2d;
+    --border-color: #444;
+    --hover-bg: #333;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Noto Sans Bengali', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.list, .input-section {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content, .sidebar {
+    background-color: var(--card-bg);
+}
+
+.nav-btn, .sign-btn {
+    background-color: var(--main-color);
+}
+
+.nav-btn:hover, .sign-btn:hover {
+    background-color: var(--hover-bg);
+}
+
+.list .item-form button, .input-section button {
+    background-color: var(--main-color);
+}
+
+.list .item-form button:hover, .input-section button:hover {
+    background-color: var(--hover-bg);
+}
+
+.theme-options {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-btn {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.theme-btn:hover {
+    opacity: 0.8;
+}
