@@ -276,6 +276,7 @@ footer {
     --card-bg: #fff;
     --border-color: #ddd;
     --hover-bg: #e2e6ea;
+    --danger-color: #dc3545;
 }
 
 .dark-theme {
@@ -285,47 +286,143 @@ footer {
     --card-bg: #2d2d2d;
     --border-color: #444;
     --hover-bg: #333;
+    --danger-color: #e85d04;
+}
+
+.golden-dark-theme {
+    --bg-color: #212529;
+    --main-color: #ffc107;
+    --text-color: #f8f9fa;
+    --card-bg: #343a40;
+    --border-color: #6c757d;
+    --hover-bg: #495057;
+    --danger-color: #e57c23;
 }
 
 body {
+    font-family: 'Noto Sans Bengali', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Noto Sans Bengali', sans-serif;
+    margin: 0;
+    padding: 0;
     transition: background-color 0.3s, color 0.3s;
 }
 
-.list, .input-section {
+header {
+    background-color: var(--main-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.header-right {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.main-container {
+    padding: 20px;
+}
+
+.input-section {
     background-color: var(--card-bg);
-    border-color: var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: none;
 }
 
-.modal-content, .sidebar {
-    background-color: var(--card-bg);
+.input-section.active {
+    display: block;
 }
 
-.nav-btn, .sign-btn {
-    background-color: var(--main-color);
-}
-
-.nav-btn:hover, .sign-btn:hover {
-    background-color: var(--hover-bg);
-}
-
-.list .item-form button, .input-section button {
-    background-color: var(--main-color);
-}
-
-.list .item-form button:hover, .input-section button:hover {
-    background-color: var(--hover-bg);
-}
-
-.theme-options {
+.input-form {
     display: flex;
     gap: 10px;
+    margin-bottom: 20px;
 }
 
-.theme-btn {
+.input-form input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.input-form button {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.input-form button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.list {
+    background-color: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.list h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.item-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.item-form input[type="text"],
+.item-form input[type="number"],
+.item-form input[type="date"] {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    flex-grow: 1;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.item-form button {
     background-color: var(--main-color);
     color: white;
     border: none;
@@ -335,6 +432,365 @@ body {
     transition: background-color 0.2s;
 }
 
-.theme-btn:hover {
+.item-form button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list ul li:last-child {
+    border-bottom: none;
+}
+
+.item-buttons button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 5px;
+    color: var(--main-color);
+}
+
+.item-buttons .delete-btn {
+    color: var(--danger-color);
+}
+
+.total-amount {
+    font-weight: bold;
+    text-align: right;
+    margin-top: 10px;
+}
+
+.export-import-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.export-import-btns button {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.export-import-btns button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    background-color: var(--card-bg);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+}
+
+.sidebar.active {
+    width: 250px;
+}
+
+.sidebar .close-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.sidebar-header.clickable-header {
+    cursor: pointer;
+}
+
+.sidebar-header h2, .sidebar-header p {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-btn, .sign-btn {
+    padding: 15px;
+    text-align: left;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-btn:hover, .sign-btn:hover {
+    background-color: var(--hover-bg);
+}
+
+.nav-btn.active {
+    background-color: var(--main-color);
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 300;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+.professional-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.modal-section {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.modal-section h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--main-color);
+}
+
+.danger-zone {
+    border-color: var(--danger-color);
+}
+
+.danger-zone h3 {
+    color: var(--danger-color);
+}
+
+.action-btn, .danger-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: white;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-btn {
+    background-color: var(--main-color);
+}
+
+.action-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.danger-btn {
+    background-color: var(--danger-color);
+}
+
+.danger-btn:hover {
     opacity: 0.8;
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 5%; opacity: 1}
+}
+
+.modal-content .close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-content .close-btn:hover {
+    color: #000;
+}
+
+#editForm input, #editForm button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.item-image {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+}
+
+.image-upload-label {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-block;
+}
+
+.image-upload-label:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.image-upload-input {
+    display: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--card-bg);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+    border-radius: 5px;
+}
+
+.dropdown-content button {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-content button:hover {
+    background-color: var(--hover-bg);
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropbtn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* New Theme Buttons */
+.theme-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.theme-btn {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.theme-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
 }
