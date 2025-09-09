@@ -3,115 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বাজার ও হিসাব</title>
+    <title>বাজারের তালিকা</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.14/dist/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header" id="sidebarHeader">
-            <h3 id="userDisplayName">লগইন করুন</h3>
+
+<div class="main-container">
+
+    <div id="sidebar" class="sidebar">
+        <button id="closeSidebarBtn" class="close-btn">&times;</button>
+        <div id="sidebarHeader" class="sidebar-header">
+            <h2 id="userDisplayName">লগইন করুন</h2>
             <p id="userEmail"></p>
         </div>
-        <button class="close-btn" id="closeSidebarBtn">&times;</button>
-        <button class="nav-btn" id="showBazarListBtn">বাজারের তালিকা</button>
-        <button class="nav-btn" id="showDokanBakiiBtn">দোকান বাকী</button>
-        <button class="nav-btn" id="showBillPaymentBtn">বিল পরিশোধ</button>
-        <div class="sidebar-divider"></div>
-        <button class="nav-btn" id="showTrashBtn">ট্র্যাশ</button>
-        <button class="nav-btn" id="showArchiveBtn">আর্কাইভ</button>
-        <div class="sidebar-divider"></div>
-        <button class="nav-btn" id="openSettingsModalBtn">সেটিংস</button>
-        <button class="nav-btn" id="exportBtn">ডেটা এক্সপোর্ট</button>
-        <button class="nav-btn" id="importBtn">ডেটা ইম্পোর্ট</button>
-        <div class="sidebar-divider"></div>
-        <button class="sign-btn" id="signInBtn">গুগল দিয়ে লগইন করুন</button>
-        <button class="sign-btn" id="signOutBtn">লগআউট</button>
+        <button id="signInBtn" class="sign-btn">
+            <i class="fab fa-google"></i> গুগল দিয়ে লগইন করুন
+        </button>
+        <button id="signOutBtn" class="sign-btn" style="display:none;">
+            <i class="fas fa-sign-out-alt"></i> সাইন আউট
+        </button>
+        <nav class="sidebar-nav">
+            <button id="showBazarListBtn" class="nav-btn active">
+                <i class="fas fa-shopping-basket"></i> বাজারের তালিকা
+            </button>
+            <button id="showDokanBakiiBtn" class="nav-btn">
+                <i class="fas fa-store-alt"></i> দোকান বাকি
+            </button>
+            <button id="showBillPaymentBtn" class="nav-btn">
+                <i class="fas fa-file-invoice"></i> বিল পেমেন্ট
+            </button>
+            <button id="showArchiveBtn" class="nav-btn">
+                <i class="fas fa-archive"></i> আর্কাইভ
+            </button>
+            <button id="showTrashBtn" class="nav-btn">
+                <i class="fas fa-trash-alt"></i> ট্র্যাশ
+            </button>
+            <button id="openSettingsModalBtn" class="nav-btn">
+                <i class="fas fa-cogs"></i> সেটিংস
+            </button>
+        </nav>
     </div>
 
-    <div class="main-content">
-        <header>
-            <button id="openSidebarBtn" class="menu-btn">☰</button>
-            <h1 class="app-title">বাজার ও হিসাব</h1>
-            <h2 class="total-amount-display">
-                মোট খরচ: <span id="totalAmount">0.00</span> টাকা
-            </h2>
-        </header>
-    
-        <main>
-            <section id="bazarListSection">
-                <div class="input-section">
-                    <input type="text" id="listNameInput" placeholder="নতুন বাজারের তালিকার নাম">
-                    <button id="addListBtn">➕ নতুন তালিকা</button>
-                </div>
-                <div class="lists-container" id="listsContainer"></div>
-            </section>
-    
-            <section id="dokanBakiiSection" style="display: none;">
-                <div class="input-section">
-                    <input type="text" id="dokanNameInput" placeholder="দোকানের নাম">
-                    <label class="image-upload-label-for-list">
-                        দোকানের ছবি
-                        <input type="file" id="dokanImageInput" accept="image/*">
-                    </label>
-                    <button id="addDokanBakiiBtn">➕ নতুন বাকি</button>
-                </div>
-                <div class="lists-container" id="dokanBakiiContainer"></div>
-            </section>
-    
-            <section id="billPaymentSection" style="display: none;">
-                <div class="input-section">
-                    <input type="text" id="billNameInput" placeholder="বিলের নাম">
-                    <button id="addBillPaymentBtn">➕ নতুন বিল</button>
-                </div>
-                <div class="lists-container" id="billPaymentContainer"></div>
-            </section>
-        </main>
-    </div>
-    
-    <div id="trashModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>ট্র্যাশ</h2>
-            <div id="trashItemsContainer"></div>
+    <header>
+        <div class="header-left">
+            <button id="openSidebarBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
+            <h1><i class="fas fa-book"></i> বাজার ও হিসাব</h1>
+        </div>
+        <div class="header-right">
+            <span>মোট খরচ: <span id="totalAmount">0.00</span> টাকা</span>
+        </div>
+    </header>
+
+    <main>
+        <section id="bazarListSection" class="input-section active">
+            <h2>বাজারের তালিকা</h2>
+            <div class="input-form">
+                <input type="text" id="listNameInput" placeholder="নতুন তালিকা যোগ করুন" required>
+                <button id="addListBtn"><i class="fas fa-plus"></i> নতুন তালিকা</button>
+            </div>
+            <div id="listsContainer"></div>
+        </section>
+
+        <section id="dokanBakiiSection" class="input-section">
+            <h2>দোকান বাকি</h2>
+            <div class="input-form">
+                <input type="text" id="dokanNameInput" placeholder="দোকানের নাম" required>
+                <button id="addDokanBakiiBtn"><i class="fas fa-plus"></i> নতুন দোকান</button>
+            </div>
+            <div id="dokanBakiiContainer"></div>
+        </section>
+
+        <section id="billPaymentSection" class="input-section">
+            <h2>বিল পেমেন্ট</h2>
+            <div class="input-form">
+                <input type="text" id="billNameInput" placeholder="বিলের নাম" required>
+                <button id="addBillPaymentBtn"><i class="fas fa-plus"></i> নতুন বিল</button>
+            </div>
+            <div id="billPaymentContainer"></div>
+        </section>
+    </main>
+</div>
+
+<div id="settingsModal" class="modal">
+    <div class="modal-content professional-modal">
+        <span class="close-btn">&times;</span>
+        <h2 class="modal-title">সেটিংস</h2>
+        
+        <div class="modal-section">
+            <h3><i class="fas fa-paint-brush"></i> থিম পরিবর্তন করুন</h3>
+            <div class="theme-options">
+                <button class="theme-btn" data-theme="default">ডিফল্ট থিম</button>
+                <button class="theme-btn" data-theme="dark">ডার্ক থিম</button>
+                <button class="theme-btn" data-theme="golden-dark">গোল্ডেন ডার্ক</button>
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <h3><i class="fas fa-cloud-download-alt"></i> ডেটা এক্সপোর্ট</h3>
+            <p>আপনার সমস্ত ডেটা JSON ফাইল হিসেবে ডাউনলোড করুন।</p>
+            <button id="exportBtn" class="action-btn"><i class="fas fa-download"></i> ডেটা এক্সপোর্ট</button>
+        </div>
+
+        <div class="modal-section">
+            <h3><i class="fas fa-cloud-upload-alt"></i> ডেটা ইম্পোর্ট</h3>
+            <p>JSON ফাইল থেকে ডেটা ইম্পোর্ট করুন।</p>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+            <button id="importBtn" class="action-btn"><i class="fas fa-upload"></i> ডেটা ইম্পোর্ট</button>
+        </div>
+
+        <div class="modal-section danger-zone">
+            <h3><i class="fas fa-exclamation-triangle"></i> ডেটা রিসেট</h3>
+            <p>সতর্কতা! এই কাজটি আপনার সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলবে।</p>
+            <button id="resetDataBtn" class="danger-btn"><i class="fas fa-trash-alt"></i> সমস্ত ডেটা মুছুন</button>
         </div>
     </div>
-    
-    <div id="editModal" class="modal">
-      <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h2>আইটেম এডিট করুন</h2>
-          <input type="text" id="editName" placeholder="পণ্যের নাম">
-          <input type="text" id="editQuantity" placeholder="পরিমাণ">
-          <input type="number" id="editPrice" placeholder="দাম (টাকা)">
-          <input type="date" id="editDate">
-          <button id="saveEditBtn">সংরক্ষণ করুন</button>
-      </div>
+</div>
+
+<div id="trashModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>ট্র্যাশ</h2>
+        <div id="trashItemsContainer"></div>
     </div>
-    
-    <div id="settingsModal" class="modal">
-      <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h2>সেটিংস</h2>
-          
-          <div class="theme-settings">
-              <h4>থিম পরিবর্তন করুন</h4>
-              <div class="theme-options">
-                  <button class="theme-btn" data-theme="default">ডিফল্ট থিম</button>
-                  <button class="theme-btn" data-theme="vibrant">ভাইব্রেন্ট থিম</button>
-                  <button class="theme-btn" data-theme="calm">শান্ত থিম</button>
-              </div>
-          </div>
-    
-          <button id="resetDataBtn" class="danger-btn">সব ডেটা মুছুন</button>
-      </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>আইটেম এডিট করুন</h2>
+        <form id="editForm">
+            <input type="text" id="editName" placeholder="পণ্যের নাম" required>
+            <input type="text" id="editQuantity" placeholder="পরিমাণ">
+            <input type="number" id="editPrice" placeholder="দাম (টাকা)" required>
+            <input type="date" id="editDate" required>
+            <button type="button" id="saveEditBtn">পরিবর্তন সেভ করুন</button>
+        </form>
     </div>
-    
-    <script src="app.js"></script>
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
