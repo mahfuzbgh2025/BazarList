@@ -713,11 +713,12 @@ header {
     background-color: var(--main-color);
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .image-upload-label:hover {
