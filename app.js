@@ -181,45 +181,46 @@ function renderList(list, containerId) {
   let totalLabel;
   let formHTML;
   let archiveButtonHTML = '';
-
+  
+  // Decide which form to render based on containerId
   if (containerId === 'dokanBakiiContainer') {
-    totalLabel = 'মোট বাকি';
-    formHTML = `
+      totalLabel = 'মোট বাকি';
+      formHTML = `
       <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
-        <input type="text" placeholder="পণ্যের নাম" required>
-        <input type="text" placeholder="পরিমাণ" style="width: 15%;">
-        <input type="number" placeholder="দাম (টাকা)" required>
-        <input type="date" placeholder="তারিখ">
-        <label class="image-upload-label">
-            ছবি আপলোড
-            <input type="file" class="image-upload-input" accept="image/*">
-        </label>
-        <button type="submit">➕ যোগ করুন</button>
+          <input type="text" placeholder="পণ্যের নাম" required>
+          <input type="text" placeholder="পরিমাণ" style="width: 15%;">
+          <input type="number" placeholder="দাম (টাকা)" required>
+          <input type="date" placeholder="তারিখ">
+          <label class="image-upload-label">
+              <i class="fas fa-image"></i> ছবি
+              <input type="file" class="image-upload-input" accept="image/*">
+          </label>
+          <button type="submit">➕</button>
       </form>
-    `;
+      `;
   } else if (containerId === 'billPaymentContainer') {
-    totalLabel = 'মোট বিল';
-    formHTML = `
+      totalLabel = 'মোট বিল';
+      formHTML = `
       <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
-        <input type="text" placeholder="বিলের নাম" required>
-        <input type="text" placeholder="পণ্যের নাম">
-        <input type="number" placeholder="দাম (টাকা)" required>
-        <input type="date" placeholder="তারিখ">
-        <button type="submit">➕ যোগ করুন</button>
+          <input type="text" placeholder="বিলের নাম" required>
+          <input type="text" placeholder="পণ্যের নাম">
+          <input type="number" placeholder="দাম (টাকা)" required>
+          <input type="date" placeholder="তারিখ">
+          <button type="submit">➕</button>
       </form>
-    `;
+      `;
   } else {
-    totalLabel = 'মোট খরচ';
-    formHTML = `
+      totalLabel = 'মোট খরচ';
+      formHTML = `
       <form class="item-form" data-list-id="${list.id}" data-container-id="${containerId}">
-        <input type="text" placeholder="পণ্যের নাম" required>
-        <input type="text" placeholder="পরিমাণ" style="width: 15%;">
-        <input type="number" placeholder="দাম (টাকা)" required>
-        <input type="date" placeholder="তারিখ">
-        <button type="submit">➕ যোগ করুন</button>
+          <input type="text" placeholder="পণ্যের নাম" required>
+          <input type="text" placeholder="পরিমাণ" style="width: 15%;">
+          <input type="number" placeholder="দাম (টাকা)" required>
+          <input type="date" placeholder="তারিখ">
+          <button type="submit">➕</button>
       </form>
-    `;
-    archiveButtonHTML = `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>`;
+      `;
+      archiveButtonHTML = `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>`;
   }
 
   listDiv.innerHTML = `
@@ -331,9 +332,9 @@ function renderItem(parentListElement, item, containerId) {
   
   listItem.innerHTML = `
     <div class="item-details">
-      ${imageHTML}
       <span>${item.name} (${item.quantity || 'N/A'}) - ${item.price} টাকা</span>
       <div class="item-meta">তারিখ: ${item.date}</div>
+      ${imageHTML}
     </div>
     <div class="item-buttons">
       <button class="edit-btn" data-item-id="${item.id}" data-container-id="${containerId}">🖊️</button>
@@ -913,10 +914,11 @@ resetDataBtn.addEventListener('click', () => {
 
 // --- Theme Changer Logic ---
 function setAppTheme(theme) {
+    document.body.className = '';
     if (theme === 'dark') {
         document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme');
+    } else if (theme === 'golden-dark') {
+        document.body.classList.add('golden-dark-theme');
     }
     localStorage.setItem('appTheme', theme);
 }
