@@ -65,8 +65,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const database = firebase.database();
 const storage = firebase.storage();
+const provider = new firebase.auth.GoogleAuthProvider();
+let userId = null;
+
+// Enable offline persistence
+firebase.database().ref().keepSynced(true);
 
 // Data structure to hold all the lists and items
 let bazarLists = [];
@@ -77,6 +83,19 @@ let archivedLists = [];
 
 // --- Helper Functions ---
 
+// Function to save data to a specific Firebase path
+function saveToFirebase(path, data) {
+    if (userId) {
+        database.ref('users/' + userId + '/' + path).set(data)
+        .then(() => {
+            // Optional: Log success
+        })
+        .catch((error) => {
+            console.error('Data save error:', error.message);
+        });
+    }
+}
+
 // Function to save data to local storage
 function saveToLocalStorage() {
   localStorage.setItem('bazarLists', JSON.stringify(bazarLists));
@@ -85,51 +104,6 @@ function saveToLocalStorage() {
   localStorage.setItem('bazarTrash', JSON.stringify(trash));
   localStorage.setItem('bazarArchived', JSON.stringify(archivedLists));
   updateTotalCost();
-
-  // Check if user is logged in, then save to Firebase
-  const user = firebase.auth().currentUser;
-  if (user) {
-    saveToFirebase(user.uid);
-  }
-}
-
-// Function to save data to Firebase
-function saveToFirebase(uid) {
-    if (uid) {
-        database.ref('users/' + uid).set({
-            lists: bazarLists,
-            dokanBakii: dokanBakiiLists,
-            billPayments: billPaymentsLists,
-            trash: trash,
-            archived: archivedLists
-        })
-        .then(() => {
-            // alert('আপনার ডেটা ক্লাউডে সফলভাবে সেভ হয়েছে! ☁️'); // Removed to avoid too many alerts
-        })
-        .catch((error) => {
-            alert('ডেটা সেভ করার সময় একটি সমস্যা হয়েছে: ' + error.message);
-        });
-    }
-}
-
-// Function to load data from Firebase
-function loadDataFromFirebase(uid) {
-    database.ref('users/' + uid).once('value')
-        .then((snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                bazarLists = data.lists || [];
-                dokanBakiiLists = data.dokanBakii || [];
-                billPaymentsLists = data.billPayments || [];
-                trash = data.trash || [];
-                archivedLists = data.archived || [];
-                renderAllLists();
-                console.log('Data loaded from Firebase.');
-            }
-        })
-        .catch((error) => {
-            console.error('Error loading data:', error);
-        });
 }
 
 // Function to update the overall total cost display
@@ -171,19 +145,16 @@ function updateUI(user) {
 }
 
 // --- Main Rendering Functions ---
-
 function renderList(list, containerId) {
   const listDiv = document.createElement('div');
   listDiv.className = 'list';
   listDiv.id = list.id;
 
-  // Calculate total price for this specific list
   const listTotal = list.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
   let totalLabel;
   let formHTML;
   let archiveButtonHTML = '';
   
-  // Decide which form to render based on containerId
   if (containerId === 'dokanBakiiContainer') {
       totalLabel = 'মোট বাকি';
       formHTML = `
@@ -220,7 +191,6 @@ function renderList(list, containerId) {
       archiveButtonHTML = `<button class="archive-list-btn" data-list-id="${list.id}">✓ আর্কাইভ</button>`;
   }
 
-  // Check if it's dokan bakii list and has an image
   const imageDisplayHTML = list.imageURL ? `<img src="${list.imageURL}" alt="${list.name}" class="item-image" style="margin-top: 10px;">` : '';
 
   listDiv.innerHTML = `
@@ -252,13 +222,11 @@ function renderList(list, containerId) {
   const form = listDiv.querySelector('.item-form');
   const itemsList = listDiv.querySelector('ul');
   
-  // Event listener for the 3-dot dropdown menu
   listDiv.querySelector('.dropbtn').addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevents document click from closing it immediately
+    e.stopPropagation();
     listDiv.querySelector('.dropdown-content').classList.toggle('show');
   });
 
-  // Event listeners for dropdown menu actions
   listDiv.querySelector('.edit-list-name-btn').addEventListener('click', (e) => {
     const listId = e.target.dataset.listId;
     const containerId = e.target.dataset.containerId;
@@ -274,11 +242,11 @@ function renderList(list, containerId) {
     if (newName) {
       listToEdit.name = newName;
       saveToLocalStorage();
+      saveToFirebase(getFirebasePath(containerId), getListArray(containerId));
       renderAllLists();
     }
   });
 
-  // Event listener for view image button
   const viewImageBtn = listDiv.querySelector('.view-image-btn');
   if (viewImageBtn) {
       viewImageBtn.addEventListener('click', () => {
@@ -287,7 +255,6 @@ function renderList(list, containerId) {
       });
   }
 
-  // Event listener for dokan image edit input
   const dokanImageEditInput = listDiv.querySelector('.dokan-image-edit-input');
   if (dokanImageEditInput) {
       dokanImageEditInput.addEventListener('change', (e) => {
@@ -321,12 +288,14 @@ function renderList(list, containerId) {
     }
   });
 
-  // Event listener for archiving the list
   if (containerId === 'listsContainer') {
-    listDiv.querySelector('.archive-list-btn').addEventListener('click', (e) => {
-      const listId = e.target.dataset.listId;
-      archiveList(listId);
-    });
+    const archiveButton = listDiv.querySelector('.archive-list-btn');
+    if (archiveButton) {
+        archiveButton.addEventListener('click', (e) => {
+            const listId = e.target.dataset.listId;
+            archiveList(listId);
+        });
+    }
   }
 
   if (form) {
@@ -344,9 +313,11 @@ function renderList(list, containerId) {
     });
   }
   
-  list.items.forEach(item => {
-    renderItem(itemsList, item, containerId);
-  });
+  if (list.items) {
+    list.items.forEach(item => {
+      renderItem(itemsList, item, containerId);
+    });
+  }
   
   const targetContainer = document.getElementById(containerId);
   if (targetContainer) {
@@ -383,15 +354,15 @@ function renderAllLists() {
   listsContainer.innerHTML = '';
   dokanBakiiContainer.innerHTML = '';
   billPaymentContainer.innerHTML = '';
-  bazarLists.forEach(list => renderList(list, 'listsContainer'));
-  dokanBakiiLists.forEach(list => renderList(list, 'dokanBakiiContainer'));
-  billPaymentsLists.forEach(list => renderList(list, 'billPaymentContainer'));
+  if (bazarLists) bazarLists.forEach(list => renderList(list, 'listsContainer'));
+  if (dokanBakiiLists) dokanBakiiLists.forEach(list => renderList(list, 'dokanBakiiContainer'));
+  if (billPaymentsLists) billPaymentsLists.forEach(list => renderList(list, 'billPaymentContainer'));
   updateTotalCost();
 }
 
 function renderArchive() {
   listsContainer.innerHTML = '<h2>আর্কাইভ করা লিস্টসমূহ</h2>';
-  if (archivedLists.length === 0) {
+  if (!archivedLists || archivedLists.length === 0) {
     listsContainer.innerHTML += '<p style="text-align: center;">আর্কাইভ খালি আছে।</p>';
   } else {
     archivedLists.forEach(list => {
@@ -405,14 +376,30 @@ function renderArchive() {
         <ul></ul>
       `;
       const itemsList = listDiv.querySelector('ul');
-      list.items.forEach(item => renderItem(itemsList, item, 'listsContainer'));
+      if (list.items) {
+          list.items.forEach(item => renderItem(itemsList, item, 'listsContainer'));
+      }
       listsContainer.appendChild(listDiv);
     });
   }
 }
 
-// --- Event Handlers ---
+// Helper function to get the Firebase path and local array based on container ID
+function getFirebasePath(containerId) {
+    if (containerId === 'listsContainer') return 'lists';
+    if (containerId === 'dokanBakiiContainer') return 'dokanBakii';
+    if (containerId === 'billPaymentContainer') return 'billPayments';
+    return '';
+}
 
+function getListArray(containerId) {
+    if (containerId === 'listsContainer') return bazarLists;
+    if (containerId === 'dokanBakiiContainer') return dokanBakiiLists;
+    if (containerId === 'billPaymentContainer') return billPaymentsLists;
+    return [];
+}
+
+// --- Event Handlers ---
 document.addEventListener('click', (e) => {
   if (!e.target.matches('.dropbtn')) {
     const dropdowns = document.getElementsByClassName("dropdown-content");
@@ -436,6 +423,7 @@ addListBtn.addEventListener('click', () => {
     bazarLists.push(newList);
     listNameInput.value = '';
     saveToLocalStorage();
+    saveToFirebase('lists', bazarLists);
     renderAllLists();
   }
 });
@@ -458,12 +446,14 @@ addDokanBakiiBtn.addEventListener('click', () => {
             dokanNameInput.value = '';
             dokanImageInput.value = '';
             saveToLocalStorage();
+            saveToFirebase('dokanBakii', dokanBakiiLists);
             renderAllLists();
         });
     } else {
         dokanBakiiLists.push(newDokan);
         dokanNameInput.value = '';
         saveToLocalStorage();
+        saveToFirebase('dokanBakii', dokanBakiiLists);
         renderAllLists();
     }
   }
@@ -481,6 +471,7 @@ addBillPaymentBtn.addEventListener('click', () => {
     billPaymentsLists.push(newBill);
     billNameInput.value = '';
     saveToLocalStorage();
+    saveToFirebase('billPayments', billPaymentsLists);
     renderAllLists();
   }
 });
@@ -538,7 +529,6 @@ listsContainer.addEventListener('click', (e) => {
   }
 });
 
-// UPDATED LOGIN LOGIC - USE signInWithRedirect
 signInBtn.addEventListener('click', () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
@@ -562,18 +552,19 @@ signOutBtn.addEventListener('click', () => {
         });
 });
 
-// New one-click backup feature
 sidebarHeader.addEventListener('click', () => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-        saveToFirebase(user.uid);
+    if (userId) {
+        saveToFirebase('lists', bazarLists);
+        saveToFirebase('dokanBakii', dokanBakiiLists);
+        saveToFirebase('billPayments', billPaymentsLists);
+        saveToFirebase('trash', trash);
+        saveToFirebase('archived', archivedLists);
     }
 });
 
 // --- New Features Logic ---
-
 function uploadDokanImage(listId, file, callback) {
-    const storageRef = storage.ref(`images/${listId}-${file.name}`);
+    const storageRef = storage.ref(`images/${userId}/${listId}-${file.name}`);
     const uploadTask = storageRef.put(file);
 
     uploadTask.on('state_changed', 
@@ -590,6 +581,7 @@ function uploadDokanImage(listId, file, callback) {
                 if (dokanList) {
                     dokanList.imageURL = downloadURL;
                     saveToLocalStorage();
+                    saveToFirebase('dokanBakii', dokanBakiiLists);
                     renderAllLists();
                     alert("ছবি সফলভাবে আপলোড হয়েছে এবং সেভ হয়েছে!");
                 }
@@ -600,15 +592,7 @@ function uploadDokanImage(listId, file, callback) {
 }
 
 function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, containerId) {
-  let targetListArray;
-  if (containerId === 'listsContainer') {
-    targetListArray = bazarLists;
-  } else if (containerId === 'dokanBakiiContainer') {
-    targetListArray = dokanBakiiLists;
-  } else {
-    targetListArray = billPaymentsLists;
-  }
-
+  let targetListArray = getListArray(containerId);
   const list = targetListArray.find(l => l.id === listId);
   if (list) {
     const dateToSave = itemDate ? formatDate(new Date(itemDate)) : formatDate(new Date());
@@ -621,50 +605,38 @@ function addItemToList(listId, itemName, itemQuantity, itemPrice, itemDate, cont
     };
     list.items.push(newItem);
     saveToLocalStorage();
+    saveToFirebase(getFirebasePath(containerId), targetListArray);
     renderAllLists();
   }
 }
 
-
 function moveToTrash(itemId, type, containerId) {
-  if (type === 'item') {
-    let itemToMove;
-    let targetListArray;
-    if (containerId === 'listsContainer') {
-      targetListArray = bazarLists;
-    } else if (containerId === 'dokanBakiiContainer') {
-      targetListArray = dokanBakiiLists;
-    } else {
-      targetListArray = billPaymentsLists;
-    }
-    targetListArray.forEach(list => {
-      const itemIndex = list.items.findIndex(item => item.id === itemId);
-      if (itemIndex > -1) {
-        itemToMove = list.items.splice(itemIndex, 1)[0];
-        if (itemToMove) {
-          trash.push(itemToMove);
+    if (type === 'item') {
+        let itemToMove;
+        let targetListArray = getListArray(containerId);
+        targetListArray.forEach(list => {
+            const itemIndex = list.items.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                itemToMove = list.items.splice(itemIndex, 1)[0];
+                if (itemToMove) {
+                    trash.push(itemToMove);
+                }
+            }
+        });
+    } else if (type === 'list') {
+        let targetListArray = getListArray(containerId);
+        const listIndex = targetListArray.findIndex(list => list.id === itemId);
+        if (listIndex > -1) {
+            const listToMove = targetListArray.splice(listIndex, 1)[0];
+            trash.push(listToMove);
         }
-      }
-    });
-  } else if (type === 'list') {
-    let targetListArray;
-    if (containerId === 'listsContainer') {
-      targetListArray = bazarLists;
-    } else if (containerId === 'dokanBakiiContainer') {
-      targetListArray = dokanBakiiLists;
-    } else {
-      targetListArray = billPaymentsLists;
     }
-    const listIndex = targetListArray.findIndex(list => list.id === itemId);
-    if (listIndex > -1) {
-      const listToMove = targetListArray.splice(listIndex, 1)[0];
-      trash.push(listToMove);
-    }
-  }
-  
-  alert('আইটেমটি ট্র্যাশে সরানো হয়েছে।');
-  saveToLocalStorage();
-  renderAllLists();
+    
+    alert('আইটেমটি ট্র্যাশে সরানো হয়েছে।');
+    saveToLocalStorage();
+    saveToFirebase(getFirebasePath(containerId), getListArray(containerId));
+    saveToFirebase('trash', trash);
+    renderAllLists();
 }
 
 showTrashBtn.addEventListener('click', () => {
@@ -732,6 +704,8 @@ function restoreItemFromTrash(itemId) {
     }
     restoredList.items.push(restoredItem);
     saveToLocalStorage();
+    saveToFirebase('trash', trash);
+    saveToFirebase('lists', bazarLists);
     renderAllLists();
     renderTrashItems();
   }
@@ -743,6 +717,8 @@ function restoreListFromTrash(listId) {
     const restoredList = trash.splice(listIndex, 1)[0];
     bazarLists.push(restoredList);
     saveToLocalStorage();
+    saveToFirebase('trash', trash);
+    saveToFirebase('lists', bazarLists);
     renderAllLists();
     renderTrashItems();
   }
@@ -751,6 +727,7 @@ function restoreListFromTrash(listId) {
 function permanentDeleteItem(itemId) {
   trash = trash.filter(item => item.id !== itemId);
   saveToLocalStorage();
+  saveToFirebase('trash', trash);
   renderTrashItems();
 }
 
@@ -761,6 +738,8 @@ function archiveList(listId) {
     archivedLists.push(listToArchive);
     alert('লিস্টটি আর্কাইভ করা হয়েছে!');
     saveToLocalStorage();
+    saveToFirebase('lists', bazarLists);
+    saveToFirebase('archived', archivedLists);
     renderAllLists();
   }
 }
@@ -771,6 +750,8 @@ function restoreListFromArchive(listId) {
     const restoredList = archivedLists.splice(listIndex, 1)[0];
     bazarLists.push(restoredList);
     saveToLocalStorage();
+    saveToFirebase('archived', archivedLists);
+    saveToFirebase('lists', bazarLists);
     renderAllLists();
   }
 }
@@ -791,15 +772,7 @@ function showEditModal(item, containerId) {
     const newPrice = document.getElementById('editPrice').value;
     const newDate = document.getElementById('editDate').value;
     
-    let targetListArray;
-    if (containerId === 'listsContainer') {
-      targetListArray = bazarLists;
-    } else if (containerId === 'dokanBakiiContainer') {
-      targetListArray = dokanBakiiLists;
-    } else {
-      targetListArray = billPaymentsLists;
-    }
-
+    let targetListArray = getListArray(containerId);
     const list = targetListArray.find(l => l.items.find(i => i.id === item.id));
     if (list) {
       const existingItem = list.items.find(i => i.id === item.id);
@@ -808,6 +781,7 @@ function showEditModal(item, containerId) {
       existingItem.price = newPrice;
       existingItem.date = formatDate(new Date(newDate));
       saveToLocalStorage();
+      saveToFirebase(getFirebasePath(containerId), targetListArray);
       renderAllLists();
     }
     editModal.style.display = 'none';
@@ -831,9 +805,6 @@ function downloadPDF(list, containerId) {
   const doc = new jsPDF();
   let y = 10;
   
-  // Custom font loading is needed for Bengali, but this example uses the default font.
-  // The default font may not support all characters.
-  
   const title = containerId === 'dokanBakiiContainer' ? `বাকি: ${list.name}` : `বাজারের তালিকা: ${list.name}`;
   doc.setFontSize(16);
   doc.text(title, 10, y);
@@ -845,15 +816,17 @@ function downloadPDF(list, containerId) {
   doc.text('আইটেমসমূহ:', 10, y);
   y += 10;
   
-  list.items.forEach(item => {
-    doc.text(`- ${item.name} (${item.quantity || ''}) - ${item.price} টাকা | তারিখ: ${item.date}`, 15, y);
-    if (item.imageURL) {
-      doc.text(`ছবি: ${item.imageURL}`, 20, y + 5);
-      y += 5;
-    }
-    totalListPrice += parseFloat(item.price) || 0;
-    y += 7;
-  });
+  if (list.items) {
+      list.items.forEach(item => {
+        doc.text(`- ${item.name} (${item.quantity || ''}) - ${item.price} টাকা | তারিখ: ${item.date}`, 15, y);
+        if (item.imageURL) {
+          doc.text(`ছবি: ${item.imageURL}`, 20, y + 5);
+          y += 5;
+        }
+        totalListPrice += parseFloat(item.price) || 0;
+        y += 7;
+      });
+  }
 
   doc.setFontSize(14);
   y += 5;
@@ -866,7 +839,6 @@ function downloadPDF(list, containerId) {
 // --- Import/Export Functionality ---
 
 exportBtn.addEventListener('click', () => {
-  // Check for internet connection before exporting
   if (!navigator.onLine) {
     alert("ডেটা এক্সপোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
     return;
@@ -892,7 +864,6 @@ exportBtn.addEventListener('click', () => {
 });
 
 importBtn.addEventListener('click', () => {
-  // Check for internet connection before importing
   if (!navigator.onLine) {
     alert("ডেটা ইম্পোর্ট করার জন্য ইন্টারনেট সংযোগ প্রয়োজন।");
     return;
@@ -914,6 +885,11 @@ importFile.addEventListener('change', (e) => {
           trash = importedData.trash;
           archivedLists = importedData.archivedLists;
           saveToLocalStorage();
+          saveToFirebase('lists', bazarLists);
+          saveToFirebase('dokanBakii', dokanBakiiLists);
+          saveToFirebase('billPayments', billPaymentsLists);
+          saveToFirebase('trash', trash);
+          saveToFirebase('archived', archivedLists);
           renderAllLists();
           alert('ডেটা সফলভাবে ইম্পোর্ট করা হয়েছে!');
         } else {
@@ -947,6 +923,9 @@ resetDataBtn.addEventListener('click', () => {
         trash = [];
         archivedLists = [];
         saveToLocalStorage();
+        if (userId) {
+            database.ref('users/' + userId).remove();
+        }
         renderAllLists();
         alert('সমস্ত ডেটা সফলভাবে মুছে ফেলা হয়েছে।');
         settingsModal.style.display = 'none';
@@ -973,21 +952,21 @@ themeButtons.forEach(button => {
 
 // --- Initial Setup ---
 function initializeApp() {
-    // Load saved theme from local storage
     const savedTheme = localStorage.getItem('appTheme');
     if (savedTheme) {
         setAppTheme(savedTheme);
     }
     
-    firebase.auth().onAuthStateChanged((user) => {
+    auth.onAuthStateChanged((user) => {
         if (user) {
+            userId = user.uid;
             console.log('Authentication state changed: User is logged in.', user.email);
             updateUI(user);
-            loadDataFromFirebase(user.uid);
+            loadAllData();
         } else {
+            userId = null;
             console.log('Authentication state changed: User is logged out.');
             updateUI(null);
-            // Load local data if user is not logged in.
             const storedData = localStorage.getItem('bazarLists');
             if (storedData) {
                 bazarLists = JSON.parse(storedData);
@@ -1013,4 +992,38 @@ function initializeApp() {
     });
 }
 
+// Function to load all data from Firebase
+function loadAllData() {
+    if (!userId) return;
+
+    // Load Bazar Lists (using 'on' for real-time updates)
+    database.ref('users/' + userId + '/lists').on('value', (snapshot) => {
+        bazarLists = snapshot.val() || [];
+        renderAllLists();
+    });
+
+    // Load Dokan Bakii (using 'on' for real-time updates)
+    database.ref('users/' + userId + '/dokanBakii').on('value', (snapshot) => {
+        dokanBakiiLists = snapshot.val() || [];
+        renderAllLists();
+    });
+
+    // Load Bill Payments (using 'on' for real-time updates)
+    database.ref('users/' + userId + '/billPayments').on('value', (snapshot) => {
+        billPaymentsLists = snapshot.val() || [];
+        renderAllLists();
+    });
+
+    // Load Archive (using 'on' for real-time updates)
+    database.ref('users/' + userId + '/archived').on('value', (snapshot) => {
+        archivedLists = snapshot.val() || [];
+    });
+
+    // Load Trash (using 'on' for real-time updates)
+    database.ref('users/' + userId + '/trash').on('value', (snapshot) => {
+        trash = snapshot.val() || [];
+    });
+}
+
 document.addEventListener('DOMContentLoaded', initializeApp);
+
